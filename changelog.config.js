@@ -4,6 +4,7 @@ module.exports = {
   list: [
     'feat',
     'style',
+    'change',
     'chore',
     'art',
     'fix',
@@ -20,7 +21,7 @@ module.exports = {
   ],
   maxMessageLength: 64,
   minMessageLength: 3,
-  questions: ['type', 'subject', 'lerna'],
+  questions: ['type', 'subject', 'body'],
   scopes: [],
   types: {
     ci: {
@@ -37,6 +38,11 @@ module.exports = {
       description: '新機能の追加',
       emoji: '✨',
       value: 'feat',
+    },
+    change: {
+      description: '既存の機能の変更',
+      emoji: '🔀',
+      value: 'change',
     },
     chore: {
       description: '雑多的な変更(ビルドプロセスやツール、ライブラリの変更など)',
@@ -103,7 +109,6 @@ module.exports = {
       type: 'コミットする変更の種類を選択してください:',
       subject: '変更の短い、命令的な説明を書いてください:',
       body: '変更の詳細な説明を提供してください: ',
-      breaking: '破壊的な変更がある場合はリストアップしてください:',
     },
   },
 }
