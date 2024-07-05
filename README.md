@@ -2,13 +2,25 @@
 
 ### Dependencies
 
-| name        | description    | Version |
-| ----------- | -------------- | ------- |
-| TypeScript  | -              | ^5      |
-| Next.js     | AppRouter      | ^14     |
-| TailwindCSS | -              | ^3.4.1  |
-| ESLint      | リンター       | ^8      |
-| Prettier    | フォーマッター | ^3.3.2  |
+| name            | description           | Version  |
+| --------------- | --------------------- | -------- |
+| TypeScript      | -                     | ^5       |
+| Next.js         | AppRouter             | ^14      |
+| TailwindCSS     | -                     | ^3.4.1   |
+| ESLint          | リンター              | ^8       |
+| Prettier        | フォーマッター        | ^3.3.2   |
+| Jotai           | 状態管理              | ^2.8.4   |
+| ReactHookForm   | フォームライブラリ    | ^7.52.1  |
+| zod             | バリデーション        | ^3.23.8  |
+| SWR             | データフェッチ        | ^2.2.5   |
+| FullCalendar    | カレンダー            | ^6.1.14  |
+| emotion         | カレンダーのスタイル  | ^11.11.4 |
+| classNames      | スタイリング補助      | ^2.5.1   |
+| PostCSS         | cssプリプロセッサー   | ^8       |
+| StoryBook       | テスト                | ^8.1.11  |
+| svgr            | SVGのコンポーネント化 | ^8.1.0   |
+| pathpida        | パスの型生成          | ^0.22.0  |
+| npm-run-all     | npmスクリプトツール   | ^4.1.5   |
 
 ### npm scripts
 
