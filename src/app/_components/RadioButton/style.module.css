@@ -1,0 +1,45 @@
+.radiobutton {
+  display: flex;
+  gap: 8px;
+  padding: 5px;
+  &[data-disabled="true"] {
+    color: var(--gray-400);
+    pointer-events: none;
+  }
+  &[data-error="true"] {
+    color: var(--incorrect-main);
+  }
+
+  & .inputGroup {
+    display: flex;
+    gap: 3px;
+    place-items: center;
+    & .input {
+      width: 20px;
+      height: 20px;
+
+      & :checked {
+        border: 6px solid black;
+      }
+
+      &[data-error="true"] {
+        appearance: none;
+        border-radius: 50%;
+        border: 1px solid #999;
+        background-color: var(--incorrect-bg);
+        border-color: var(--incorrect-main);
+      }
+
+      &[data-disabled="true"] {
+        background-color: var(--gray-10);
+        pointer-events: none;
+
+        &[data-active="true"],
+        &[data-error="true"] {
+          background-color: var(--gray-400);
+          border-color: var(--gray-400);
+        }
+      }
+    }
+  }
+}
