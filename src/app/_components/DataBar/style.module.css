@@ -1,0 +1,42 @@
+.table {
+  background-color: var(--gray-0);
+  border: 1.5px solid var(--gray-200);
+  border-radius: 5px;
+  width: 100%;
+
+  & .thead {
+    background-color: var(--gray-10);
+    border-bottom: 1.5px solid var(--gray-200);
+
+    & .label {
+      & .labelName {
+        padding: 10px;
+      }
+    }
+  }
+
+  & .tbody {
+    & :hover {
+      background-color: var(--gray-200);
+    }
+    & .data {
+      cursor: pointer;
+
+      & .col {
+        padding: 10px;
+      }
+      & .icons {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        place-items: center;
+        padding: 10px 5px;
+        & :hover {
+          box-shadow: 0 0 4px var(--gray-500);
+        }
+
+        & .icon {
+        }
+      }
+    }
+  }
+}
