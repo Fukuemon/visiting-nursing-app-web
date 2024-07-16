@@ -14,5 +14,26 @@ const config: StorybookConfig = {
     options: {},
   },
   staticDirs: ['../public'],
+  core: {
+    builder: {
+      name: '@storybook/builder-webpack5',
+      options: {
+        fsCache: false,
+        lazyCompilation: false,
+      },
+    },
+  },
+  webpackFinal: async (config) => {
+    config?.module?.rules?.push({
+      test: /\.svg$/,
+      use: ['@svgr/webpack'],
+    })
+    const fileLoaderRule = config?.module?.rules?.find(
+      (rule) => rule.test && rule.test.test('.svg'),
+    )
+    fileLoaderRule.exclude = /\.svg$/
+
+    return config
+  },
 }
 export default config

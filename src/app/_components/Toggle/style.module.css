@@ -1,0 +1,76 @@
+.toggle {
+  display: flex;
+  gap: 8px;
+  place-items: center;
+  position: relative;
+  transition:
+    border-color 0.1s ease-in,
+    background-color 0.1s ease-in;
+  z-index: 0;
+
+  & .input {
+    position: absolute;
+    width: 0;
+    height: 0;
+  }
+
+  & .base {
+    width: 56px;
+    border-radius: 16px;
+    height: 32px;
+    background-color: #ddd;
+    cursor: pointer;
+    border: 1.5px solid var(--gray-200);
+
+    &:focus-within {
+      border-color: var(--action-main);
+      outline: solid 2px var(--action-main);
+      outline-offset: 2px;
+    }
+
+    &[data-active="true"] {
+      background-color: var(--action-main);
+      border-color: var(--action-main);
+
+      & .circle {
+        transform: translateX(100%);
+      }
+
+      &[data-error="true"] {
+        background-color: var(--incorrect-main);
+        border-color: var(--incorrect-main);
+      }
+    }
+    &[data-error="true"] {
+      background-color: var(--incorrect-main);
+      border-color: var(--incorrect-main);
+    }
+
+    &[data-disabled="true"] {
+      background-color: var(--gray-10);
+      pointer-events: none;
+
+      &[data-active="true"],
+      &[data-error="true"] {
+        background-color: var(--gray-400);
+        border-color: var(--gray-400);
+      }
+    }
+  }
+
+  & .circle {
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    width: 24px;
+    height: 24px;
+    border-radius: 12px;
+    background-color: var(--gray-0);
+  }
+
+  & .label {
+    display: block;
+    font-size: 15px;
+    white-space: nowrap;
+  }
+}

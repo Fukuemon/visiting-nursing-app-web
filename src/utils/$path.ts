@@ -13,6 +13,13 @@ export const pagesPath = {
 export type PagesPath = typeof pagesPath;
 
 export const staticPath = {
+  icons: {
+    check_svg: '/icons/check.svg',
+    minus_svg: '/icons/minus.svg',
+    search_svg: '/icons/search.svg',
+    square_pen_svg: '/icons/square-pen.svg',
+    trash_2_svg: '/icons/trash-2.svg'
+  },
   next_svg: '/next.svg',
   vercel_svg: '/vercel.svg'
 } as const;

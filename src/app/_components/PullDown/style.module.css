@@ -1,0 +1,116 @@
+.pullDown {
+  width: 100%;
+
+  & .customSelectWrapper {
+    position: relative;
+    user-select: none;
+
+    .customSelect {
+      width: 100%;
+
+      .customSelectTrigger {
+        display: block;
+        width: 100%;
+        padding: 0 84px 0 22px;
+        font-size: 15px;
+        font-weight: 300;
+        color: #fff;
+        background: var(--action-main);
+        border-radius: 4px;
+        cursor: pointer;
+
+        &::after {
+          position: absolute;
+          display: block;
+          content: "";
+          width: 10px;
+          height: 10px;
+          top: 50%;
+          right: 25px;
+          margin-top: -3px;
+          border-bottom: 1px solid var(--gray-0);
+          border-right: 1px solid var(--gray-0);
+          transform: rotate(45deg) translateY(-50%);
+          transition: all 0.1s ease-in-out;
+          transform-origin: 50% 0;
+        }
+      }
+
+      &.opened .customSelectTrigger::after {
+        margin-top: 3px;
+        transform: rotate(-135deg) translateY(-50%);
+      }
+
+      .customOptions {
+        position: absolute;
+        display: block;
+        top: 100%;
+        left: 0;
+        right: 0;
+        min-width: 100%;
+        margin: 15px 0;
+        border-radius: 4px;
+        box-sizing: border-box;
+        box-shadow: 0 2px 1px rgba(0, 0, 0, 0.07);
+        background: #fff;
+        transition: all 0.4s ease-in-out;
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+        transform: translateY(-15px);
+
+        &::before {
+          position: absolute;
+          display: block;
+          content: "";
+          bottom: 100%;
+          right: 25px;
+          width: 7px;
+          height: 7px;
+          margin-bottom: -4px;
+          border-top: 1px solid #b5b5b5;
+          border-left: 1px solid #b5b5b5;
+          background: #fff;
+          transform: rotate(45deg);
+          transition: all 0.1s ease-in-out;
+        }
+
+        .optionHover::before {
+          background: #f9f9f9;
+        }
+      }
+
+      &.opened .customOptions {
+        opacity: 1;
+        visibility: visible;
+        pointer-events: all;
+        transform: translateY(0);
+      }
+
+      .customOption {
+        position: relative;
+        display: block;
+        padding: 0 22px;
+        font-size: 15px;
+        font-weight: 600;
+        color: var(--gray-500);
+        cursor: pointer;
+        transition: all 0.4s ease-in-out;
+
+        &:first-of-type {
+          border-radius: 4px 4px 0 0;
+        }
+
+        &:last-of-type {
+          border-bottom: 0;
+          border-radius: 0 0 4px 4px;
+        }
+
+        &:hover,
+        &.selection {
+          background: var(--gray-200);
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,63 @@
+.textInput {
+  position: relative;
+  width: 100%;
+
+  & .label {
+    padding: 5px;
+    font-size: 15px;
+  }
+
+  & .inputArea {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    place-items: center;
+
+    & .icon {
+      border-radius: 5px;
+      padding: 10px;
+      height: 100%;
+      background-color: var(--gray-0);
+      border: 1px solid var(--gray-200);
+    }
+  }
+  & .input {
+    border-radius: 5px;
+    width: 100%;
+    padding: 10px;
+    background-color: var(--gray-0);
+    border: 1.5px solid var(--gray-200);
+
+    &:focus-within {
+      border-color: var(--action-main);
+      outline: solid 2px var(--action-main);
+      outline-offset: 2px;
+    }
+
+    &[data-active="true"] {
+      background-color: var(--action-main);
+      border-color: var(--action-main);
+
+      &[data-error="true"] {
+        background-color: var(--incorrect-main);
+        border-color: var(--incorrect-main);
+      }
+    }
+
+    &[data-error="true"] {
+      background-color: var(--incorrect-bg);
+      border-color: var(--incorrect-main);
+
+    }
+
+    &[data-disabled="true"] {
+      background-color: var(--gray-10);
+      pointer-events: none;
+
+      &[data-active="true"],
+      &[data-error="true"] {
+        background-color: var(--gray-400);
+        border-color: var(--gray-400);
+      }
+    }
+  }
+}
