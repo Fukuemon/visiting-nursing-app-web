@@ -11,7 +11,7 @@
       .customSelectTrigger {
         display: block;
         width: 100%;
-        padding: 0 84px 0 22px;
+        padding: 0 21px 0 11px;
         font-size: 15px;
         font-weight: 300;
         color: #fff;
@@ -26,7 +26,7 @@
           width: 10px;
           height: 10px;
           top: 50%;
-          right: 25px;
+          right: 15px;
           margin-top: -3px;
           border-bottom: 1px solid var(--gray-0);
           border-right: 1px solid var(--gray-0);
@@ -53,7 +53,7 @@
         box-sizing: border-box;
         box-shadow: 0 2px 1px rgba(0, 0, 0, 0.07);
         background: #fff;
-        transition: all 0.4s ease-in-out;
+        transition: all 0.1s ease-in-out;
         opacity: 0;
         visibility: hidden;
         pointer-events: none;
@@ -64,7 +64,7 @@
           display: block;
           content: "";
           bottom: 100%;
-          right: 25px;
+          right: 15px;
           width: 7px;
           height: 7px;
           margin-bottom: -4px;
@@ -95,7 +95,7 @@
         font-weight: 600;
         color: var(--gray-500);
         cursor: pointer;
-        transition: all 0.4s ease-in-out;
+        transition: all 0.1s ease-in-out;
 
         &:first-of-type {
           border-radius: 4px 4px 0 0;
