@@ -15,6 +15,7 @@ export type PagesPath = typeof pagesPath;
 export const staticPath = {
   icons: {
     check_svg: '/icons/check.svg',
+    close_svg: '/icons/close.svg',
     minus_svg: '/icons/minus.svg',
     search_svg: '/icons/search.svg',
     square_pen_svg: '/icons/square-pen.svg',
