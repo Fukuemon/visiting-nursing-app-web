@@ -1,0 +1,6 @@
+& .left {
+  display: flex;
+  place-items: center;
+  width: 100%;
+  gap: 8px;
+}
