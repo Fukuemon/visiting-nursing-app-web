@@ -1,0 +1,57 @@
+.container {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 200px;
+  height: calc(100dvh - 60px);
+
+  & .calender {
+    position: relative;
+    height: 100%;
+    overflow-x: auto;
+  }
+
+  & .timeGridDayContainer {
+    display: grid;
+    grid-auto-flow: column;
+    overflow-x: auto;
+    position: relative;
+
+    & ::-webkit-scrollbar {
+      display: none;
+    }
+
+    & .parentContainer {
+      postition: fixed;
+      left: 0px;
+      height: 800px;
+
+      & .parentBody {
+        display: flex;
+        flex-direction: column;
+        width: 43px;
+        overflow-y: scroll;
+        height: 800px;
+      }
+    }
+
+    & .timeGridDay {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      min-width: 120px;
+      overflow-y: scroll;
+      height: 100%;
+      border: 1px var(--gray-500) solid;
+
+      & .name {
+        padding-left: 30px;
+        text-align: center;
+        width: 100%;
+        position: sticky;
+        top: 0px;
+        background-color: var(--gray-0);
+        z-index: 1;
+      }
+    }
+  }
+}
