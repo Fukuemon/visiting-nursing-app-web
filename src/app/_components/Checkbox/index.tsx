@@ -28,22 +28,24 @@ export const Checkbox: FC<CheckboxProps> = ({
   ...props
 }) => {
   return (
-    <label
-      className={styles.checkbox}
-      data-active={checkBoxState !== CheckboxStateType.DEFAULT}
-      data-disabled={disabled}
-      data-error={error}
-      tabIndex={disabled ? -1 : 0}
-    >
-      <input type="checkbox" hidden disabled={disabled} {...props} />
-      <div
-        className={styles.icon}
+    <div className={styles.container}>
+      <label
+        className={styles.checkbox}
         data-active={checkBoxState !== CheckboxStateType.DEFAULT}
+        data-disabled={disabled}
+        data-error={error}
+        tabIndex={disabled ? -1 : 0}
       >
-        {checkBoxState === 'checked' && <CheckIcon width={16} height={16} />}
-        {checkBoxState === 'minus' && <MinusIcon width={16} height={16} />}
-      </div>
-      {label !== '' && <span className={styles.label}>{label}</span>}
-    </label>
+        <input type="checkbox" hidden disabled={disabled} {...props} />
+        <div
+          className={styles.icon}
+          data-active={checkBoxState !== CheckboxStateType.DEFAULT}
+        >
+          {checkBoxState === 'checked' && <CheckIcon width={16} height={16} />}
+          {checkBoxState === 'minus' && <MinusIcon width={16} height={16} />}
+        </div>
+        {label !== '' && <span className={styles.label}>{label}</span>}
+      </label>
+    </div>
   )
 }

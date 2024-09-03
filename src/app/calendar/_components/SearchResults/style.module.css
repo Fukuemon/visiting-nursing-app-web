@@ -1,0 +1,25 @@
+.searchMembers {
+  display: grid;
+
+  & .table {
+    width: 100%;
+
+    & .heading {
+      align-items: center;
+      border-bottom: 1px solid var(--gray-100);
+      display: grid;
+      gap: 8px;
+      font-size: 8px;
+      grid-template-columns: 18px 1fr 24px;
+    }
+
+    & .row {
+      align-items: center;
+      border-bottom: 1px solid var(--gray-100);
+      display: grid;
+      gap: 8px;
+      grid-template-columns: 18px 1fr 24px;
+      position: relative;
+    }
+  }
+}

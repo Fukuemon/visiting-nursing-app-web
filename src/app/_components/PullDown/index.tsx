@@ -1,30 +1,42 @@
 // PullDownコンポーネント
-import type { FC } from 'react'
 import { useEffect, useRef, useState } from 'react'
 import styles from './style.module.css'
 
-export type PullDownProps = {
-  disabled?: boolean
-  error?: boolean
-  options: { value: string; label: string }[]
-  onChange?: (value: string) => void // 追加
+export type Option<T = string> = {
+  value: T
+  label: string
 }
 
-export const PullDown: FC<PullDownProps> = ({
+export type PullDownProps<T = string> = {
+  disabled?: boolean
+  error?: boolean
+  options: Option<T>[]
+  initial?: Option<T>
+  onChange?: (value: T) => void
+}
+
+export const PullDown = <T extends string | number = string>({
   disabled = false,
   error = false,
+  initial,
   options,
-  onChange, // 追加
-}) => {
+  onChange,
+}: PullDownProps<T>) => {
   const [isOpen, setIsOpen] = useState(false)
-  const [selectedValue, setSelectedValue] = useState('選択してください')
+  const [selectedOption, setSelectedOption] = useState<Option<T>>(() => {
+    if (initial !== undefined) {
+      return initial
+    }
+    return { value: options[0].value, label: options[0].label }
+  })
+
   const selectWrapperRef = useRef<HTMLDivElement>(null)
 
-  const handleOptionClick = (value: string, label: string) => {
-    setSelectedValue(label)
+  const handleOptionClick = (option: Option<T>) => {
+    setSelectedOption(option)
     setIsOpen(false)
     if (onChange !== undefined) {
-      onChange(value) // 選択された値を親コンポーネントに通知
+      onChange(option.value)
     }
   }
 
@@ -56,13 +68,15 @@ export const PullDown: FC<PullDownProps> = ({
           className={`${styles.customSelect} ${isOpen ? styles.opened : ''}`}
           onClick={() => setIsOpen(!isOpen)}
         >
-          <span className={styles.customSelectTrigger}>{selectedValue}</span>
+          <span className={styles.customSelectTrigger}>
+            {selectedOption.label}
+          </span>
           <div className={styles.customOptions}>
             {options.map((option) => (
               <span
-                key={option.value}
-                className={`${styles.customOption} ${selectedValue === option.label ? styles.selection : ''}`}
-                onClick={() => handleOptionClick(option.value, option.label)}
+                key={String(option.value)}
+                className={`${styles.customOption} ${selectedOption.value === option.value ? styles.selection : ''}`}
+                onClick={() => handleOptionClick(option)}
               >
                 {option.label}
               </span>
