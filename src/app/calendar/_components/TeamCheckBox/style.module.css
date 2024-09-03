@@ -1,0 +1,8 @@
+.team {
+  padding: 12px;
+
+  & .member {
+    margin-left: 20px;
+    padding: 6px;
+  }
+}

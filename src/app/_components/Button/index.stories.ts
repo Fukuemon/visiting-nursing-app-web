@@ -21,7 +21,7 @@ export const PrimaryDisabled: Story = {
   args: {
     children: 'button',
     variant: 'primary',
-    disabled: true
+    disabled: true,
   },
 }
 
@@ -34,7 +34,7 @@ export const Secondary: Story = {
 export const Small: Story = {
   args: {
     children: 'button',
-    size: 'S'
+    size: 'S',
   },
 }
 
@@ -62,7 +62,7 @@ export const Wide: Story = {
 export const Click: Story = {
   args: {
     children: 'button',
-    onclick: fn()
+    onclick: fn(),
   },
 }
 
@@ -70,7 +70,7 @@ export const Anchor: Story = {
   args: {
     children: 'button',
     isAnchor: true,
-    href: '#'
+    href: '#',
   },
 }
 export const AnchorDisabled: Story = {
@@ -78,6 +78,6 @@ export const AnchorDisabled: Story = {
     children: 'button',
     isAnchor: true,
     href: '#',
-    disabled: true
+    disabled: true,
   },
 }
