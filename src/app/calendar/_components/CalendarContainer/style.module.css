@@ -42,6 +42,7 @@
       overflow-y: scroll;
       height: 100%;
       border: 1px var(--gray-500) solid;
+      z-index: 1;
 
       & .name {
         padding-left: 30px;
