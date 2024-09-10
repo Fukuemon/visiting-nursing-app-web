@@ -1,0 +1,44 @@
+._isCancelled {
+  background-color: var(--incorrect-bg);
+}
+.container {
+  display: grid;
+  padding: 0 16px;
+
+  & .heading {
+    display: grid;
+    grid-template-columns: 180px 1fr auto;
+    font-size: 16px;
+    font-weight: bold;
+  }
+
+  & .cancel {
+    text-align: center;
+    color: var(--incorrect-main);
+  }
+
+  & .list {
+    display: grid;
+    grid-template-rows: repeat(auto-fit, 1fr);
+    width: 100%;
+
+    & .row {
+      align-items: center;
+      border-bottom: 1px solid var(--gray-100);
+      display: grid;
+      grid-template-columns: 180px 1fr;
+      position: relative;
+      padding: 16px 0;
+
+      > th {
+        font-size: bold;
+      }
+
+      & .link {
+        &:hover {
+          color: var(--action-main);
+        }
+      }
+    }
+  }
+}
