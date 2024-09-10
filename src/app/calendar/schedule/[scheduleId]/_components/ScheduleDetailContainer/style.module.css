@@ -1,0 +1,5 @@
+.scheduleDetailContainer {
+  & .footer {
+    padding: 8px;
+  }
+}
