@@ -1,4 +1,4 @@
-const ServiceCode = {
+export const ServiceCode = {
   訪看I1: '訪看I1',
   訪看I2: '訪看I2',
   訪看I3: '訪看I3',
