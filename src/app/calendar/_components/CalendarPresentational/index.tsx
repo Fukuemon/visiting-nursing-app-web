@@ -71,6 +71,8 @@ export const CalendarPresentational: FC<CalendarContainerProps> = ({
           slotDuration="00:10"
           eventDurationEditable={false}
           events={events}
+          eventClick={calendarHandler.handleEventClick}
+          dateClick={calendarHandler.handleDateClick}
         />
       </StyleWrapper>
     </div>
