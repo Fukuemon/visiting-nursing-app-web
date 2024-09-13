@@ -5,6 +5,13 @@ export const ServiceCode = {
   医療: '医',
 } as const
 
+export enum serviceCode {
+  訪看I1= '訪看I1',
+  訪看I2= '訪看I2',
+  訪看I3= '訪看I3',
+  医療= '医',
+} 
+
 export type ServiceCode = (typeof ServiceCode)[keyof typeof ServiceCode]
 
 export const ServiceCodeText: Record<ServiceCode, string> = {
