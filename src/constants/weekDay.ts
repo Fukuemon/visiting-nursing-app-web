@@ -8,3 +8,24 @@ export const weekDayList: Record<number, WeekDays> = {
   5: 'FR',
   6: 'SA',
 }
+export const WeekDay = {
+  sunday: 'sunday',
+  monday: 'monday',
+  tuesday: 'tuesday',
+  wednesday: 'wednesday',
+  thursday: 'thursday',
+  friday: 'friday',
+  saturday: 'saturday',
+} as const
+export type WeekDay =
+  (typeof WeekDay)[keyof typeof WeekDay]
+
+export const WeekDayText: Record<WeekDay, string> = {
+  [WeekDay.sunday]: '日',
+  [WeekDay.monday]: '月',
+  [WeekDay.tuesday]: '火',
+  [WeekDay.wednesday]: '水',
+  [WeekDay.thursday]: '木',
+  [WeekDay.friday]: '金',
+  [WeekDay.saturday]: '土',
+} as const
