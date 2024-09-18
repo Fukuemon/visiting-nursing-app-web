@@ -10,51 +10,277 @@ import type { User } from '@/types/user'
 import { useEffect, useRef, useState, type FC } from 'react'
 import styles from './style.module.css'
 
+const getUserBorderColor = (userId: string): string => {
+  // ユーザーIDに基づいて色を割り当てる
+  const colors = [
+    '#FF5733',
+    '#33FF57',
+    '#3357FF',
+    '#FF33F1',
+    '#33FFF1',
+    '#F1FF33',
+    '#FF3333',
+    '#33FF33',
+    '#3333FF',
+    '#FFFF33',
+    '#33FFFF',
+    '#FF33FF',
+  ]
+  const colorIndex = userId.charCodeAt(0) % colors.length
+  return colors[colorIndex]
+}
+
 const createEvent = (
   id: string,
   userId: string,
-  isCancel: boolean,
-  offsetDays: number = 0,
+  isCanceled: boolean,
+  startDateTime: Date,
+  durationMinutes: number = ServiceCodeDuration.訪看I1,
+  backgroundColor: string = 'blue',
 ): CalendarEvent => {
-  const startDate = new Date()
-  startDate.setDate(startDate.getDate() + offsetDays)
-  const endDate = new Date(startDate)
-  endDate.setMinutes(endDate.getMinutes() + ServiceCodeDuration.訪看I1)
+  const endDate = new Date(startDateTime)
+  endDate.setMinutes(endDate.getMinutes() + durationMinutes)
+  const extendedProps = {
+    userId,
+    isCanceled,
+  }
+
+  // isCanceled が true の場合、backgroundColor を 'red' に設定
+  const eventBackgroundColor = isCanceled ? '#fff2f2' : backgroundColor
+  const textColor = isCanceled ? 'gray' : 'white'
+
+  // userIdに基づいてborderColorを設定
+  const borderColor = getUserBorderColor(userId)
 
   return {
     id,
     title: '訪問',
-    userId,
-    start: startDate,
+    start: startDateTime,
     end: endDate,
-    startEditable: false,
+    startEditable: true,
     durationEditable: false,
-    isCancel,
+    backgroundColor: eventBackgroundColor,
+    borderColor,
+    textColor,
+    extendedProps,
   }
 }
 
 const events: CalendarEvent[] = [
-  createEvent('1', 'a', false),
-  createEvent('2', 'b', true, 1),
-  createEvent('3', 'c', true, 3),
-  createEvent('4', 'c', true, 1),
+  createEvent('1', 'a', false, new Date(), 30, 'green'),
+  createEvent(
+    '2',
+    'b',
+    true,
+    new Date(new Date().setDate(new Date().getDate() + 1)),
+    30,
+    'green',
+  ),
+  createEvent(
+    '3',
+    'c',
+    true,
+    new Date(new Date().setDate(new Date().getDate() + 3)),
+    45,
+    'green',
+  ),
+  createEvent(
+    '4',
+    'd',
+    false,
+    new Date(new Date().setHours(new Date().getHours() + 2)),
+    60,
+  ),
+  createEvent(
+    '5',
+    'e',
+    false,
+    new Date(new Date().setHours(new Date().getHours() + 5)),
+    90,
+  ),
+  createEvent(
+    '6',
+    'f',
+    false,
+    new Date(new Date().setDate(new Date().getDate() + 1)),
+    120,
+  ),
+  createEvent(
+    '7',
+    'g',
+    false,
+    new Date(new Date().setDate(new Date().getDate() + 2)),
+    45,
+  ),
+  createEvent(
+    '8',
+    'h',
+    false,
+    new Date(new Date().setDate(new Date().getDate() + 1)),
+    15,
+  ),
+  createEvent(
+    '9',
+    'i',
+    false,
+    new Date(new Date().setDate(new Date().getDate() + 4)),
+    30,
+  ),
+  createEvent(
+    '10',
+    'j',
+    true,
+    new Date(new Date().setDate(new Date().getDate() + 1)),
+    60,
+  ),
+  createEvent(
+    '11',
+    'k',
+    false,
+    new Date(new Date().setDate(new Date().getDate() + 3)),
+    75,
+  ),
+  createEvent(
+    '12',
+    'l',
+    true,
+    new Date(new Date().setDate(new Date().getDate() + 5)),
+    120,
+  ),
+  createEvent(
+    '13',
+    'a',
+    true,
+    (() => {
+      const d = new Date()
+      d.setDate(d.getDate() + 1)
+      return d
+    })(),
+    60,
+    'green',
+  ),
+  createEvent(
+    '14',
+    'a',
+    false,
+    (() => {
+      const d = new Date()
+      d.setDate(d.getDate() + 1)
+      d.setHours(1)
+      return d
+    })(),
+    90,
+    'green',
+  ),
+  createEvent(
+    '15',
+    'b',
+    false,
+    (() => {
+      const d = new Date()
+      d.setDate(d.getDate() + 1)
+      d.setHours(2)
+      return d
+    })(),
+    45,
+    'green',
+  ),
+  createEvent(
+    '16',
+    'b',
+    false,
+    (() => {
+      const d = new Date()
+      d.setDate(d.getDate() + 1)
+      d.setHours(3)
+      return d
+    })(),
+    30,
+    'green',
+  ),
+  createEvent(
+    '17',
+    'c',
+    false,
+    (() => {
+      const d = new Date()
+      d.setDate(d.getDate() + 1)
+      d.setHours(4)
+      return d
+    })(),
+    60,
+    'green',
+  ),
+  createEvent(
+    '18',
+    'c',
+    true,
+    (() => {
+      const d = new Date()
+      d.setDate(d.getDate() + 1)
+      d.setHours(5)
+      return d
+    })(),
+    120,
+    'green',
+  ),
+  createEvent(
+    '19',
+    'a',
+    false,
+    (() => {
+      const d = new Date()
+      d.setDate(d.getDate() + 1)
+      d.setHours(6)
+      return d
+    })(),
+    30,
+    'green',
+  ),
+  createEvent(
+    '20',
+    'b',
+    false,
+    (() => {
+      const d = new Date()
+      d.setDate(d.getDate() + 1)
+      d.setHours(7)
+      return d
+    })(),
+    60,
+    'green',
+  ),
+  createEvent(
+    '21',
+    'c',
+    false,
+    (() => {
+      const d = new Date()
+      d.setDate(d.getDate() + 1)
+      d.setHours(8)
+      return d
+    })(),
+    90,
+    'green',
+  ),
 ]
+
 
 const allTeams: { name: string; members: User[] }[] = [
   {
     name: 'A',
     members: [
       { id: 'a', name: '山田太郎', team: 'A' },
-      { id: 'b', name: '山田次郎', team: 'A' },
-      { id: 'c', name: '山田三郎', team: 'A' },
+      { id: 'b', name: '鈴木次郎', team: 'A' },
+      { id: 'c', name: '伊藤三郎', team: 'A' },
     ],
   },
   {
     name: 'B',
     members: [
       { id: 'd', name: '山田士郎', team: 'B' },
-      { id: 'e', name: '山田五郎', team: 'B' },
-      { id: 'f', name: '山田六郎', team: 'B' },
+      { id: 'e', name: '鈴木五郎', team: 'B' },
+      { id: 'f', name: '伊藤六郎', team: 'B' },
       { id: 'g', name: '山田菜々郎', team: 'B' },
     ],
   },
@@ -91,11 +317,13 @@ export const CalendarContainer: FC<CalendarContainerProps> = ({
 
   const filterEvents = () => {
     let filteredEvents = events.filter((event) =>
-      showMembers.some((member) => member.id === event.userId),
+      showMembers.some((member) => member.id === event.extendedProps.userId),
     )
 
     if (showCancel === 'default') {
-      filteredEvents = filteredEvents.filter((event) => event.isCancel)
+      filteredEvents = filteredEvents.filter(
+        (event) => !event.extendedProps.isCanceled,
+      )
     }
 
     setVisibleEvents(filteredEvents)
@@ -178,7 +406,7 @@ export const CalendarContainer: FC<CalendarContainerProps> = ({
           </div>
           {showMembers.map((member, index) => {
             const memberEvents = visibleEvents.filter(
-              (event) => event.userId === member.id,
+              (event) => event.extendedProps.userId === member.id,
             )
 
             return (
