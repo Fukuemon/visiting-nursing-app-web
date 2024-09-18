@@ -56,13 +56,14 @@ export const CalendarTimeGridDayPresentational: FC<
           timeZone="Asia/Tokyo"
           contentHeight="auto"
           nowIndicator
-          navLinks
           titleFormat={{ month: 'short', week: 'short', day: 'numeric' }}
           dayCellContent={calendarHandler.handleDayCellContent}
           dayHeaderContent={calendarHandler.handleDayHeaderContent}
           slotLabelContent={calendarHandler.handleSlotLabelContent}
           slotDuration="00:10"
-          eventDurationEditable={false}
+          selectable
+          editable
+          droppable
           events={events}
           eventClick={calendarHandler.handleEventClick}
           dateClick={calendarHandler.handleDateClick}

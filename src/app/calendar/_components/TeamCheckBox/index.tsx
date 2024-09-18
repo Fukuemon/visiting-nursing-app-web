@@ -40,7 +40,7 @@ export const TeamCheckbox: FC<{
             ? CheckboxStateType.CHECKED
             : CheckboxStateType.DEFAULT
         }
-        label={team.name}
+        label={`${team.name}チーム`}
         onClick={toggleTeamMembers}
       />
       {team.members.map((member) => (

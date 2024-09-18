@@ -67,10 +67,18 @@ export const TimeGridDayStyleWrapper = styled.div`
     font-size: 0.5em;
   }
   .fc .fc-v-event .fc-event-title {
-    font-size: 2.5em;
+    font-size: 4em;
+  }
+  .fc .fc-event-main {
+    border-width: 2px;
+    padding: 3px;
+  }
+
+  .fc .fc-event-main:hover {
+    opacity: 0.8;
   }
   .fc .fc-timegrid-event .fc-event-time {
-    font-size: 2.5em;
+    font-size: 2em;
   }
   .fc .fc-button {
     display: none;
