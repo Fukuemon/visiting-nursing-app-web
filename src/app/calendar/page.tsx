@@ -21,7 +21,7 @@ import { useAtom } from 'jotai'
 export default function CalendarPage() {
   const [isMenubarOpen, setIsMenuBarOpen] = useState(false)
   const [currentCalendarView, setCurrentCalendarView] = useState<CalendarView>(
-    CalendarView.timeGridWeek,
+    CalendarView.dayGridMonth,
   )
   const [showCancel, setShowCancel] = useState(ToggleStateType.DEFAULT)
   const pathname = usePathname()
