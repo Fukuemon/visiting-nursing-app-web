@@ -12,7 +12,7 @@ export const LeftControls: React.FC<{
     <button onClick={onPrev}>
       <PrevIcon width={24} height={24} />
     </button>
-    <button onClick={onToday}>今日</button>
+    <button className={styles.today} onClick={onToday}>今日</button>
     <button onClick={onNext}>
       <NextIcon width={24} height={24} />
     </button>

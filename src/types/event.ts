@@ -12,13 +12,18 @@ export type Duration = {
 }
 export type CalendarEvent = {
   id: string
-  userId: string
   title: string
   start: Date
   end: Date
-  isCancel: boolean
   startEditable: boolean
   durationEditable: boolean
+  backgroundColor?: string
+  borderColor?: string
+  textColor?: string
+  extendedProps: {
+    userId: string
+    isCanceled: boolean
+  }
 }
 export type BackgroundEvent = {
   id: string
@@ -30,4 +35,4 @@ export type BackgroundEvent = {
   display: 'background'
 }
 
-export type Events = (CalendarEvent | BackgroundEvent)[]
+export type Events = (CalendarEvent)[]

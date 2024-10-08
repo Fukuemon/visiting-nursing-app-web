@@ -60,16 +60,14 @@ export const CalendarPresentational: FC<CalendarContainerProps> = ({
           initialView={currentCalendarView}
           locale={jaLocale}
           timeZone="Asia/Tokyo"
-          // contentHeight="auto"
           height="auto"
           nowIndicator
-          navLinks
+          selectable
           titleFormat={{ month: 'short', week: 'short', day: 'numeric' }}
           dayCellContent={calendarHandler.handleDayCellContent}
           dayHeaderContent={calendarHandler.handleDayHeaderContent}
           slotLabelContent={calendarHandler.handleSlotLabelContent}
           slotDuration="00:10"
-          eventDurationEditable={false}
           events={events}
           eventClick={calendarHandler.handleEventClick}
           dateClick={calendarHandler.handleDateClick}
