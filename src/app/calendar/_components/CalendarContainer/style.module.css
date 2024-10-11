@@ -23,14 +23,17 @@
     & .parentContainer {
       position: sticky;
       left: 0px;
-      height: 800px;
+      /* カレンダーの時間軸と揃うように調整 */
+      padding-top: 17px;
+      box-shadow: 2px 0px 2px 0px rgba(0, 0, 0, 0.4);
+      border-top: 1px var(--gray-200) solid;
 
       & .parentBody {
         display: flex;
         flex-direction: column;
         width: 43px;
         overflow-y: scroll;
-        height: 800px;
+        height: 100%;
       }
     }
 

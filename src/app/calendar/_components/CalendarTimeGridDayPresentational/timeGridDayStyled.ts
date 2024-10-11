@@ -1,5 +1,6 @@
 import styled from '@emotion/styled'
 export const TimeGridDayStyleWrapper = styled.div`
+  height: 100%; // 高さを画面下まで広げる
   .fc .fc-toolbar.fc-header-toolbar {
     margin-bottom: 0;
   }
@@ -41,9 +42,6 @@ export const TimeGridDayStyleWrapper = styled.div`
     color: #b6b5b3;
     border: none;
   }
-  .fc .fc-scrollgrid {
-    border-width: 0;
-  }
 
   .fc .fc-scrollgrid-section > * {
     border: none;
@@ -57,12 +55,13 @@ export const TimeGridDayStyleWrapper = styled.div`
     line-height: 1rem;
     color: #acaba9;
   }
-  .fc .fc-timegrid-slot .fc-timegrid-slot-label .fc-scrollgrid-shrink {
+
+  // 日付カレンダーの時間軸の高さを調整
+  .fc .fc-timegrid-slot.fc-timegrid-slot-lane {
+    height: 17px;
+    line-height: 0px;
   }
-  .fc .fc-timegrid-slot {
-    height: 1.5em;
-    line-height: 2.8em;
-  }
+
   .fc table {
     font-size: 0.5em;
   }
@@ -89,11 +88,19 @@ export const TimeGridDayStyleWrapper = styled.div`
   .fc .fc-col-header-cell-cushion {
     display: none;
   }
-  .fc .fc-timegrid-slot-label {
-    visibility: hidden;
+
+  // カレンダーの時間軸（time axis）のラベルを非表示
+  .fc-timegrid-slot-label {
+    display: none;
   }
-  // .fc .fc-scrollgrid-shrink-frame {
-  //   display: none;
-  //   width: 1px;
-  // }
+
+  // カレンダーのheaderを非表示
+  .fc-header-toolbar.fc-toolbar {
+    display: none;
+  }
+
+  // カレンダーの左側の線を非表示
+  .fc-timegrid-col.fc-timegrid-axis {
+    border: none;
+  }
 `
