@@ -46,6 +46,7 @@ export const staticPath = {
   icons: {
     arrow_left_svg: '/icons/arrow-left.svg',
     arrow_right_svg: '/icons/arrow-right.svg',
+    calendar_svg: '/icons/calendar.svg',
     check_svg: '/icons/check.svg',
     close_svg: '/icons/close.svg',
     hamburger_svg: '/icons/hamburger.svg',
@@ -53,6 +54,7 @@ export const staticPath = {
     minus_svg: '/icons/minus.svg',
     search_svg: '/icons/search.svg',
     square_pen_svg: '/icons/square-pen.svg',
+    timer_svg: '/icons/timer.svg',
     trash_2_svg: '/icons/trash-2.svg',
     user_svg: '/icons/user.svg'
   },
