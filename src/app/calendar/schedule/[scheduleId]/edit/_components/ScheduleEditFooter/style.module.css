@@ -1,0 +1,17 @@
+.footer {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+
+  & .save {
+    display: flex;
+    gap: 16px;
+  }
+}
+& .heading {
+  text-align: center;
+  width: 100%;
+  font-size: 15px;
+  font-weight: bold;
+  color: var(--text-secondary, #71737f);
+}
