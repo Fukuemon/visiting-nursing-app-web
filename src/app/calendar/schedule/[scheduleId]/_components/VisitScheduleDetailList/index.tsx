@@ -2,7 +2,7 @@ import { recallingTextFromRule } from '@/constants/recallingRule'
 import {
   ScheduleCategoryText,
   type ScheduleCategory,
-} from '@/constants/scheduleCatefory'
+} from '@/constants/scheduleCategory'
 import { ScheduleTypeText, type ScheduleType } from '@/constants/scheduleType'
 import type { ServiceCode } from '@/constants/serviceCode'
 import type { Patient } from '@/types/patient'
