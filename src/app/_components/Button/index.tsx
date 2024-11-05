@@ -16,6 +16,7 @@ type BaseProps = {
   isAnchor?: boolean
   isWide?: boolean
   isDiv?: boolean
+  isLoading?: boolean
 }
 
 type NativeButtonProps = BaseProps &
@@ -28,6 +29,13 @@ type AnchorButtonProps = BaseProps &
     href: string | UrlObject
     disabled?: boolean
   }
+type DivButtonProps = BaseProps & ComponentPropsWithoutRef<'div'>
+
+const Loading = () => (
+  <div className={styles.loading}>
+    <div className={styles.circle}></div>
+  </div>
+)
 
 export type ButtonProps = NativeButtonProps | AnchorButtonProps
 
@@ -38,6 +46,7 @@ export const Button: FC<ButtonProps> = ({
   isWide,
   isDiv,
   children,
+  isLoading,
   disabled,
   ...props
 }) => {
@@ -50,6 +59,13 @@ export const Button: FC<ButtonProps> = ({
     [styles._medium!]: size === 'M',
     [styles._wide!]: isWide,
   })
+  const buttonClickHandler = (e: React.MouseEvent<HTMLButtonElement>) => {
+    if (isLoading === true) {
+      e.preventDefault()
+    } else if (isLoading === false) {
+      ;(props.onClick as NativeButtonProps['onClick'])?.(e)
+    }
+  }
 
   return isAnchor ? (
     <NextLink
@@ -70,8 +86,11 @@ export const Button: FC<ButtonProps> = ({
       className={classNames(className)}
       disabled={disabled}
       {...(props as NativeButtonProps)}
+      onClick={buttonClickHandler}
     >
-      <div className={styles.content}>{children}</div>
+      <div className={styles.content}>
+        {isLoading != null ? isLoading ? <Loading /> : children : children}
+      </div>
     </button>
   )
 }
