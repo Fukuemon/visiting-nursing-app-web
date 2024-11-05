@@ -6,6 +6,11 @@ export const RecallingFrequency = {
   onceAMonth: 'onceAMonth',
 } as const
 
+export enum recallingFrequency {
+  Weekly= 'Weekly',
+  Monthly= 'Monthly',
+}
+
 export type RecallingFrequency =
   (typeof RecallingFrequency)[keyof typeof RecallingFrequency]
 

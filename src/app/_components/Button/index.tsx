@@ -10,11 +10,13 @@ import NextLink from 'next/link'
 import styles from './style.module.css'
 
 type BaseProps = {
-  variant?: 'primary' | 'secondary'
+  variant?: 'primary' | 'secondary' | 'destructive'
   size?: 'S' | 'M' | 'L'
   children: ReactNode
   isAnchor?: boolean
   isWide?: boolean
+  isDiv?: boolean
+  isLoading?: boolean
 }
 
 type NativeButtonProps = BaseProps &
@@ -27,6 +29,13 @@ type AnchorButtonProps = BaseProps &
     href: string | UrlObject
     disabled?: boolean
   }
+type DivButtonProps = BaseProps & ComponentPropsWithoutRef<'div'>
+
+const Loading = () => (
+  <div className={styles.loading}>
+    <div className={styles.circle}></div>
+  </div>
+)
 
 export type ButtonProps = NativeButtonProps | AnchorButtonProps
 
@@ -35,7 +44,9 @@ export const Button: FC<ButtonProps> = ({
   size = 'M',
   isAnchor = false,
   isWide,
+  isDiv,
   children,
+  isLoading,
   disabled,
   ...props
 }) => {
@@ -43,11 +54,19 @@ export const Button: FC<ButtonProps> = ({
   const className = classNames(styles.button, {
     [styles._primary!]: variant === 'primary',
     [styles._secondary!]: variant === 'secondary',
+    [styles._destructive!]: variant === 'destructive',
     [styles._large!]: size === 'L',
     [styles._small!]: size === 'S',
     [styles._medium!]: size === 'M',
     [styles._wide!]: isWide,
   })
+  const buttonClickHandler = (e: React.MouseEvent<HTMLButtonElement>) => {
+    if (isLoading === true) {
+      e.preventDefault()
+    } else if (isLoading === false) {
+      ;(props.onClick as NativeButtonProps['onClick'])?.(e)
+    }
+  }
 
   return isAnchor ? (
     <NextLink
@@ -57,13 +76,22 @@ export const Button: FC<ButtonProps> = ({
     >
       <div className={styles.content}>{children}</div>
     </NextLink>
+  ) : isDiv != null ? (
+    <div className={className} {...(props as DivButtonProps)}>
+      <div className={styles.content}>
+        {isLoading != null && isLoading ? <Loading /> : children}
+      </div>
+    </div>
   ) : (
     <button
       className={classNames(className)}
       disabled={disabled}
       {...(props as NativeButtonProps)}
+      onClick={buttonClickHandler}
     >
-      <div className={styles.content}>{children}</div>
+      <div className={styles.content}>
+        {isLoading != null ? isLoading ? <Loading /> : children : children}
+      </div>
     </button>
   )
 }

@@ -45,8 +45,22 @@
     }
   }
 
+  & .body {
+    max-height: 600px;
+    overflow-y: hidden;
+  }
+
   & .stickyFooter {
+    background: var(--background-surface, #fff);
+    border-radius: 0 0 24px 24px;
+    border-top: 1px solid var(--border-divider, #f1f2f4);
     bottom: 0;
+    display: flex;
+    padding: 16px 20px;
     position: sticky;
+
+    & > *:last-child {
+      margin-left: auto;
+    }
   }
 }

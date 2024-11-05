@@ -13,6 +13,8 @@
     #e9e9eb 0%,
     rgb(233 233 235 / 0%) 100%
   );
+  --text-critical: #c11111;
+  --background-default: #ffffff;
   --correct-bg: #e6fdf0;
   --correct-main: #00ad64;
   --non-active-main: #ffb800;
@@ -20,7 +22,7 @@
   --incorrect-bg: #fff2f2;
   --incorrect-main: #c11111;
   --action-bg: #edf3ff;
-  --action-main: #4D89C0;
+  --action-main: #4d89c0;
   --gray-1000: #09090b;
   --gray-500: #71737f;
   --gray-400: #bcbdc1;
