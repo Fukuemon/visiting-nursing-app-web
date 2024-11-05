@@ -10,7 +10,7 @@ import NextLink from 'next/link'
 import styles from './style.module.css'
 
 type BaseProps = {
-  variant?: 'primary' | 'secondary'
+  variant?: 'primary' | 'secondary' | 'destructive'
   size?: 'S' | 'M' | 'L'
   children: ReactNode
   isAnchor?: boolean
@@ -54,6 +54,7 @@ export const Button: FC<ButtonProps> = ({
   const className = classNames(styles.button, {
     [styles._primary!]: variant === 'primary',
     [styles._secondary!]: variant === 'secondary',
+    [styles._destructive!]: variant === 'destructive',
     [styles._large!]: size === 'L',
     [styles._small!]: size === 'S',
     [styles._medium!]: size === 'M',
