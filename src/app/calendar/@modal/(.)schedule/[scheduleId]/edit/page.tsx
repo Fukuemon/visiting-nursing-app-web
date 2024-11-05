@@ -1,9 +1,5 @@
-import InterceptModal from "@/app/_components/InterceptModal";
+import { ScheduleEditContainer } from '@/app/calendar/schedule/[scheduleId]/edit/_components/ScheduleEditContainer'
 
 export default function ScheduleEditPage() {
-    return (
-      <div>
-        <InterceptModal> edit modal</InterceptModal>
-      </div>
-    )
+  return <ScheduleEditContainer />
 }
