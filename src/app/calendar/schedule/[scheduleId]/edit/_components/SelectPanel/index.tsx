@@ -1,42 +1,59 @@
 import type { FC, ReactNode } from 'react'
 
-import Link from 'next/link'
-
+import { Toggle, ToggleStateType } from '@/app/_components/Toggle'
+import type { RecallingScheduleKey } from '@/schema/recallingSchedule'
 import type { ScheduleKey, VisitScheduleKey } from '@/schema/schedule'
-import { useSearchParams } from 'next/navigation'
 import styles from './style.module.css'
 
 export type ButtonContentProps = {
-  id: ScheduleKey | VisitScheduleKey
+  id: ScheduleKey | VisitScheduleKey | RecallingScheduleKey
   label: string
   content: ReactNode
 }
 
 export type SelectPanelProps = {
-  questionEditMap: ButtonContentProps[]
+  scheduleEditMap: ButtonContentProps[]
+  setCurrentId: (
+    id: ScheduleKey | VisitScheduleKey | RecallingScheduleKey,
+  ) => void
+  currentId: ScheduleKey | VisitScheduleKey | RecallingScheduleKey | undefined
+  isRecallingSchedule: boolean
+  setIsRecallingSchedule: (isRecallingSchedule: boolean) => void
 }
 
-export const SelectPanel: FC<SelectPanelProps> = ({ questionEditMap }) => {
-  const queryParams = useSearchParams()
-
+export const SelectPanel: FC<SelectPanelProps> = ({
+  scheduleEditMap,
+  setCurrentId,
+  currentId,
+  isRecallingSchedule,
+  setIsRecallingSchedule,
+}) => {
   return (
     <div className={styles.selectPanel}>
-      <h2 className={styles.heading}>編集</h2>
+      <div className={styles.toggle}>
+        <span className={styles.label}>繰り返し</span> 
+        <Toggle
+          toggleState={
+            isRecallingSchedule
+              ? ToggleStateType.CHECKED
+              : ToggleStateType.DEFAULT
+          }
+          onClick={() => {
+            setIsRecallingSchedule(!isRecallingSchedule)
+          }}
+        />
+      </div>
       <div className={styles.buttons}>
-        {questionEditMap.map((button) => (
-          <Link
+        {scheduleEditMap.map((button) => (
+          <div
             key={button.id}
             className={styles.button}
-            href={{
-              query: {
-                id: button.id,
-              },
-            }}
-            data-active={button.id === queryParams.get('id') ? 'true' : 'false'}
+            onClick={() => setCurrentId(button.id)}
+            data-active={button.id === currentId ? 'true' : 'false'}
           >
             <span className={styles.label}>{button.label}</span>
             {button.content}
-          </Link>
+          </div>
         ))}
       </div>
     </div>
