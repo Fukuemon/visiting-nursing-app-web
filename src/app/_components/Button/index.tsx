@@ -15,6 +15,7 @@ type BaseProps = {
   children: ReactNode
   isAnchor?: boolean
   isWide?: boolean
+  isDiv?: boolean
 }
 
 type NativeButtonProps = BaseProps &
@@ -35,6 +36,7 @@ export const Button: FC<ButtonProps> = ({
   size = 'M',
   isAnchor = false,
   isWide,
+  isDiv,
   children,
   disabled,
   ...props
@@ -57,6 +59,12 @@ export const Button: FC<ButtonProps> = ({
     >
       <div className={styles.content}>{children}</div>
     </NextLink>
+  ) : isDiv != null ? (
+    <div className={className} {...(props as DivButtonProps)}>
+      <div className={styles.content}>
+        {isLoading != null && isLoading ? <Loading /> : children}
+      </div>
+    </div>
   ) : (
     <button
       className={classNames(className)}
