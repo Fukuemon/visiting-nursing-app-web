@@ -1,4 +1,10 @@
+import type { Patient } from '@/schema/patient'
 import useSWR from 'swr'
+import { ulid } from 'ulid'
+
+const patientIda = ulid()
+const patientIdb = ulid()
+const patientIdc = ulid()
 
 const patientFetcher = async (url: string) => {
   const res = {
@@ -24,13 +30,11 @@ export const usePatient = (patientId: string) => {
 }
 
 const patientListFetcher = async (url: string) => {
-  const res = {
-    patients: [
-      { name: '鈴木一郎', id: '2' },
-      { name: '鈴木二郎', id: '3' },
-      { name: '鈴木三郎', id: '4' },
-    ],
-  }
+  const res: Patient[] = [
+    { name: '鈴木一郎', id: patientIda, area: 'A' },
+    { name: '鈴木二郎', id: patientIdb, area: 'B' },
+    { name: '鈴木三郎', id: patientIdc, area: 'C' },
+  ]
   return res
   //   const res = await fetch(url)
   //   return res.json()

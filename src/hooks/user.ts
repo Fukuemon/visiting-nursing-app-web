@@ -13,6 +13,28 @@ export const userIdg = ulid()
 export const userIdh = ulid()
 export const userIdi = ulid()
 
+const currentUserFetcher: Fetcher<User> = async (url: string) => {
+  const res = {
+    name: '田中太郎',
+    id: userIda,
+    team: 'A',
+  }
+  return res
+}
+
+export const useCurrentUser = () => {
+  const { data, isLoading, error } = useSWR<User, Error>(
+    process.env.NEXT_PUBLIC_API_URL + `/users/${userIda}`,
+    currentUserFetcher,
+  )
+
+  return {
+    user: data,
+    isLoading,
+    error,
+  }
+}
+
 const userFetcher: Fetcher<User> = async (url: string) => {
   const res = {
     name: '田中太郎',
