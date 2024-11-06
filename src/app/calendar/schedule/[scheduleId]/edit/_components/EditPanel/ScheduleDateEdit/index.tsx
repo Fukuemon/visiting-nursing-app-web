@@ -191,7 +191,9 @@ export const ScheduleDateEdit = ({
 
   return (
     <div className={styles.scheduleDateEdit}>
-      <h1 className={styles.title}>訪問日時</h1>
+      <h1 className={styles.title}>
+        {isVisitSchedule ? '訪問日時' : '予定日時'}
+      </h1>
       <div className={styles.inputs}>
         <div className={styles.row}>
           <DatePicker
