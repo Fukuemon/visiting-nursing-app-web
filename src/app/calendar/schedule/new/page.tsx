@@ -1,20 +1,15 @@
 'use client'
 
-import InterceptModal from '@/app/_components/InterceptModal'
+import { ScheduleCreateContainer } from '@/app/calendar/schedule/new/_components/ScheduleCreateContainer'
 
 export type Query = {
   start: string
 }
 
 export default function EventModal() {
-  // const params = useSearchParams();
-  // const event: NewCalendarEventProps = {
-  //   start: params.get("start") || "",
-  // };
-
   return (
     <>
-      <InterceptModal>new event page</InterceptModal>
+      <ScheduleCreateContainer />
     </>
   )
 }
