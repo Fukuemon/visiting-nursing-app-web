@@ -230,7 +230,10 @@ export const ScheduleDateEdit = ({
       </div>
       {isVisitSchedule && (
         <div className={styles.serviceCode}>
-          <ServiceCodeEdit control={control} />
+          <ServiceCodeEdit
+            control={control}
+            name={serviceCodeName}
+          />
         </div>
       )}
     </div>

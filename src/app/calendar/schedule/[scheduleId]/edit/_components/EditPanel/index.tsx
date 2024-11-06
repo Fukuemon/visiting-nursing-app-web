@@ -97,16 +97,28 @@ export const EditPanel: FC<EditPanelProps> = ({
           <ScheduleUserEdit control={control} name={ScheduleKey.UserId} />
         )}
         {currentId === ScheduleKey.CcCategory && (
-          <CcCategoryEdit control={control} isVisitSchedule={isVisitSchedule} />
+          <CcCategoryEdit
+            control={control}
+            name={ScheduleKey.CcCategory}
+            isVisitSchedule={isVisitSchedule}
+          />
         )}
         {currentId === ScheduleKey.CcUserId && (
-          <ScheduleUserEdit control={control} name={ScheduleKey.CcUserId} />
+          <ScheduleUserEdit
+            control={control}
+            name={ScheduleKey.CcUserId}
+          />
         )}
         {currentId === VisitScheduleKey.ServiceCode && (
-          <ServiceCodeEdit control={control} />
+          <ServiceCodeEdit
+            control={control}
+            name={VisitScheduleKey.ServiceCode}
+          />
         )}
         {currentId === VisitScheduleKey.ScheduleCategory && (
-          <ScheduleCategoryEdit control={control} />
+          <ScheduleCategoryEdit
+            control={control}
+          />
         )}
         {currentId === ScheduleKey.Description && (
           <TextareaEdit

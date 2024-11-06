@@ -1,16 +1,13 @@
-import type { FC } from 'react'
-
-import type { Control } from 'react-hook-form'
+import type { Control, FieldPath, FieldValues } from 'react-hook-form'
 import { useController } from 'react-hook-form'
 
 import styles from './style.module.css'
 
 import { ccCategory, CcCategoryText } from '@/constants/ccCategory'
-import type { ScheduleEdit } from '@/schema/schedule'
-import { ScheduleKey } from '@/schema/schedule'
 
-export type CcCategoryEditProps = {
-  control: Control<ScheduleEdit>
+export type CcCategoryEditProps<T extends FieldValues> = {
+  control: Control<T>
+  name: FieldPath<T>
   isVisitSchedule: boolean
 }
 
@@ -29,13 +26,14 @@ export const ccCategoryOptions = {
   },
 }
 
-export const CcCategoryEdit: FC<CcCategoryEditProps> = ({
+export const CcCategoryEdit = <T extends FieldValues>({
   control,
+  name,
   isVisitSchedule,
-}) => {
+}: CcCategoryEditProps<T>) => {
   const { field } = useController({
     control,
-    name: ScheduleKey.CcCategory,
+    name,
   })
 
   const filteredOptions = isVisitSchedule
