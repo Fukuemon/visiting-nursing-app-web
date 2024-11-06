@@ -29,3 +29,13 @@ export const WeekDayText: Record<WeekDay, string> = {
   [WeekDay.friday]: '金',
   [WeekDay.saturday]: '土',
 } as const
+
+export const WeekDayTextFromNumber: Record<number, string> = {
+  0: '日',
+  1: '月',
+  2: '火',
+  3: '水',
+  4: '木',
+  5: '金',
+  6: '土',
+}
