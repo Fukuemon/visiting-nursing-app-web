@@ -69,6 +69,7 @@ export const CalendarTimeGridDayParent: FC<
           slotLabelContent={calendarHandler.handleSlotLabelContent}
           slotDuration="00:10"
           eventDurationEditable={false}
+          allDaySlot={false}
         />
       </StyleWrapper>
     </div>
