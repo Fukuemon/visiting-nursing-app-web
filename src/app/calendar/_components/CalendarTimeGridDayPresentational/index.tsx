@@ -67,6 +67,7 @@ export const CalendarTimeGridDayPresentational: FC<
           events={events}
           eventClick={calendarHandler.handleEventClick}
           dateClick={calendarHandler.handleDateClick}
+          allDaySlot={false}
         />
       </TimeGridDayStyleWrapper>
     </div>

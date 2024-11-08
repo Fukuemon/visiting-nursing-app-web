@@ -59,9 +59,10 @@ export const StyleWrapper = styled.div`
   }
   .fc .fc-timegrid-slot .fc-timegrid-slot-label .fc-scrollgrid-shrink {
   }
+
+  // 時間軸の幅が揃うように調整
   .fc .fc-timegrid-slot {
-    height: 1.5em;
-    line-height: 2.8em;
+    height: 17px;
   }
   .fc table {
     font-size: 0.5em;

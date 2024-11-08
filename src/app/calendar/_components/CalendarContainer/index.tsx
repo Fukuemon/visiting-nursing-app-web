@@ -265,7 +265,6 @@ const events: CalendarEvent[] = [
   ),
 ]
 
-
 const allTeams: { name: string; members: User[] }[] = [
   {
     name: 'A',
@@ -400,7 +399,6 @@ export const CalendarContainer: FC<CalendarContainerProps> = ({
               }}
               onScroll={() => handleScroll(0)}
             >
-              <p className={styles.name}>時間</p>
               <CalendarTimeGridDayParent />
             </div>
           </div>
@@ -426,19 +424,6 @@ export const CalendarContainer: FC<CalendarContainerProps> = ({
               </div>
             )
           })}
-          <div className={styles.parentContainer}>
-            <div
-              key="additional"
-              className={styles.parentBody}
-              ref={(el) => {
-                scrollRefs.current[showMembers.length + 1] = el
-              }}
-              onScroll={() => handleScroll(showMembers.length + 1)}
-            >
-              <p className={styles.name}>時間</p>
-              <CalendarTimeGridDayParent />
-            </div>
-          </div>
         </div>
       )}
       <CalendarSidebar

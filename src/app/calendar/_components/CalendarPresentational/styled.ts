@@ -1,5 +1,6 @@
 import styled from '@emotion/styled'
 export const StyleWrapper = styled.div`
+  height: 100%; // 高さを画面下まで広げる
   .fc .fc-toolbar.fc-header-toolbar {
     margin-bottom: 0;
   }
@@ -99,5 +100,63 @@ export const StyleWrapper = styled.div`
 
   .fc .fc-daygrid-body tr {
     height: 120px;
+  }
+
+  // カレンダーのヘッダーを非表示
+  .fc .fc-toolbar {
+    display: none;
+  }
+
+  // 月表示カレンダーの高さを広げるように調整
+  .fc-direction-ltr {
+    height: 100%;
+  }
+
+  // 月表示カレンダーの高さを広げるように調整
+  .fc-dayGridMonth-view.fc-view.fc-daygrid {
+    height: 100%;
+  }
+
+  // 月表示カレンダーの高さを広げるように調整
+  .fc-scrollgrid {
+    height: 100%;
+  }
+
+  // 月表示カレンダーの高さを広げるように調整
+  .fc-scroller-harness {
+    height: 100%;
+  }
+
+  // 月表示カレンダーの高さを広げるように調整
+  .fc-scroller {
+    height: 100%;
+  }
+
+  // 月表示カレンダーの高さを広げるように調整
+  .fc-daygrid-body.fc-daygrid-body-unbalanced.fc-daygrid-body-natural {
+    height: 100%;
+  }
+
+  // 月表示カレンダーの高さを広げるように調整
+  .fc .fc-scrollgrid-section-body table,
+  .fc .fc-scrollgrid-section-footer table {
+    height: 100%;
+  }
+
+  // 曜日の枠線
+  .fc-scroller-harness .fc-col-header {
+    box-shadow: 2px 0px 4px 0px rgba(0, 0, 0, 0.4);
+    border: 1px var(--gray-200) solid;
+  }
+
+  // 曜日の枠線に影を追加
+  .fc-scrollgrid-section.fc-scrollgrid-section-header.fc-scrollgrid-section-sticky {
+    box-shadow: 2px 0px 4px 0px rgba(0, 0, 0, 0.4);
+  }
+
+  // 時間軸の枠線
+  .fc-timegrid-col.fc-timegrid-axis {
+    box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.4);
+    border: 1px var(--gray-200) solid;
   }
 `
