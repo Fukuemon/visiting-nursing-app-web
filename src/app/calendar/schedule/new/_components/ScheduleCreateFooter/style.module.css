@@ -1,0 +1,10 @@
+.footer {
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+
+  & .save {
+    display: flex;
+    gap: 16px;
+  }
+}

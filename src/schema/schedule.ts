@@ -106,7 +106,16 @@ export type NormalScheduleEdit = Omit<
 >
 export type ScheduleEdit = VisitScheduleEdit | NormalScheduleEdit
 
-export type ScheduleCreate = Omit<Schedule, ScheduleKey.ScheduleId>
+export type VisitScheduleCreate = Omit<
+  VisitSchedule,
+  ScheduleKey.ScheduleId
+>
+export type NormalScheduleCreate = Omit<
+  NormalSchedule,
+  ScheduleKey.ScheduleId
+>
+
+export type ScheduleCreate = VisitScheduleCreate | NormalScheduleCreate
 
 export const scheduleSchema = baseScheduleSchema.and(
   z.union([visitScheduleSchema, normalScheduleSchema]),
@@ -127,7 +136,15 @@ export const scheduleEditSchema = z.union([
   normalScheduleEditSchema,
 ]) satisfies ZodType<ScheduleEdit>
 
+export const visitScheduleCreateSchema = visitScheduleSchema.omit({
+  [ScheduleKey.ScheduleId]: true,
+})
+
+export const normalScheduleCreateSchema = normalScheduleSchema.omit({
+  [ScheduleKey.ScheduleId]: true,
+})
+
 export const scheduleCreateSchema = z.union([
-  visitScheduleSchema.omit({ [ScheduleKey.ScheduleId]: true }),
-  normalScheduleSchema.omit({ [ScheduleKey.ScheduleId]: true }),
+  visitScheduleCreateSchema,
+  normalScheduleCreateSchema,
 ]) satisfies ZodType<ScheduleCreate>

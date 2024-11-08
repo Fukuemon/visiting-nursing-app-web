@@ -7,10 +7,9 @@ import { ServiceCodeDuration } from '@/constants/serviceCode'
 import type {
   RecallingSchedule,
   RecallingScheduleCreate,
-  RecallingScheduleEdit,
 } from '@/schema/recallingSchedule'
 import { RecallingScheduleKey } from '@/schema/recallingSchedule'
-import type { Schedule, ScheduleEdit } from '@/schema/schedule'
+import type { Schedule, ScheduleCreate } from '@/schema/schedule'
 import { useEffect } from 'react'
 import {
   useWatch,
@@ -22,21 +21,20 @@ import {
 } from 'react-hook-form'
 import styles from './style.module.css'
 
-export type ScheduleDateEditProps = {
-  control: Control<ScheduleEdit>
-  dateName: FieldPath<ScheduleEdit>
-  startTimeName: FieldPath<ScheduleEdit>
-  endTimeName: FieldPath<ScheduleEdit>
-  serviceTimeName: FieldPath<ScheduleEdit>
-  setValue: UseFormSetValue<ScheduleEdit>
-  recallingSetValue: UseFormSetValue<RecallingScheduleEdit>
-  serviceCodeName: FieldPath<ScheduleEdit>
+export type ScheduleDateCreateProps = {
+  control: Control<ScheduleCreate>
+  dateName: FieldPath<ScheduleCreate>
+  startTimeName: FieldPath<ScheduleCreate>
+  endTimeName: FieldPath<ScheduleCreate>
+  serviceTimeName: FieldPath<ScheduleCreate>
+  setValue: UseFormSetValue<ScheduleCreate>
+  recallingSetValue: UseFormSetValue<RecallingScheduleCreate>
+  serviceCodeName: FieldPath<ScheduleCreate>
   isVisitSchedule: boolean
   isRecallingSchedule: boolean
-  recallingCreateSetValue: UseFormSetValue<RecallingScheduleCreate>
 }
 
-export const ScheduleDateEdit = ({
+export const ScheduleDateCreate = ({
   control,
   setValue,
   dateName,
@@ -47,8 +45,7 @@ export const ScheduleDateEdit = ({
   recallingSetValue,
   isVisitSchedule,
   isRecallingSchedule,
-  recallingCreateSetValue,
-}: ScheduleDateEditProps) => {
+}: ScheduleDateCreateProps) => {
   const date = useWatch({ control, name: dateName })
   const startTime = useWatch({ control, name: startTimeName }) as
     | string
@@ -157,7 +154,7 @@ export const ScheduleDateEdit = ({
             shouldValidate: true,
           },
         )
-        recallingCreateSetValue(
+        recallingSetValue(
           RecallingScheduleKey.DayOfWeek,
           dayOfWeek as PathValue<RecallingSchedule, Path<RecallingSchedule>>,
           {
@@ -171,14 +168,14 @@ export const ScheduleDateEdit = ({
             shouldValidate: true,
           },
         )
-        recallingCreateSetValue(
+        recallingSetValue(
           RecallingScheduleKey.WeekOfMonth,
           weekOfMonth as PathValue<RecallingSchedule, Path<RecallingSchedule>>,
           {
             shouldValidate: true,
           },
         )
-        recallingCreateSetValue(
+        recallingSetValue(
           RecallingScheduleKey.StartDate,
           visitDate as PathValue<RecallingSchedule, Path<RecallingSchedule>>,
           {
@@ -187,7 +184,7 @@ export const ScheduleDateEdit = ({
         )
       }
     }
-  }, [date, setValue, recallingSetValue, recallingCreateSetValue])
+  }, [date, setValue, recallingSetValue, recallingSetValue])
 
   return (
     <div className={styles.scheduleDateEdit}>
@@ -232,10 +229,7 @@ export const ScheduleDateEdit = ({
       </div>
       {isVisitSchedule && (
         <div className={styles.serviceCode}>
-          <ServiceCodeEdit
-            control={control}
-            name={serviceCodeName}
-          />
+          <ServiceCodeEdit control={control} name={serviceCodeName} />
         </div>
       )}
     </div>

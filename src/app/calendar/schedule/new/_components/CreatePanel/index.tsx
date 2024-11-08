@@ -1,49 +1,39 @@
 import { CcCategoryEdit } from '@/app/calendar/schedule/[scheduleId]/edit/_components/EditPanel/CcCategoryEdit'
 import { RecallingRuleCreate } from '@/app/calendar/schedule/[scheduleId]/edit/_components/EditPanel/RecallingRuleCreate'
-import { RecallingRuleEdit } from '@/app/calendar/schedule/[scheduleId]/edit/_components/EditPanel/RecallingRuleEdit'
-import { ScheduleCategoryEdit } from '@/app/calendar/schedule/[scheduleId]/edit/_components/EditPanel/ScheduleCategoryEdit'
-import { ScheduleDateEdit } from '@/app/calendar/schedule/[scheduleId]/edit/_components/EditPanel/ScheduleDateEdit'
+import { SchedulePatientEdit } from '@/app/calendar/schedule/[scheduleId]/edit/_components/EditPanel/SchedulePatientEdit'
 import { ScheduleUserEdit } from '@/app/calendar/schedule/[scheduleId]/edit/_components/EditPanel/ScheduleUserEdit'
-import { ServiceCodeEdit } from '@/app/calendar/schedule/[scheduleId]/edit/_components/EditPanel/ServiceCodeEdit'
 import { TextareaEdit } from '@/app/calendar/schedule/[scheduleId]/edit/_components/EditPanel/TextareaEdit'
-import type {
-  RecallingScheduleCreate,
-  RecallingScheduleEdit,
-} from '@/schema/recallingSchedule'
+import { ScheduleCategoryCreate } from '@/app/calendar/schedule/new/_components/CreatePanel/ScheduleCategoryCreate'
+import { ScheduleDateCreate } from '@/app/calendar/schedule/new/_components/CreatePanel/ScheduleDateCreate'
+import type { RecallingScheduleCreate } from '@/schema/recallingSchedule'
 import { RecallingScheduleKey } from '@/schema/recallingSchedule'
-import type { ScheduleEdit } from '@/schema/schedule'
+import type { ScheduleCreate } from '@/schema/schedule'
 import { ScheduleKey, VisitScheduleKey } from '@/schema/schedule'
 import type { FC } from 'react'
 import { useEffect } from 'react'
 import type { Control, UseFormSetValue } from 'react-hook-form'
 import styles from './style.module.css'
 
-export type EditPanelProps = {
-  control: Control<ScheduleEdit>
-  recallingControl: Control<RecallingScheduleEdit>
-  recallingCreateControl: Control<RecallingScheduleCreate>
-  recallingSetValue: UseFormSetValue<RecallingScheduleEdit>
-  recallingCreateSetValue: UseFormSetValue<RecallingScheduleCreate>
-  setValue: UseFormSetValue<ScheduleEdit>
+export type CreatePanelProps = {
+  control: Control<ScheduleCreate>
+  recallingControl: Control<RecallingScheduleCreate>
+  recallingSetValue: UseFormSetValue<RecallingScheduleCreate>
+  setValue: UseFormSetValue<ScheduleCreate>
   currentId: ScheduleKey | VisitScheduleKey | RecallingScheduleKey | undefined
   setCurrentId: (id: ScheduleKey | VisitScheduleKey) => void
   isRecallingSchedule: boolean
   isVisitSchedule: boolean
-  recallingScheduleId: string | undefined
 }
 
-export const EditPanel: FC<EditPanelProps> = ({
+export const CreatePanel: FC<CreatePanelProps> = ({
   control,
   recallingControl,
-  recallingCreateControl,
   recallingSetValue,
-  recallingCreateSetValue,
   setValue,
   currentId,
   setCurrentId,
   isRecallingSchedule,
   isVisitSchedule,
-  recallingScheduleId,
 }) => {
   useEffect(() => {
     if (currentId === null || currentId === undefined) {
@@ -52,7 +42,7 @@ export const EditPanel: FC<EditPanelProps> = ({
   }, [currentId, setCurrentId])
 
   return (
-    <div className={styles.editPanel}>
+    <div className={styles.createPanel}>
       <div className={styles.container}>
         {currentId === ScheduleKey.Title && (
           <TextareaEdit
@@ -61,8 +51,14 @@ export const EditPanel: FC<EditPanelProps> = ({
             placeholder="タイトル"
           />
         )}
+        {currentId === VisitScheduleKey.PatientId && (
+          <SchedulePatientEdit
+            control={control}
+            name={VisitScheduleKey.PatientId}
+          />
+        )}
         {currentId === ScheduleKey.ScheduleDate && (
-          <ScheduleDateEdit
+          <ScheduleDateCreate
             control={control}
             setValue={setValue}
             dateName={ScheduleKey.ScheduleDate}
@@ -71,25 +67,15 @@ export const EditPanel: FC<EditPanelProps> = ({
             serviceTimeName={VisitScheduleKey.ServiceTime}
             serviceCodeName={VisitScheduleKey.ServiceCode}
             recallingSetValue={recallingSetValue}
-            recallingCreateSetValue={recallingCreateSetValue}
             isVisitSchedule={isVisitSchedule}
             isRecallingSchedule={isRecallingSchedule}
           />
         )}
         {isRecallingSchedule &&
-          Boolean(recallingScheduleId) &&
-          currentId === RecallingScheduleKey.Frequency && (
-            <RecallingRuleEdit
-              control={recallingControl}
-              setValue={recallingSetValue}
-            />
-          )}
-        {isRecallingSchedule &&
-          recallingScheduleId === undefined &&
           currentId === RecallingScheduleKey.Frequency && (
             <RecallingRuleCreate
-              control={recallingCreateControl}
-              setValue={recallingCreateSetValue}
+              control={recallingControl}
+              setValue={recallingSetValue}
             />
           )}
 
@@ -104,21 +90,10 @@ export const EditPanel: FC<EditPanelProps> = ({
           />
         )}
         {currentId === ScheduleKey.CcUserId && (
-          <ScheduleUserEdit
-            control={control}
-            name={ScheduleKey.CcUserId}
-          />
-        )}
-        {currentId === VisitScheduleKey.ServiceCode && (
-          <ServiceCodeEdit
-            control={control}
-            name={VisitScheduleKey.ServiceCode}
-          />
+          <ScheduleUserEdit control={control} name={ScheduleKey.CcUserId} />
         )}
         {currentId === VisitScheduleKey.ScheduleCategory && (
-          <ScheduleCategoryEdit
-            control={control}
-          />
+          <ScheduleCategoryCreate control={control} />
         )}
         {currentId === ScheduleKey.Description && (
           <TextareaEdit

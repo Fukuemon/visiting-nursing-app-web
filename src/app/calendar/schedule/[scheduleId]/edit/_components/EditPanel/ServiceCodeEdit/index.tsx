@@ -1,16 +1,13 @@
-import type { FC } from 'react'
-
-import type { Control } from 'react-hook-form'
+import type { Control, FieldPath, FieldValues } from 'react-hook-form'
 import { useController } from 'react-hook-form'
 
 import styles from './style.module.css'
 
 import { ServiceCode, ServiceCodeText } from '@/constants/serviceCode'
-import type { ScheduleEdit } from '@/schema/schedule'
-import { VisitScheduleKey } from '@/schema/schedule'
 
-export type ServiceCodeEditProps = {
-  control: Control<ScheduleEdit>
+export type ServiceCodeEditProps<T extends FieldValues> = {
+  control: Control<T>
+  name: FieldPath<T>
 }
 
 export const serviceCodeOptions = {
@@ -49,10 +46,13 @@ export const serviceCodeOptions = {
   },
 }
 
-export const ServiceCodeEdit: FC<ServiceCodeEditProps> = ({ control }) => {
+export const ServiceCodeEdit = <T extends FieldValues>({
+  name,
+  control,
+}: ServiceCodeEditProps<T>) => {
   const { field } = useController({
     control,
-    name: VisitScheduleKey.ServiceCode,
+    name,
   })
 
   return (

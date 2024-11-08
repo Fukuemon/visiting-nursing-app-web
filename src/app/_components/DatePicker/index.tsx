@@ -1,6 +1,6 @@
 'use client'
 
-import type { ComponentPropsWithoutRef } from 'react'
+import { useEffect, type ComponentPropsWithoutRef } from 'react'
 import type { Control, FieldPath, FieldValues } from 'react-hook-form'
 import { useController } from 'react-hook-form'
 import styles from './style.module.css'
@@ -39,10 +39,17 @@ export const DatePicker = <T extends FieldValues>({
   const getValue = () => {
     const value = field.value as Date
     if (value !== null && typeof value === 'object' && 'getTime' in value) {
-      return value.toISOString().split('T')[0]
+      const year = value.getFullYear()
+      const month = String(value.getMonth() + 1).padStart(2, '0')
+      const day = String(value.getDate()).padStart(2, '0')
+      return `${year}-${month}-${day}`
     }
     return ''
   }
+
+  useEffect(() => {
+    getValue()
+  }, [])
 
   return (
     <div className={styles.datePicker} data-wide={isWide}>

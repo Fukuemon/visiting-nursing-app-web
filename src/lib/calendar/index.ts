@@ -1,4 +1,5 @@
 'use client'
+import { pagesPath } from '@/utils/$path'
 import type {
   CalendarApi,
   DayCellContentArg,
@@ -11,7 +12,6 @@ import type { DateClickArg } from '@fullcalendar/interaction/index.js'
 import type FullCalendar from '@fullcalendar/react'
 import type { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime'
 import type { RefObject } from 'react'
-import { pagesPath } from '@/utils/$path'
 
 export default class CalendarHandler {
   calendarRef: RefObject<FullCalendar>
@@ -23,12 +23,17 @@ export default class CalendarHandler {
     this.calendarApi = this.calendarRef.current?.getApi()
   }
   handleEventClick = (arg: EventClickArg) => {
-    this.router.push(pagesPath.calendar.schedule._scheduleId(arg.event.id).$url().path)
+    this.router.push(
+      pagesPath.calendar.schedule._scheduleId(arg.event.id).$url().path,
+    )
   }
   handleEventChange = (arg: EventChangeArg) => {}
   handleDateClick = (arg: DateClickArg) => {
     const start = String(arg.date).replace(/ GMT.*$/, '')
-    this.router.push(pagesPath.calendar.schedule.new.$url({query: {start}}).path)
+    this.router.push(
+      pagesPath.calendar.schedule.new.$url({ query: { start } }).path +
+        '&tab=normal',
+    )
   }
   handleViewChange = (currentCalendarView: string) => {
     this.calendarApi?.changeView(currentCalendarView)

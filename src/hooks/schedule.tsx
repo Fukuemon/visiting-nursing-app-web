@@ -11,8 +11,9 @@ const scheduleIda: string = ulid()
 const scheduleIdb: string = ulid()
 const recallingScheduleIda: string = ulid()
 const patientIda: string = ulid()
+const startDate_a = new Date(2024, 10, 6, 8, 10)
 
-const schedule_aa: Schedule = {
+const schedule_normal_a: Schedule = {
   scheduleId: scheduleIda,
   userId: userIda,
   title: '会議',
@@ -23,16 +24,22 @@ const schedule_aa: Schedule = {
   description: 'テキストテキスト',
 }
 
-const schedule_ba: Schedule = {
+const schedule_visit_a: Schedule = {
   scheduleId: scheduleIda,
   userId: userIda,
   title: '訪看I2 鈴木一郎',
   scheduleType: scheduleType.visit,
   patientId: patientIda,
   serviceCode: serviceCode.訪看I2,
-  scheduleDate: new Date(),
-  startTime: '11:10',
-  endTime: '11:39',
+  scheduleDate: startDate_a,
+  startTime: startDate_a.toLocaleTimeString('ja-JP', {
+    hour: '2-digit',
+    minute: '2-digit',
+  }),
+  endTime: startDate_a.toLocaleTimeString('ja-JP', {
+    hour: '2-digit',
+    minute: '2-digit',
+  }),
   serviceTime: 29,
   isCanceled: false,
   destination: '兵庫県神戸市中央区',
@@ -52,14 +59,14 @@ const schedule_ba: Schedule = {
     userId: userIda,
 
     frequency: RecallingFrequency.Monthly,
-    dayOfWeek: 1,
+    dayOfWeek: new Date().getDay(),
     weekOfMonth: 1,
     startDate: new Date(),
   },
 }
 
 const scheduleFetcher: Fetcher<Schedule> = async (url: string) => {
-  const res: Schedule = schedule_ba
+  const res: Schedule = schedule_visit_a
   return res
   //   const res = await fetch(url)
   //   return res.json()

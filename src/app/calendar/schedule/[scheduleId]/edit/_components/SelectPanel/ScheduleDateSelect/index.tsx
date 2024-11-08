@@ -20,9 +20,12 @@ export const ScheduleDateSelect: FC<ScheduleDateSelectProps> = ({
   serviceCode,
   isVisitSchedule,
 }) => {
+  const year = scheduleDate.getFullYear()
+  const month = String(scheduleDate.getMonth() + 1).padStart(2, '0')
+  const day = String(scheduleDate.getDate()).padStart(2, '0')
   return (
     <div className={styles.dateSelect}>
-      <p>{new Date(scheduleDate).toISOString().split('T')[0]}</p>
+      <p>{`${year}-${month}-${day}`}</p>
 
       <div>
         <p className={styles.title}>開始時間</p>
