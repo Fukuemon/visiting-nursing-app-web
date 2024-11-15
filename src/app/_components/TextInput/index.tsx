@@ -1,41 +1,56 @@
 'use client'
 
-import type { ComponentPropsWithoutRef, FC, ReactNode } from 'react'
+import type { ComponentPropsWithoutRef } from 'react'
 
-import classNames from 'classnames'
+import type { Control, FieldPath, FieldValues } from 'react-hook-form'
+import { useController } from 'react-hook-form'
+
 import styles from './style.module.css'
 
-export type TextInputProps = ComponentPropsWithoutRef<'input'> & {
-  disabled?: boolean
-  error?: boolean
-  label?: string
-  placeholder: string
-  icon?: ReactNode
-}
+export type TextFieldProps<T extends FieldValues> =
+  ComponentPropsWithoutRef<'input'> & {
+    name: FieldPath<T>
+    control: Control<T>
+    label: string
+    unit?: string
+    note?: string
+  }
 
-export const TextInput: FC<TextInputProps> = ({
-  disabled = false,
-  error = false,
-  label = '',
-  placeholder = '',
-  icon = '',
+export const TextInput = <T extends FieldValues>({
+  name,
+  control,
+  label,
+  note,
+  unit,
   ...props
-}) => {
+}: TextFieldProps<T>) => {
+  const {
+    field,
+    fieldState: { error },
+  } = useController({
+    name,
+    control,
+  })
+
   return (
-    <label className={styles.textInput} tabIndex={disabled ? -1 : 0}>
-      {label !== '' ? <div className={styles.label}>{label}</div> : null}
-      <div className={icon !== '' ? styles.inputArea: ''}>
-        {icon !== '' ? <div className={styles.icon}>{icon}</div> : null}
-        <input
-          className={styles.input}
-          type="text"
-          data-disabled={disabled}
-          data-error={error}
-          placeholder={placeholder}
-          disabled={disabled}
-          {...props}
-        />
+    <div className={styles.textInput}>
+      <div className={styles.unitContainer}>
+        <div className={styles.container}>
+          <input
+            className={styles.input}
+            type="text"
+            placeholder=" "
+            {...field}
+            {...props}
+          />
+          <label className={styles.label} htmlFor={name}>
+            {label}
+          </label>
+        </div>
+        {unit !== undefined && <span className={styles.unit}>{unit}</span>}
       </div>
-    </label>
+      {note !== undefined && <span className={styles.note}>{note}</span>}
+      {error !== undefined && <span className={styles.error}>{error.message}</span>}
+    </div>
   )
 }
