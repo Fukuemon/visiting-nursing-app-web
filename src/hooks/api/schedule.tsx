@@ -1,6 +1,6 @@
 import { scheduleType } from '@/constants/scheduleType'
 import { serviceCode } from '@/constants/serviceCode'
-import { userIda } from '@/hooks/user'
+import { userIda } from '@/hooks/api/user'
 import { RecallingFrequency } from '@/schema/recallingSchedule'
 import type { Schedule } from '@/schema/schedule'
 import type { Fetcher } from 'swr'
