@@ -37,6 +37,12 @@ export const pagesPath = {
     },
     $url: (url?: { hash?: string }) => ({ pathname: '/calendar' as const, hash: url?.hash, path: `/calendar${buildSuffix(url)}` })
   },
+  "users": {
+    _userId: (userId: string | number) => ({
+      $url: (url?: { hash?: string }) => ({ pathname: '/users/[userId]' as const, query: { userId }, hash: url?.hash, path: `/users/${userId}${buildSuffix(url)}` })
+    }),
+    $url: (url?: { hash?: string }) => ({ pathname: '/users' as const, hash: url?.hash, path: `/users${buildSuffix(url)}` })
+  },
   $url: (url?: { hash?: string }) => ({ pathname: '/' as const, hash: url?.hash, path: `/${buildSuffix(url)}` })
 };
 
@@ -44,11 +50,15 @@ export type PagesPath = typeof pagesPath;
 
 export const staticPath = {
   icons: {
+    arrow_bottom_svg: '/icons/arrow-bottom.svg',
     arrow_left_svg: '/icons/arrow-left.svg',
     arrow_right_svg: '/icons/arrow-right.svg',
+    arrow_top_svg: '/icons/arrow-top.svg',
     calendar_svg: '/icons/calendar.svg',
     check_svg: '/icons/check.svg',
     close_svg: '/icons/close.svg',
+    eye_closed_svg: '/icons/eye-closed.svg',
+    eye_opened_svg: '/icons/eye-opened.svg',
     hamburger_svg: '/icons/hamburger.svg',
     menu_svg: '/icons/menu.svg',
     minus_svg: '/icons/minus.svg',
