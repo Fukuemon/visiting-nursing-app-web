@@ -1,0 +1,31 @@
+.userList {
+  padding: 16px;
+
+  & .userRow {
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+  }
+  & .searchInput {
+    display: grid;
+    gap: 16px;
+    grid-template-columns: 1fr auto;
+    margin-bottom: 16px;
+
+    & .selectButtons {
+      display: flex;
+      gap: 16px;
+    }
+  }
+  
+
+  & .monthlyOperatingHours {
+    display: flex;
+    gap: 8px;
+  }
+
+  & .link {
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
