@@ -1,0 +1,5 @@
+.nameEditModal {
+  display: flex;
+  gap: 8px;
+  padding: 12px 32px;
+}

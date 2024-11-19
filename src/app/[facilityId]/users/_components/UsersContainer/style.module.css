@@ -1,0 +1,9 @@
+& .searchInput {
+    display: grid;
+    gap: 16px;
+    grid-template-columns: 1fr auto auto auto;
+    margin-bottom: 16px;
+    padding: 16px;
+
+
+  }

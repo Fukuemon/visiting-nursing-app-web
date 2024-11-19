@@ -1,0 +1,103 @@
+.container {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  padding: 40px 20px;
+  width: 100%;
+}
+
+.title {
+  color: var(--text-default);
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.userSection {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 720px;
+  width: 100%;
+
+  & .list {
+    border-top: 1px solid var(--border-divider);
+    width: 100%;
+
+    & .listItem {
+      align-items: center;
+      align-self: stretch;
+      border-bottom: 1px solid var(--border-divider);
+      display: flex;
+      gap: 20px;
+      padding: 12px 8px 12px 20px;
+
+      & .listTitle {
+        color: var(--text-default);
+        font-size: 15px;
+        font-weight: 400;
+        width: 200px;
+      }
+
+      & .listText {
+        color: var(--text-default);
+        flex: 1;
+        font-size: 15px;
+        font-weight: 400;
+      }
+
+      & .listImg {
+        flex: 1;
+
+        & .icon {
+          border: 1px solid var(--border-default);
+          border-radius: 999px;
+        }
+      }
+
+      & .listButton {
+        border-radius: 8px;
+        color: var(--text-link);
+        font-size: 15px;
+        margin-left: auto;
+        padding: 8px 12px;
+
+        &:hover {
+          background-color: var(--background-bg-surface-hover);
+        }
+      }
+    }
+  }
+}
+
+.groupSection {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 720px;
+  width: 100%;
+
+  & .groupHeader {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  & .groupList {
+    align-items: center;
+    align-self: stretch;
+    border-bottom: 1px solid var(--border-divider);
+    border-top: 1px solid var(--border-divider);
+    color: var(--text-default);
+    display: flex;
+    font-size: 15px;
+    font-weight: 700;
+    gap: 20px;
+    padding: 16px 20px;
+  }
+}
+
+.deleteUserSection {
+  max-width: 720px;
+  width: 100%;
+}
