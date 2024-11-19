@@ -7,10 +7,12 @@
   gap: 8px;
   background-color: var(--gray-0);
   border: 1px var(--gray-500) solid;
+  overflow: hidden;
 
   & .top {
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
+    gap: 8px;
     width: 100%;
   }
 

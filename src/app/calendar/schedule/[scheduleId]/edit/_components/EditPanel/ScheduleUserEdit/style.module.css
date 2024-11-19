@@ -15,6 +15,9 @@
     transition: 0.2s background-color;
     width: 100%;
     word-break: break-word;
+    display: flex;
+    align-items: center;
+    gap:4px;
 
     &:not(:focus):hover {
       background-color: var(--gray-10);

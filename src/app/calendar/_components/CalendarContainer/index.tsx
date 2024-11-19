@@ -1,3 +1,4 @@
+import { Loading } from '@/app/_components/Loading'
 import type { ToggleStateType } from '@/app/_components/Toggle'
 import { CalendarPresentational } from '@/app/calendar/_components/CalendarPresentational'
 import { CalendarSidebar } from '@/app/calendar/_components/CalendarSidebar'
@@ -5,8 +6,10 @@ import { CalendarTimeGridDayParent } from '@/app/calendar/_components/CalendarTi
 import { CalendarTimeGridDayPresentational } from '@/app/calendar/_components/CalendarTimeGridDayPresentational'
 import { CalendarView } from '@/constants/calendarView'
 import { ServiceCodeDuration } from '@/constants/serviceCode'
+import { useTeamList } from '@/hooks/api/team'
+import { useUserList } from '@/hooks/api/user'
+import type { User } from '@/schema/user'
 import type { CalendarEvent, Events } from '@/types/event'
-import type { User } from '@/types/user'
 import { useEffect, useRef, useState, type FC } from 'react'
 import styles from './style.module.css'
 
@@ -35,7 +38,7 @@ const createEvent = (
   userId: string,
   isCanceled: boolean,
   startDateTime: Date,
-  durationMinutes: number = ServiceCodeDuration.訪看I1,
+  durationMinutes: number = ServiceCodeDuration.訪看I2.max,
   backgroundColor: string = 'blue',
 ): CalendarEvent => {
   const endDate = new Date(startDateTime)
@@ -66,11 +69,16 @@ const createEvent = (
   }
 }
 
+const userIda = '01JAYGNY3TV8N9ACMKDAW7RCRN'
+const userIdb = '01JAYFC3Q3HGJZ6DP3DN9EPZZR'
+const userIdc = '01JAYFA0T9H84RE135JTPEBEF2'
+const userIdd = '01JAYF6Q11Q8BKBY53VW7ZV5WJ'
+
 const events: CalendarEvent[] = [
-  createEvent('1', 'a', false, new Date(), 30, 'green'),
+  createEvent('1', userIda, false, new Date(), 30, 'green'),
   createEvent(
     '2',
-    'b',
+    userIdb,
     true,
     new Date(new Date().setDate(new Date().getDate() + 1)),
     30,
@@ -78,7 +86,7 @@ const events: CalendarEvent[] = [
   ),
   createEvent(
     '3',
-    'c',
+    userIdc,
     true,
     new Date(new Date().setDate(new Date().getDate() + 3)),
     45,
@@ -86,7 +94,7 @@ const events: CalendarEvent[] = [
   ),
   createEvent(
     '4',
-    'd',
+    userIdd,
     false,
     new Date(new Date().setHours(new Date().getHours() + 2)),
     60,
@@ -149,7 +157,7 @@ const events: CalendarEvent[] = [
   ),
   createEvent(
     '13',
-    'a',
+    userIda,
     true,
     (() => {
       const d = new Date()
@@ -161,7 +169,7 @@ const events: CalendarEvent[] = [
   ),
   createEvent(
     '14',
-    'a',
+    userIda,
     false,
     (() => {
       const d = new Date()
@@ -174,7 +182,7 @@ const events: CalendarEvent[] = [
   ),
   createEvent(
     '15',
-    'b',
+    userIdb,
     false,
     (() => {
       const d = new Date()
@@ -187,7 +195,7 @@ const events: CalendarEvent[] = [
   ),
   createEvent(
     '16',
-    'b',
+    userIdb,
     false,
     (() => {
       const d = new Date()
@@ -200,7 +208,7 @@ const events: CalendarEvent[] = [
   ),
   createEvent(
     '17',
-    'c',
+    userIdc,
     false,
     (() => {
       const d = new Date()
@@ -213,7 +221,7 @@ const events: CalendarEvent[] = [
   ),
   createEvent(
     '18',
-    'c',
+    userIdc,
     true,
     (() => {
       const d = new Date()
@@ -226,7 +234,7 @@ const events: CalendarEvent[] = [
   ),
   createEvent(
     '19',
-    'a',
+    userIda,
     false,
     (() => {
       const d = new Date()
@@ -239,7 +247,7 @@ const events: CalendarEvent[] = [
   ),
   createEvent(
     '20',
-    'b',
+    userIdb,
     false,
     (() => {
       const d = new Date()
@@ -252,7 +260,7 @@ const events: CalendarEvent[] = [
   ),
   createEvent(
     '21',
-    'c',
+    userIdc,
     false,
     (() => {
       const d = new Date()
@@ -265,28 +273,6 @@ const events: CalendarEvent[] = [
   ),
 ]
 
-const allTeams: { name: string; members: User[] }[] = [
-  {
-    name: 'A',
-    members: [
-      { id: 'a', name: '山田太郎', team: 'A' },
-      { id: 'b', name: '鈴木次郎', team: 'A' },
-      { id: 'c', name: '伊藤三郎', team: 'A' },
-    ],
-  },
-  {
-    name: 'B',
-    members: [
-      { id: 'd', name: '山田士郎', team: 'B' },
-      { id: 'e', name: '鈴木五郎', team: 'B' },
-      { id: 'f', name: '伊藤六郎', team: 'B' },
-      { id: 'g', name: '山田菜々郎', team: 'B' },
-    ],
-  },
-]
-
-const me = { id: 'a', name: '山田太郎', team: 'A' }
-
 type CalendarContainerProps = {
   currentCalendarView: string
   showCancel: ToggleStateType
@@ -296,9 +282,26 @@ export const CalendarContainer: FC<CalendarContainerProps> = ({
   currentCalendarView,
   showCancel,
 }) => {
+  const facilityId = '01J6SMYDSKKKNJCR2Y3242T7YX'
+  const users = useUserList([facilityId, '', '', '', ''])
+  const teams = useTeamList(facilityId)
+  const currentUser = {
+    id: '01JAYFC3Q3HGJZ6DP3DN9EPZZR',
+    username: 'テストメンバー1',
+    position: 'member',
+    team: 'C',
+    facility: 'テスト訪問看護ステーション',
+    department: '看護',
+    area: 'B',
+    policies: [],
+    email: '',
+    phone: '+0123456789',
+    created_at: '2024-10-24T14:18:15+09:00',
+    updated_at: '2024-10-24T14:18:15+09:00',
+  }
   const containerRef = useRef<HTMLDivElement>(null)
   const [width, setWidth] = useState(0)
-  const [showMembers, setShowMembers] = useState<User[]>([me])
+  const [showMembers, setShowMembers] = useState<User[]>([currentUser])
   const [visibleEvents, setVisibleEvents] = useState<Events>([])
   const scrollRefs = useRef<(HTMLDivElement | null)[]>([])
   const resizeTimeoutRef = useRef<NodeJS.Timeout | null>(null)
@@ -416,7 +419,7 @@ export const CalendarContainer: FC<CalendarContainerProps> = ({
                 }}
                 onScroll={() => handleScroll(index + 1)}
               >
-                <p className={styles.name}>{member.name}</p>
+                <p className={styles.name}>{member.username}</p>
                 <CalendarTimeGridDayPresentational
                   key={width}
                   events={memberEvents}
@@ -426,12 +429,19 @@ export const CalendarContainer: FC<CalendarContainerProps> = ({
           })}
         </div>
       )}
-      <CalendarSidebar
-        allTeams={allTeams}
-        me={me}
-        showMembers={showMembers}
-        setShowMembers={setShowMembers}
-      />
+      {users.users === undefined ||
+      teams.teams === undefined ||
+      currentUser === undefined ? (
+        <Loading />
+      ) : (
+        <CalendarSidebar
+          users={users.users}
+          teams={teams.teams}
+          currentUser={currentUser}
+          showMembers={showMembers}
+          setShowMembers={setShowMembers}
+        />
+      )}
     </div>
   )
 }

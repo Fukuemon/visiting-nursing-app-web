@@ -1,5 +1,5 @@
 import { Checkbox, CheckboxStateType } from '@/app/_components/Checkbox'
-import type { User } from '@/types/user'
+import type { User } from '@/schema/user'
 import type { FC } from 'react'
 import styles from './style.module.css'
 
@@ -45,7 +45,7 @@ export const SearchResults: FC<{
               </span>
             </td>
             <td>
-              <span>{member.name}</span>
+              <span>{member.username}</span>
             </td>
             <td>
               <span>{member.team}</span>

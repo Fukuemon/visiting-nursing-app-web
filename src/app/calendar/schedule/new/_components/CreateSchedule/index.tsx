@@ -154,19 +154,27 @@ export const CreateSchedule: FC<CreateScheduleProps> = ({
       RecallingScheduleKey.ScheduleType,
       activeTab === 'visit' ? scheduleType.visit : scheduleType.normal,
     )
-    if (recallingScheduleCreate.watch(VisitScheduleKey.ServiceCode) === undefined) {
+    if (
+      recallingScheduleCreate.watch(VisitScheduleKey.ServiceCode) === undefined
+    ) {
       recallingScheduleCreate.setValue(
         VisitRecallingScheduleKey.ServiceCode,
         serviceCode.訪看I2,
       )
     }
-    if (recallingScheduleCreate.watch(VisitRecallingScheduleKey.ServiceTime) === undefined) {
+    if (
+      recallingScheduleCreate.watch(VisitRecallingScheduleKey.ServiceTime) ===
+      undefined
+    ) {
       recallingScheduleCreate.setValue(
         VisitRecallingScheduleKey.ServiceTime,
         29,
       )
     }
-    if (recallingScheduleCreate.watch(VisitRecallingScheduleKey.Destination) === undefined) {
+    if (
+      recallingScheduleCreate.watch(VisitRecallingScheduleKey.Destination) ===
+      undefined
+    ) {
       recallingScheduleCreate.setValue(
         VisitRecallingScheduleKey.Destination,
         '',
@@ -209,8 +217,8 @@ export const CreateSchedule: FC<CreateScheduleProps> = ({
               <OptionSelect
                 content={
                   patients?.find(
-                    (user) =>
-                      user.id ===
+                    (patient) =>
+                      patient.id ===
                       scheduleCreate.watch(VisitScheduleKey.PatientId),
                   )?.name ?? '未選択'
                 }
@@ -267,7 +275,7 @@ export const CreateSchedule: FC<CreateScheduleProps> = ({
           content={
             users?.find(
               (user) => user.id === scheduleCreate.watch(ScheduleKey.UserId),
-            )?.name ?? '未選択'
+            )?.username ?? '未選択'
           }
         />
       ),
@@ -296,7 +304,7 @@ export const CreateSchedule: FC<CreateScheduleProps> = ({
                   users?.find(
                     (user) =>
                       user.id === scheduleCreate.watch(ScheduleKey.CcUserId),
-                  )?.name ?? '未選択'
+                  )?.username ?? '未選択'
                 }
               />
             ),
@@ -315,7 +323,7 @@ export const CreateSchedule: FC<CreateScheduleProps> = ({
                   users?.find(
                     (user) =>
                       user.id === scheduleCreate.watch(ScheduleKey.CcUserId),
-                  )?.name ?? '未選択'
+                  )?.username ?? '未選択'
                 }
               />
             ),
@@ -333,7 +341,7 @@ export const CreateSchedule: FC<CreateScheduleProps> = ({
                   users?.find(
                     (user) =>
                       user.id === scheduleCreate.watch(ScheduleKey.CcUserId),
-                  )?.name ?? '未選択'
+                  )?.username ?? '未選択'
                 }
               />
             ),

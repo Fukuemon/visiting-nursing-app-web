@@ -1,43 +1,37 @@
+import { Loading } from '@/app/_components/Loading'
 import { CreateSchedule } from '@/app/calendar/schedule/new/_components/CreateSchedule'
-import { usePatientList } from '@/hooks/patient'
-import { useCurrentUser, useUserList } from '@/hooks/user'
+import { usePatientList } from '@/hooks/api/patient'
+import { useUserList } from '@/hooks/api/user'
 import { useSearchParams } from 'next/navigation'
 
 export const ScheduleCreateContainer = () => {
+  const facilityId = '01J6SMYDSKKKNJCR2Y3242T7YX'
   const startParam = useSearchParams().get('start')
   const startDate =
     startParam !== null && startParam !== '' ? new Date(startParam) : new Date()
   console.log(startDate)
-  const users = useUserList()
+  const users = useUserList([facilityId, '', '', '', ''])
   const patients = usePatientList()
-  const currentUser = useCurrentUser()
-  if (
-    users.isLoading ||
-    users.users === undefined ||
-    currentUser.isLoading ||
-    currentUser.user === undefined ||
-    patients.isLoading ||
-    patients.patients === undefined
-  )
-    return <div>Loading...</div>
-  if (
-    users.error !== undefined ||
-    currentUser.error !== undefined ||
-    patients.error !== undefined
-  ) {
+  const currentUser = {
+    id: '01J6SMYDSKKKNJCR2Y3242T7YX',
+    username: '鈴木一郎',
+  }
+
+  if (users.error !== undefined || patients.error !== undefined) {
     const errorMessage =
-      users.error?.message ??
-      currentUser.error?.message ??
-      patients.error?.message ??
-      'Unknown error'
+      users.error?.message ?? patients.error?.message ?? 'Unknown error'
     throw new Error(errorMessage)
   }
 
-  return (
+  return users.users === undefined ||
+    currentUser === undefined ||
+    patients.patients === undefined ? (
+    <Loading />
+  ) : (
     <CreateSchedule
       users={users.users}
       patients={patients.patients}
-      currentUserId={currentUser.user.id}
+      currentUserId={currentUser.id}
       startDate={startDate}
     />
   )

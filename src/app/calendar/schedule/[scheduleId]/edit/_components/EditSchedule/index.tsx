@@ -230,7 +230,7 @@ export const EditSchedule: FC<EditScheduleProps> = ({ schedule, users }) => {
           content={
             users?.find(
               (user) => user.id === scheduleEdit.watch(ScheduleKey.UserId),
-            )?.name ?? '未選択'
+            )?.username ?? '未選択'
           }
         />
       ),
@@ -259,7 +259,7 @@ export const EditSchedule: FC<EditScheduleProps> = ({ schedule, users }) => {
                   users?.find(
                     (user) =>
                       user.id === scheduleEdit.watch(ScheduleKey.CcUserId),
-                  )?.name ?? '未選択'
+                  )?.username ?? '未選択'
                 }
               />
             ),
@@ -278,7 +278,7 @@ export const EditSchedule: FC<EditScheduleProps> = ({ schedule, users }) => {
                   users?.find(
                     (user) =>
                       user.id === scheduleEdit.watch(ScheduleKey.CcUserId),
-                  )?.name ?? '未選択'
+                  )?.username ?? '未選択'
                 }
               />
             ),
@@ -296,7 +296,7 @@ export const EditSchedule: FC<EditScheduleProps> = ({ schedule, users }) => {
                   users?.find(
                     (user) =>
                       user.id === scheduleEdit.watch(ScheduleKey.CcUserId),
-                  )?.name ?? '未選択'
+                  )?.username ?? '未選択'
                 }
               />
             ),

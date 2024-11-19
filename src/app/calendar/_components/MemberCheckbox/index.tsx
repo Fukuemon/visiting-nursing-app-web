@@ -1,5 +1,5 @@
 import { Checkbox, CheckboxStateType } from '@/app/_components/Checkbox'
-import type { User } from '@/types/user'
+import type { User } from '@/schema/user'
 import type { FC } from 'react'
 
 export const MemberCheckbox: FC<{
@@ -26,7 +26,7 @@ export const MemberCheckbox: FC<{
       checkBoxState={
         isChecked ? CheckboxStateType.CHECKED : CheckboxStateType.DEFAULT
       }
-      label={member.name}
+      label={member.username}
       onClick={toggleMember}
     />
   )
