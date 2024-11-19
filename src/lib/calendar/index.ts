@@ -17,21 +17,27 @@ export default class CalendarHandler {
   calendarRef: RefObject<FullCalendar>
   calendarApi: CalendarApi | undefined
   router: AppRouterInstance
-  constructor(calendarRef: RefObject<FullCalendar>, router: AppRouterInstance) {
+  facilityId: string
+  constructor(
+    calendarRef: RefObject<FullCalendar>,
+    router: AppRouterInstance,
+    facilityId: string,
+  ) {
     this.calendarRef = calendarRef
     this.router = router
+    this.facilityId = facilityId
     this.calendarApi = this.calendarRef.current?.getApi()
   }
   handleEventClick = (arg: EventClickArg) => {
     this.router.push(
-      pagesPath.calendar.schedule._scheduleId(arg.event.id).$url().path,
+      pagesPath._facilityId(this.facilityId).calendar.schedule._scheduleId(arg.event.id).$url().path,
     )
   }
   handleEventChange = (arg: EventChangeArg) => {}
   handleDateClick = (arg: DateClickArg) => {
     const start = String(arg.date).replace(/ GMT.*$/, '')
     this.router.push(
-      pagesPath.calendar.schedule.new.$url({ query: { start } }).path +
+      pagesPath._facilityId(this.facilityId).calendar.schedule.new.$url({ query: { start } }).path +
         '&tab=normal',
     )
   }
