@@ -1,13 +1,10 @@
 import type { Control, FieldPath, FieldValues } from 'react-hook-form'
-import { useController } from 'react-hook-form'
+import { useController, useForm } from 'react-hook-form'
 
+import { SearchInput } from '@/app/_components/SearchInput'
 import Table from '@/app/_components/Table'
-import { TextInput } from '@/app/_components/TextInput'
-import { usePatientList } from '@/hooks/patient'
-import type { Patient } from '@/schema/patient'
-import { useState } from 'react'
+import { usePatientList } from '@/hooks/api/patient'
 import styles from './style.module.css'
-import SearchIcon from '/public/icons/search.svg'
 
 export type SchedulePatientEditProps<T extends FieldValues> = {
   control: Control<T>
@@ -18,64 +15,34 @@ export const SchedulePatientEdit = <T extends FieldValues>({
   control,
   name,
 }: SchedulePatientEditProps<T>) => {
-  const { patients, isLoading, error } = usePatientList()
-
   const { field } = useController({
     name,
     control,
   })
 
-  const [searchText, setSearchText] = useState('')
-  const [searchTextTeam, setSearchTextTeam] = useState('')
-  const [searchPatients, setSearchPatients] = useState<Patient[]>(
-    patients ?? [],
-  )
+  const { control: searchControl, watch } = useForm<{
+    patientName: string
+    patientArea: string
+  }>({
+    defaultValues: {
+      patientName: '',
+      patientArea: '',
+    },
+  })
+  const { patients, isLoading, error } = usePatientList()
+
   if (isLoading || patients === undefined) return <div>Loading...</div>
   if (error !== undefined && error.message !== '') {
     throw new Error(error.message)
   }
 
-  const handleSearch = () => {
-    const filteredPatients = patients.filter((patient) => {
-      const matchesName =
-        searchText === '' ||
-        patient.name.toLowerCase().includes(searchText.toLowerCase())
-      const matchesTeam =
-        searchTextTeam === '' ||
-        patient.area.toLowerCase().includes(searchTextTeam.toLowerCase())
-      return matchesName && matchesTeam
-    })
-    setSearchPatients(filteredPatients)
-  }
-  const searchIcon = (
-    <button onClick={handleSearch}>
-      <SearchIcon />
-    </button>
-  )
   return (
     <div className={styles.userEdit}>
       <div className={styles.searchInput}>
-        <TextInput
+        <SearchInput
           placeholder="患者を検索"
-          icon={searchIcon}
-          value={searchText}
-          onChange={(e) => setSearchText(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter') {
-              handleSearch()
-            }
-          }}
-        />
-        <TextInput
-          placeholder="エリアを検索"
-          icon={searchIcon}
-          value={searchTextTeam}
-          onChange={(e) => setSearchTextTeam(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter') {
-              handleSearch()
-            }
-          }}
+          name="patientName"
+          control={searchControl}
         />
       </div>
       <div className={styles.table}>
@@ -87,7 +54,7 @@ export const SchedulePatientEdit = <T extends FieldValues>({
             </Table.Row>
           </Table.Header>
           <Table.Body>
-            {searchPatients.map((patient) => (
+            {patients.map((patient) => (
               <Table.Row key={patient.id}>
                 <Table.Cell>
                   <label className={styles.option}>
