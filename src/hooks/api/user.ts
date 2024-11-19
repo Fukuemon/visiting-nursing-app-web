@@ -3,10 +3,10 @@ import type { Fetcher } from 'swr'
 import useSWR from 'swr'
 import { ulid } from 'ulid'
 
-export const userIda = ulid()
-export const userIdb = ulid()
-export const userIdc = ulid()
-export const userIdd = ulid()
+export const userIda = '01JAYGNY3TV8N9ACMKDAW7RCRN'
+export const userIdb = '01JAYFC3Q3HGJZ6DP3DN9EPZZR'
+export const userIdc = '01JAYFA0T9H84RE135JTPEBEF2'
+export const userIdd = '01JAYF6Q11Q8BKBY53VW7ZV5WJ'
 export const userIde = ulid()
 export const userIdf = ulid()
 export const userIdg = ulid()
@@ -52,7 +52,6 @@ export const useUser = (userId: string) => {
 const userListFetcher: Fetcher<User[]> = async (url: string) => {
   const res = await fetch(url)
   const users = await res.json()
-  
   return users
 }
 
@@ -72,6 +71,6 @@ export const useUserList = ([
   return {
     users: data,
     error,
-    mutate
+    mutate,
   }
 }
