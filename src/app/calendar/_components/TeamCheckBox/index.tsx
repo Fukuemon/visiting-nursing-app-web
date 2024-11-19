@@ -1,15 +1,16 @@
 import { Checkbox, CheckboxStateType } from '@/app/_components/Checkbox'
 import { MemberCheckbox } from '@/app/calendar/_components/MemberCheckbox'
-import type { User } from '@/types/user'
+import type { User } from '@/schema/user'
 import type { FC } from 'react'
 import styles from './style.module.css'
 
 export const TeamCheckbox: FC<{
-  team: { name: string; members: User[] }
+  teamName: string
+  teamMembers: User[]
   showMembers: User[]
   setShowMembers: (members: User[]) => void
-}> = ({ team, showMembers, setShowMembers }) => {
-  const allMembersInTeamSelected = team.members.every((member) =>
+}> = ({ teamName, teamMembers, showMembers, setShowMembers }) => {
+  const allMembersInTeamSelected = teamMembers.every((member) =>
     showMembers.some((showMember) => showMember.id === member.id),
   )
 
@@ -18,13 +19,13 @@ export const TeamCheckbox: FC<{
       setShowMembers(
         showMembers.filter(
           (showMember) =>
-            !team.members.some((member) => member.id === showMember.id),
+            !teamMembers.some((member) => member.id === showMember.id),
         ),
       )
     } else {
       setShowMembers([
         ...showMembers,
-        ...team.members.filter(
+        ...teamMembers.filter(
           (member) =>
             !showMembers.some((showMember) => showMember.id === member.id),
         ),
@@ -40,10 +41,10 @@ export const TeamCheckbox: FC<{
             ? CheckboxStateType.CHECKED
             : CheckboxStateType.DEFAULT
         }
-        label={`${team.name}チーム`}
+        label={`${teamName}チーム`}
         onClick={toggleTeamMembers}
       />
-      {team.members.map((member) => (
+      {teamMembers.map((member) => (
         <div key={member.id} className={styles.member}>
           <MemberCheckbox
             member={member}
