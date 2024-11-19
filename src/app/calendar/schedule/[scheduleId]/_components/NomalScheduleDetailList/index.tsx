@@ -1,70 +1,92 @@
-import { recallingTextFromRule } from '@/constants/recallingRule'
-import { ScheduleTypeText, type ScheduleType } from '@/constants/scheduleType'
-import type { RecallingRule } from '@/types/recallingRule'
-import type { User } from '@/types/user'
-import Link from 'next/link'
-import { useEffect, useState, type FC } from 'react'
+import { WeekDayTextFromNumber } from '@/constants/weekDay'
+import { RecallingFrequency } from '@/schema/recallingSchedule'
+import { NormalSchedule } from '@/schema/schedule'
+import { type FC } from 'react'
 import styles from './style.module.css'
 
 export type NormalScheduleDetailListProps = {
-  user: User
-  schedule_type: ScheduleType
-  description?: string
-  start_time: Date
-  end_time: Date
-  recalling_rule?: RecallingRule
-}
-
-const formatTime = (date: Date) => {
-  return `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`
+  schedule: NormalSchedule
 }
 
 export const NormalScheduleDetailList: FC<NormalScheduleDetailListProps> = ({
-  user,
-  schedule_type,
-  start_time,
-  end_time,
-  description,
-  recalling_rule,
+  schedule,
 }) => {
-  const [recalling, setRecalling] = useState('')
-
-  useEffect(() => {
-    if (recalling_rule !== undefined) {
-      setRecalling(recallingTextFromRule(recalling_rule))
-    }
-  }, [recalling_rule])
-
   return (
     <div className={styles.container}>
-      <div className={styles.heading}>
-        <p>{ScheduleTypeText[schedule_type]}</p>
-        {recalling_rule !== undefined && (
-          <p>
-            <span>頻度 : {recalling}</span>
-          </p>
-        )}
-      </div>
+      <ul className={styles.list}>
+        <div className={styles.heading}>
+          <h2 className={styles.title}>
+            {schedule.scheduleDate.toLocaleDateString('ja-JP', {
+              month: 'long',
+            })}
+            {schedule.scheduleDate.toLocaleDateString('ja-JP', {
+              day: 'numeric',
+            })}
+            （
+            {schedule.scheduleDate.toLocaleDateString('ja-JP', {
+              weekday: 'short',
+            })}
+            ）
+          </h2>
+        </div>
+        <div className={styles.info}>
+          <div>
+            <li className={styles.row}>
+              <span>開始時間</span>
+              <span className={styles.item}>{schedule.startTime}</span>
+            </li>
+            <li className={styles.row}>
+              <span>終了時間</span>
+              <span className={styles.item}>{schedule.endTime}</span>
+            </li>
+          </div>
+          <div>
+            {schedule.recallingSchedule !== undefined && (
+              <li className={styles.row}>
+                <span>繰り返し</span>
+                <span className={styles.item}>
+                  {schedule.recallingSchedule.frequency ===
+                    RecallingFrequency.Monthly && (
+                    <div>
+                      <p>
+                        毎月：第
+                        {schedule.recallingSchedule.weekOfMonth ?? 1}
+                        {
+                          WeekDayTextFromNumber[
+                            schedule.recallingSchedule.dayOfWeek ?? 0
+                          ]
+                        }
+                        曜日
+                      </p>
+                    </div>
+                  )}
+                  {schedule.recallingSchedule.frequency ===
+                    RecallingFrequency.Weekly && (
+                    <div>
+                      <p>
+                        毎週：
+                        {
+                          WeekDayTextFromNumber[
+                            schedule.recallingSchedule.dayOfWeek ?? 0
+                          ]
+                        }
+                        曜日
+                      </p>
+                    </div>
+                  )}
+                </span>
+              </li>
+            )}
+          </div>
+        </div>
+      </ul>
 
       <ul className={styles.list}>
+        <h2 className={styles.title}>補足情報</h2>
         <li className={styles.row}>
-          <span>担当者</span>
-          <Link className={styles.link} href={`/user/${user.id}`}>
-            <span>{user.name}</span>
-          </Link>
-        </li>
-        <li className={styles.row}>
-          <span>開始時間</span>
-          <span>{formatTime(start_time)}</span>
-        </li>
-        <li className={styles.row}>
-          <span>終了時間</span>
-          <span>{formatTime(end_time)}</span>
+          <span>{schedule.description}</span>
         </li>
       </ul>
-      <div className={styles.description}>
-        <p>{description}</p>
-      </div>
     </div>
   )
 }
