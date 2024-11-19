@@ -10,7 +10,7 @@ import styles from './style.module.css'
 export type ScheduleEditContainerProps = object
 
 export const ScheduleEditContainer: FC<ScheduleEditContainerProps> = ({}) => {
-  const facilityId = '01J6SMYDSKKKNJCR2Y3242T7YX'
+  const { facilityId } = useParams<{ facilityId: string }>()
   const { scheduleId } = useParams<{ scheduleId: string }>()
   const schedule = useSchedule(scheduleId)
   const users = useUserList([facilityId, '', '', '', ''])

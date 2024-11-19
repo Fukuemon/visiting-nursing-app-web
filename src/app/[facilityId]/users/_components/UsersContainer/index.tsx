@@ -12,9 +12,10 @@ import { useDebounce } from '@/hooks/useDebounce'
 import type { UserSearchParams } from '@/schema/user'
 import { useForm } from 'react-hook-form'
 import styles from './style.module.css'
+import { useParams } from 'next/navigation'
 
 export const UsersContainer = () => {
-  const facilityId = '01J6SMYDSKKKNJCR2Y3242T7YX'
+  const { facilityId } = useParams<{ facilityId: string }>()
   const { control, watch, handleSubmit } = useForm<UserSearchParams>({
     defaultValues: {
       username: '',

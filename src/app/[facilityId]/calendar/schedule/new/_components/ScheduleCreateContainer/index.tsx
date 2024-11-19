@@ -2,10 +2,10 @@ import { CreateSchedule } from '@/app/[facilityId]/calendar/schedule/new/_compon
 import { Loading } from '@/app/_components/Loading'
 import { usePatientList } from '@/hooks/api/patient'
 import { useUserList } from '@/hooks/api/user'
-import { useSearchParams } from 'next/navigation'
+import { useParams, useSearchParams } from 'next/navigation'
 
 export const ScheduleCreateContainer = () => {
-  const facilityId = '01J6SMYDSKKKNJCR2Y3242T7YX'
+  const { facilityId } = useParams<{ facilityId: string }>()
   const startParam = useSearchParams().get('start')
   const startDate =
     startParam !== null && startParam !== '' ? new Date(startParam) : new Date()

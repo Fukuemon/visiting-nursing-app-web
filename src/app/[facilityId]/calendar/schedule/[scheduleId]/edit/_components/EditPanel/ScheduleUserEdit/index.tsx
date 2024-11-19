@@ -9,6 +9,7 @@ import { useTeamList } from '@/hooks/api/team'
 import { useUserList } from '@/hooks/api/user'
 import { useDebounce } from '@/hooks/useDebounce'
 import styles from './style.module.css'
+import { useParams } from 'next/navigation'
 
 export type ScheduleUserEditProps<T extends FieldValues> = {
   control: Control<T>
@@ -19,7 +20,7 @@ export const ScheduleUserEdit = <T extends FieldValues>({
   control,
   name,
 }: ScheduleUserEditProps<T>) => {
-  const facilityId = '01J6SMYDSKKKNJCR2Y3242T7YX'
+  const { facilityId } = useParams<{ facilityId: string }>()
   const { teams, error: teamsError } = useTeamList(facilityId)
   const {
     control: controlSearch,

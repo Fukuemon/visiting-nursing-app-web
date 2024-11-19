@@ -12,6 +12,7 @@ import type { User } from '@/schema/user'
 import type { CalendarEvent, Events } from '@/types/event'
 import { useEffect, useRef, useState, type FC } from 'react'
 import styles from './style.module.css'
+import { useParams } from 'next/navigation'
 
 const getUserBorderColor = (userId: string): string => {
   // ユーザーIDに基づいて色を割り当てる
@@ -282,7 +283,7 @@ export const CalendarContainer: FC<CalendarContainerProps> = ({
   currentCalendarView,
   showCancel,
 }) => {
-  const facilityId = '01J6SMYDSKKKNJCR2Y3242T7YX'
+  const { facilityId } = useParams<{ facilityId: string }>()
   const users = useUserList([facilityId, '', '', '', ''])
   const teams = useTeamList(facilityId)
   const currentUser = {

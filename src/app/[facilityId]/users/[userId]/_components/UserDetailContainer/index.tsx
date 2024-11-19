@@ -14,7 +14,7 @@ import { useDepartmentList } from '@/hooks/api/department'
 import { usePositionList } from '@/hooks/api/position'
 import { useTeamList } from '@/hooks/api/team'
 import type { User } from '@/schema/user'
-import { useRouter } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
 import type { FC } from 'react'
 import styles from './style.module.css'
 
@@ -23,7 +23,7 @@ export type UserDetailContainerProps = {
 }
 
 export const UserDetailContainer: FC<UserDetailContainerProps> = ({ user }) => {
-  const facilityId = '01J6SMYDSKKKNJCR2Y3242T7YX'
+  const { facilityId } = useParams<{ facilityId: string }>()
   const teams = useTeamList(facilityId)
   const positions = usePositionList(facilityId)
   const departments = useDepartmentList(facilityId)
@@ -203,7 +203,7 @@ export const UserDetailContainer: FC<UserDetailContainerProps> = ({ user }) => {
           onClick={() => {
             if (confirm('本当に削除しますか？この操作は取り消せません。')) {
               // deleteMember({ memberId })
-              router.push(pagesPath.users.$url().path)
+              router.push(pagesPath._facilityId(facilityId).users.$url().path)
             }
           }}
         >
