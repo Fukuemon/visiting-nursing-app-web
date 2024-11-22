@@ -1,107 +1,152 @@
-import { recallingTextFromRule } from '@/constants/recallingRule'
-import {
-  ScheduleCategoryText,
-  type ScheduleCategory,
-} from '@/constants/scheduleCategory'
-import { ScheduleTypeText, type ScheduleType } from '@/constants/scheduleType'
-import type { ServiceCode } from '@/constants/serviceCode'
-import type { Patient } from '@/types/patient'
-import type { RecallingRule } from '@/types/recallingRule'
-import type { User } from '@/types/user'
+import { ScheduleCategoryText } from '@/constants/scheduleCategory'
+import { WeekDayTextFromNumber } from '@/constants/weekDay'
+import { usePatient } from '@/hooks/patient'
+import { RecallingFrequency } from '@/schema/recallingSchedule'
+import { VisitSchedule } from '@/schema/schedule'
 import classNames from 'classnames'
 import Link from 'next/link'
-import { useEffect, useState, type FC } from 'react'
+import { type FC } from 'react'
 import styles from './style.module.css'
 
 export type VisitScheduleDetailListProps = {
-  user: User
-  patient: Patient
-  service_code: ServiceCode
-  schedule_type: ScheduleType
-  schedule_category: ScheduleCategory
-  description?: string
-  start_time: Date
-  end_time: Date
-  destination: string
-  is_cancelled: boolean
-  recalling_rule?: RecallingRule
+  schedule: VisitSchedule
 }
 
 export const VisitScheduleDetailList: FC<VisitScheduleDetailListProps> = ({
-  user,
-  patient,
-  service_code,
-  schedule_type,
-  start_time,
-  end_time,
-  destination,
-  is_cancelled,
-  schedule_category,
-  recalling_rule,
-  description,
+  schedule,
 }) => {
-  const [recalling, setRecalling] = useState('')
+  const patient = usePatient(schedule.patientId)
 
-  useEffect(() => {
-    if (recalling_rule !== undefined) {
-      setRecalling(recallingTextFromRule(recalling_rule))
-    }
-  }, [recalling_rule])
+  if (patient.isLoading || !patient.patient) {
+    return <div>Loading...</div>
+  }
+
+  if (patient.error) {
+    throw new Error(patient.error)
+  }
 
   return (
     <div
       className={classNames(styles.container, {
-        [styles._isCancelled]: is_cancelled,
+        [styles._isCancelled]: schedule.isCanceled,
       })}
     >
-      <div className={styles.heading}>
-        <p>{ScheduleTypeText[schedule_type]}</p>
-        <p>
-          {recalling_rule !== undefined ? (
-            <span>頻度 : {recalling}</span>
-          ) : (
-            <span></span>
-          )}
-        </p>
-        {is_cancelled && <p className={styles.cancel}>キャンセル</p>}
-      </div>
-
       <ul className={styles.list}>
-        <li className={styles.row}>
-          <span>担当者</span>
-          <Link className={styles.link} href={`/user/${user.id}`}>
-            <span>{user.name}</span>
-          </Link>
-        </li>
-        <li className={styles.row}>
-          <span>患者名</span>
-          <Link className={styles.link} href={`/patient/${patient.id}`}>
-            <span>{patient.name}</span>
-          </Link>
-        </li>
-        <li className={styles.row}>
-          <span>サービスコード</span>
-          <span>{service_code}</span>
-        </li>
-        <li className={styles.row}>
-          <span>開始時間</span>
-          <span>
-            {`${String(start_time.getHours()).padStart(2, '0')}:${String(start_time.getMinutes()).padStart(2, '0')}`}
-          </span>
-        </li>
-        <li className={styles.row}>
-          <span>終了時間</span>
-          <span>
-            {`${String(end_time.getHours()).padStart(2, '0')}:${String(end_time.getMinutes()).padStart(2, '0')}`}
-          </span>
-        </li>
-        <li className={styles.row}>
-          <span>訪問種類</span>
-          <span>{ScheduleCategoryText[schedule_category]}</span>
-        </li>
+        <div className={styles.heading}>
+          <h2 className={styles.title}>
+            {schedule.scheduleDate.toLocaleDateString('ja-JP', {
+              month: 'long',
+            })}
+            {schedule.scheduleDate.toLocaleDateString('ja-JP', {
+              day: 'numeric',
+            })}
+            （
+            {schedule.scheduleDate.toLocaleDateString('ja-JP', {
+              weekday: 'short',
+            })}
+            ）
+          </h2>
+          {schedule.isCanceled && <p className={styles.cancel}>キャンセル</p>}
+        </div>
+        <div className={styles.info}>
+          <div>
+            <li className={styles.row}>
+              <span>開始時間</span>
+              <span className={styles.item}>{schedule.startTime}</span>
+            </li>
+            <li className={styles.row}>
+              <span>終了時間</span>
+              <span className={styles.item}>{schedule.endTime}</span>
+            </li>
+          </div>
+          <div>
+            {schedule.recallingSchedule !== undefined && (
+              <li className={styles.row}>
+                <span>繰り返し</span>
+                <span className={styles.item}>
+                  {schedule.recallingSchedule.frequency ===
+                    RecallingFrequency.Monthly && (
+                    <div>
+                      <p>
+                        毎月：第
+                        {schedule.recallingSchedule.weekOfMonth ?? 1}
+                        {
+                          WeekDayTextFromNumber[
+                            schedule.recallingSchedule.dayOfWeek ?? 0
+                          ]
+                        }
+                        曜日
+                      </p>
+                    </div>
+                  )}
+                  {schedule.recallingSchedule.frequency ===
+                    RecallingFrequency.Weekly && (
+                    <div>
+                      <p>
+                        毎週：
+                        {
+                          WeekDayTextFromNumber[
+                            schedule.recallingSchedule.dayOfWeek ?? 0
+                          ]
+                        }
+                        曜日
+                      </p>
+                    </div>
+                  )}
+                </span>
+              </li>
+            )}
+          </div>
+        </div>
+      </ul>
+      <ul className={styles.list}>
+        <h2 className={styles.title}>訪問情報</h2>
+        <div className={styles.info}>
+          <div>
+            <li className={styles.row}>
+              <span>提供時間</span>
+              <span className={styles.item}>{schedule.serviceTime}分</span>
+            </li>
+            <li className={styles.row}>
+              <span>患者名</span>
+              <Link
+                className={styles.link}
+                href={`/patient/${patient.patient.id}`}
+              >
+                <span className={styles.item}>{patient.patient.name}</span>
+              </Link>
+            </li>
+          </div>
+          <div>
+            <li className={styles.row}>
+              <span>サービスコード</span>
+              <span className={styles.item}>{schedule.serviceCode}</span>
+            </li>
+            <li className={styles.row}>
+              <span>訪問種類</span>
+              <div className={styles._category}>
+                {schedule.scheduleCategory ? (
+                  schedule.scheduleCategory.map((category) => (
+                    <span className={styles.item}>
+                      {ScheduleCategoryText[category]}
+                    </span>
+                  ))
+                ) : (
+                  <span className={styles.item}>通常</span>
+                )}
+              </div>
+            </li>
+          </div>
+        </div>
         <li className={styles.row}>
           <span>住所</span>
-          <span>{destination}</span>
+          <span className={styles.item}>{schedule.destination}</span>
+        </li>
+      </ul>
+      <ul className={styles.list}>
+        <h2 className={styles.title}>補足情報</h2>
+        <li className={styles.row}>
+          <span>{schedule.description}</span>
         </li>
       </ul>
     </div>
