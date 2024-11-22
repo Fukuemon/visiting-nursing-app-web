@@ -5,285 +5,96 @@ import { CalendarTimeGridDayPresentational } from '@/app/[facilityId]/calendar/_
 import { Loading } from '@/app/_components/Loading'
 import type { ToggleStateType } from '@/app/_components/Toggle'
 import { CalendarView } from '@/constants/calendarView'
-import { ServiceCodeDuration } from '@/constants/serviceCode'
 import { useTeamList } from '@/hooks/api/team'
 import { useUserList } from '@/hooks/api/user'
+import { useQueryParams } from '@/hooks/useQueryParams'
 import type { User } from '@/schema/user'
 import type { CalendarEvent, Events } from '@/types/event'
+import { useParams } from 'next/navigation'
 import { useEffect, useRef, useState, type FC } from 'react'
 import styles from './style.module.css'
-import { useParams } from 'next/navigation'
 
-const getUserBorderColor = (userId: string): string => {
-  // ユーザーIDに基づいて色を割り当てる
-  const colors = [
-    '#FF5733',
-    '#33FF57',
-    '#3357FF',
-    '#FF33F1',
-    '#33FFF1',
-    '#F1FF33',
-    '#FF3333',
-    '#33FF33',
-    '#3333FF',
-    '#FFFF33',
-    '#33FFFF',
-    '#FF33FF',
-  ]
-  const colorIndex = userId.charCodeAt(0) % colors.length
-  return colors[colorIndex]
-}
+import { eventBackgroundColorCode } from '@/constants/eventBackground'
+import { scheduleType } from '@/constants/scheduleType'
+import { Schedule } from '@/schema/schedule'
 
-const createEvent = (
-  id: string,
-  userId: string,
-  isCanceled: boolean,
-  startDateTime: Date,
-  durationMinutes: number = ServiceCodeDuration.訪看I2.max,
-  backgroundColor: string = 'blue',
-): CalendarEvent => {
-  const endDate = new Date(startDateTime)
-  endDate.setMinutes(endDate.getMinutes() + durationMinutes)
-  const extendedProps = {
-    userId,
-    isCanceled,
+const createEvent = (schedule: Schedule): CalendarEvent => {
+  const startDate = new Date(schedule.scheduleDate)
+  const endDate = new Date(schedule.scheduleDate)
+  startDate.setHours(parseInt(schedule.startTime.slice(0, 2)))
+  startDate.setMinutes(parseInt(schedule.startTime.slice(3)))
+  endDate.setHours(parseInt(schedule.endTime.slice(0, 2)))
+  endDate.setMinutes(parseInt(schedule.endTime.slice(3)))
+  let eventBackgroundColor = eventBackgroundColorCode[schedule.scheduleType]
+
+  if (schedule.scheduleType === scheduleType.normal) {
+    return {
+      id: schedule.scheduleId,
+      title: schedule.title,
+      start: startDate,
+      end: endDate,
+      startEditable: true,
+      durationEditable: false,
+      backgroundColor: eventBackgroundColor,
+      // borderColor,
+      textColor: 'white',
+      extendedProps: {
+        userId: schedule.userId,
+        isCanceled: false,
+      },
+    }
   }
 
-  // isCanceled が true の場合、backgroundColor を 'red' に設定
-  const eventBackgroundColor = isCanceled ? '#fff2f2' : backgroundColor
-  const textColor = isCanceled ? 'gray' : 'white'
+  const extendedProps = {
+    userId: schedule.userId,
+    isCanceled: schedule.isCanceled,
+  }
+  const textColor = schedule.isCanceled ? 'gray' : 'white'
 
-  // userIdに基づいてborderColorを設定
-  const borderColor = getUserBorderColor(userId)
+  if (schedule.isCanceled) {
+    eventBackgroundColor = eventBackgroundColorCode.canceled
+    return {
+      id: schedule.scheduleId,
+      title: schedule.description,
+      start: startDate,
+      end: endDate,
+      startEditable: true,
+      durationEditable: false,
+      backgroundColor: eventBackgroundColor,
+      textColor,
+      extendedProps,
+    }
+  }
 
   return {
-    id,
-    title: '訪問',
-    start: startDateTime,
+    id: schedule.scheduleId,
+    title: schedule.title,
+    start: startDate,
     end: endDate,
     startEditable: true,
     durationEditable: false,
     backgroundColor: eventBackgroundColor,
-    borderColor,
     textColor,
     extendedProps,
   }
 }
 
-const userIda = '01JAYGNY3TV8N9ACMKDAW7RCRN'
-const userIdb = '01JAYFC3Q3HGJZ6DP3DN9EPZZR'
-const userIdc = '01JAYFA0T9H84RE135JTPEBEF2'
-const userIdd = '01JAYF6Q11Q8BKBY53VW7ZV5WJ'
-
-const events: CalendarEvent[] = [
-  createEvent('1', userIda, false, new Date(), 30, 'green'),
-  createEvent(
-    '2',
-    userIdb,
-    true,
-    new Date(new Date().setDate(new Date().getDate() + 1)),
-    30,
-    'green',
-  ),
-  createEvent(
-    '3',
-    userIdc,
-    true,
-    new Date(new Date().setDate(new Date().getDate() + 3)),
-    45,
-    'green',
-  ),
-  createEvent(
-    '4',
-    userIdd,
-    false,
-    new Date(new Date().setHours(new Date().getHours() + 2)),
-    60,
-  ),
-  createEvent(
-    '5',
-    'e',
-    false,
-    new Date(new Date().setHours(new Date().getHours() + 5)),
-    90,
-  ),
-  createEvent(
-    '6',
-    'f',
-    false,
-    new Date(new Date().setDate(new Date().getDate() + 1)),
-    120,
-  ),
-  createEvent(
-    '7',
-    'g',
-    false,
-    new Date(new Date().setDate(new Date().getDate() + 2)),
-    45,
-  ),
-  createEvent(
-    '8',
-    'h',
-    false,
-    new Date(new Date().setDate(new Date().getDate() + 1)),
-    15,
-  ),
-  createEvent(
-    '9',
-    'i',
-    false,
-    new Date(new Date().setDate(new Date().getDate() + 4)),
-    30,
-  ),
-  createEvent(
-    '10',
-    'j',
-    true,
-    new Date(new Date().setDate(new Date().getDate() + 1)),
-    60,
-  ),
-  createEvent(
-    '11',
-    'k',
-    false,
-    new Date(new Date().setDate(new Date().getDate() + 3)),
-    75,
-  ),
-  createEvent(
-    '12',
-    'l',
-    true,
-    new Date(new Date().setDate(new Date().getDate() + 5)),
-    120,
-  ),
-  createEvent(
-    '13',
-    userIda,
-    true,
-    (() => {
-      const d = new Date()
-      d.setDate(d.getDate() + 1)
-      return d
-    })(),
-    60,
-    'green',
-  ),
-  createEvent(
-    '14',
-    userIda,
-    false,
-    (() => {
-      const d = new Date()
-      d.setDate(d.getDate() + 1)
-      d.setHours(1)
-      return d
-    })(),
-    90,
-    'green',
-  ),
-  createEvent(
-    '15',
-    userIdb,
-    false,
-    (() => {
-      const d = new Date()
-      d.setDate(d.getDate() + 1)
-      d.setHours(2)
-      return d
-    })(),
-    45,
-    'green',
-  ),
-  createEvent(
-    '16',
-    userIdb,
-    false,
-    (() => {
-      const d = new Date()
-      d.setDate(d.getDate() + 1)
-      d.setHours(3)
-      return d
-    })(),
-    30,
-    'green',
-  ),
-  createEvent(
-    '17',
-    userIdc,
-    false,
-    (() => {
-      const d = new Date()
-      d.setDate(d.getDate() + 1)
-      d.setHours(4)
-      return d
-    })(),
-    60,
-    'green',
-  ),
-  createEvent(
-    '18',
-    userIdc,
-    true,
-    (() => {
-      const d = new Date()
-      d.setDate(d.getDate() + 1)
-      d.setHours(5)
-      return d
-    })(),
-    120,
-    'green',
-  ),
-  createEvent(
-    '19',
-    userIda,
-    false,
-    (() => {
-      const d = new Date()
-      d.setDate(d.getDate() + 1)
-      d.setHours(6)
-      return d
-    })(),
-    30,
-    'green',
-  ),
-  createEvent(
-    '20',
-    userIdb,
-    false,
-    (() => {
-      const d = new Date()
-      d.setDate(d.getDate() + 1)
-      d.setHours(7)
-      return d
-    })(),
-    60,
-    'green',
-  ),
-  createEvent(
-    '21',
-    userIdc,
-    false,
-    (() => {
-      const d = new Date()
-      d.setDate(d.getDate() + 1)
-      d.setHours(8)
-      return d
-    })(),
-    90,
-    'green',
-  ),
-]
-
 type CalendarContainerProps = {
-  currentCalendarView: string
   showCancel: ToggleStateType
+  schedules: Schedule[]
+}
+
+const getTeamIndexColor = (teamIndex: number): string => {
+  const colors = ['#FFF8DC', '#E0FFD1', '#FFB6C1', '#B0E0E6'] // 4種類の色
+  return colors[teamIndex % colors.length]
 }
 
 export const CalendarContainer: FC<CalendarContainerProps> = ({
-  currentCalendarView,
   showCancel,
+  schedules,
 }) => {
   const { facilityId } = useParams<{ facilityId: string }>()
+  const { queryParams } = useQueryParams()
   const users = useUserList([facilityId, '', '', '', ''])
   const teams = useTeamList(facilityId)
   const currentUser = {
@@ -318,8 +129,10 @@ export const CalendarContainer: FC<CalendarContainerProps> = ({
     })
   }
 
+  const calendarEvents: CalendarEvent[] = schedules.map(createEvent)
+
   const filterEvents = () => {
-    let filteredEvents = events.filter((event) =>
+    let filteredEvents = calendarEvents.filter((event) =>
       showMembers.some((member) => member.id === event.extendedProps.userId),
     )
 
@@ -382,14 +195,25 @@ export const CalendarContainer: FC<CalendarContainerProps> = ({
     })
   }, [width]) // widthが変更されたときにスクロール位置を復元
 
+  const setShowMembersSorted = (users: User[]) => {
+    const sortedUsers = [...users].sort((a, b) => {
+      if (a.team < b.team) return -1
+      if (a.team > b.team) return 1
+      return 0
+    })
+    setShowMembers(showMembers.length === users.length ? [] : sortedUsers)
+  }
+
   return (
     <div ref={containerRef} className={styles.container}>
-      {currentCalendarView !== CalendarView.timeGridDay ? (
+      {queryParams.get('tab') !== CalendarView.timeGridDay ? (
         <div className={styles.calender}>
           <CalendarPresentational
             key={width}
             events={visibleEvents}
-            currentCalendarView={currentCalendarView}
+            currentCalendarView={
+              queryParams.get('tab') ?? CalendarView.timeGridDay
+            }
           />
         </div>
       ) : (
@@ -411,6 +235,11 @@ export const CalendarContainer: FC<CalendarContainerProps> = ({
               (event) => event.extendedProps.userId === member.id,
             )
 
+            // チームのインデックスを取得
+            const teamIndex = showMembers.findIndex(
+              (m) => m.team === member.team,
+            )
+
             return (
               <div
                 key={member.id}
@@ -420,7 +249,12 @@ export const CalendarContainer: FC<CalendarContainerProps> = ({
                 }}
                 onScroll={() => handleScroll(index + 1)}
               >
-                <p className={styles.name}>{member.username}</p>
+                <p
+                  className={styles.name}
+                  style={{ backgroundColor: getTeamIndexColor(teamIndex) }}
+                >
+                  {member.username}
+                </p>
                 <CalendarTimeGridDayPresentational
                   key={width}
                   events={memberEvents}
@@ -440,7 +274,7 @@ export const CalendarContainer: FC<CalendarContainerProps> = ({
           teams={teams.teams}
           currentUser={currentUser}
           showMembers={showMembers}
-          setShowMembers={setShowMembers}
+          setShowMembers={setShowMembersSorted}
         />
       )}
     </div>
