@@ -1,32 +1,44 @@
 .menubarContainer {
   display: grid;
-  font-weight: 700;
   grid-template-columns: 0.5fr 1fr;
   height: 100%;
   left: 0;
   overflow-y: auto;
   position: fixed;
-  top: 72px;
-  width: 400px;
+  top: 60px;
+  width: 160px;
 
   & .menuContent {
     display: flex;
     flex-direction: column;
     height: 100%;
-    border: 1px var(--gray-500) solid;
+    border: 1px var(--gray-100) solid;
+    width: 160px;
+
     & .links {
       display: flex;
       flex-direction: column;
-      font-size: 18px;
+      font-size: 16px;
       width: 100%;
 
-      & .currentLink {
-        background-color: var(--action-bg);
-        border-left: 10px var(--action-main) solid;
+      & .linkContainer {
+        &._currentLink {
+          background-color: var(--action-bg);
+          border-left: 10px var(--action-main) solid;
+        }
       }
 
       & .link {
-        padding: 20px 0;
+        display: flex;
+        align-items: center;
+        padding: 10px;
+
+        & .linkIcon {
+          display: flex;
+          align-items: center;
+          margin-right: 10px;
+          color: var(--gray-1000);
+        }
 
         &:hover {
           background-color: var(--action-bg);
