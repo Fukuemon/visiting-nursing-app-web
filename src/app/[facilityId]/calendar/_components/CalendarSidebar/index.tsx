@@ -8,7 +8,6 @@ import type { User } from '@/schema/user'
 import { useEffect, useState, type FC } from 'react'
 import { useForm } from 'react-hook-form'
 import styles from './style.module.css'
-import SearchIcon from '/public/icons/search.svg'
 
 type CalendarSidebarProps = {
   currentUser: User
@@ -43,12 +42,6 @@ export const CalendarSidebar: FC<CalendarSidebarProps> = ({
       setSearchUsers([])
     }
   }
-
-  const searchIcon = (
-    <button onClick={handleSearch}>
-      <SearchIcon />
-    </button>
-  )
 
   useEffect(() => {
     handleSearch()
