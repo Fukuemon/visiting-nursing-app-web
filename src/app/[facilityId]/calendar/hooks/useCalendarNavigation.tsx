@@ -2,7 +2,7 @@ import { CalendarView } from '@/constants/calendarView'
 import { useCallback } from 'react'
 
 export const useCalendarNavigation = (
-  currentCalendarView: CalendarView,
+  currentCalendarView: string,
   currentCalendarDate: Date,
   setCurrentCalendarDate: (date: Date) => void,
 ) => {
