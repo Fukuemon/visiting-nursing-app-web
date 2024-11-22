@@ -3,4 +3,4 @@ import { atom } from 'jotai'
 import type { RefObject } from 'react'
 
 export const CalendarRefAtom = atom([] as RefObject<FullCalendar>[])
-export const CurrentCalendarDateAtom = atom(new Date())
+export const CurrentCalendarDateAtom = atom<Date | null>(null)

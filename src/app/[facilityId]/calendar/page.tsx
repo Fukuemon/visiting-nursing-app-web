@@ -6,7 +6,7 @@ import { Menubar } from '@/app/_components/Menubar'
 import { ToggleStateType } from '@/app/_components/Toggle'
 import { CalendarView } from '@/constants/calendarView'
 import { useParams, usePathname, useRouter } from 'next/navigation'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import styles from './style.module.css'
 import MenuIcon from '/public/icons/menu.svg'
 import UserIcon from '/public/icons/user.svg'
@@ -15,45 +15,56 @@ import { LeftControls } from '@/app/[facilityId]/calendar/_components/CalendarLe
 import { RightControls } from '@/app/[facilityId]/calendar/_components/CalendarRightControls'
 import { useCalendarNavigation } from '@/app/[facilityId]/calendar/hooks/useCalendarNavigation'
 import { CurrentCalendarDateAtom } from '@/app/[facilityId]/calendar/provider/calendar'
-import { pagesPath } from '@/utils/$path'
 import { useAtom } from 'jotai'
 
+import { DatePicker } from '@/app/_components/DatePicker'
+import { Loading } from '@/app/_components/Loading'
+import { useScheduleList } from '@/hooks/api/schedule'
+import { useQueryParams } from '@/hooks/useQueryParams'
+import { useForm } from 'react-hook-form'
+
 export default function CalendarPage() {
-  const { facilityId } = useParams<{ facilityId: string }>()
-
-  const LINKS = [
-    {
-      href: pagesPath._facilityId(facilityId).calendar.$url().path,
-      label: 'カレンダー',
-    },
-    { href: '/patient', label: '患者' },
-    {
-      href: pagesPath._facilityId(facilityId).users.$url().path,
-      label: '職員情報',
-    },
-    { href: '/indicators', label: '経営数値' },
-  ]
-
   const [isMenubarOpen, setIsMenuBarOpen] = useState(false)
-  const [currentCalendarView, setCurrentCalendarView] = useState<CalendarView>(
-    CalendarView.dayGridMonth,
-  )
+  const { queryParams, setQueryParams } = useQueryParams()
   const [showCancel, setShowCancel] = useState(ToggleStateType.DEFAULT)
   const pathname = usePathname()
   const router = useRouter()
   const [currentCalendarDate, setCurrentCalendarDate] = useAtom(
     CurrentCalendarDateAtom,
   )
+  const schedules = useScheduleList()
+  useEffect(() => {
+    if (queryParams.get('date') === null) {
+      setQueryParams({ date: new Date() })
+    }
+  }, [])
+
+  useEffect(() => {
+    if (currentCalendarDate !== null) {
+      setQueryParams({ date: currentCalendarDate })
+      setValue('date', currentCalendarDate)
+    }
+  }, [currentCalendarDate])
 
   const { handlePrev, handleNext, handleToday } = useCalendarNavigation(
-    currentCalendarView,
-    currentCalendarDate,
+    queryParams.get('tab') ?? CalendarView.timeGridDay,
+    currentCalendarDate ?? new Date(),
     setCurrentCalendarDate,
   )
 
-  const menubar = (
-    <Menubar links={LINKS} currentLink={pathname} isOpen={isMenubarOpen} />
-  )
+  const { control, watch, setValue } = useForm<{ date: Date }>({
+    defaultValues: {
+      date: new Date(queryParams.get('date') ?? new Date()),
+    },
+  })
+
+  useEffect(() => {
+    if (watch('date')) {
+      setQueryParams({ date: watch('date') })
+    }
+  }, [watch('date')])
+
+  const menubar = <Menubar currentLink={pathname} isOpen={isMenubarOpen} />
 
   const leftIcon = (
     <IconButton onClick={() => setIsMenuBarOpen(!isMenubarOpen)}>
@@ -78,11 +89,9 @@ export default function CalendarPage() {
             onToday={handleToday}
           />
         }
-        center={currentCalendarDate.toLocaleDateString()}
+        center={<DatePicker name="date" control={control} label="日付" />}
         right={
           <RightControls
-            currentCalendarView={currentCalendarView}
-            setCurrentCalendarView={setCurrentCalendarView}
             showCancel={showCancel}
             setShowCancel={setShowCancel}
           />
@@ -91,10 +100,14 @@ export default function CalendarPage() {
         menubar={menubar}
         isMenubarOpen={isMenubarOpen}
       >
-        <CalendarContainer
-          currentCalendarView={currentCalendarView}
-          showCancel={showCancel}
-        />
+        {schedules.schedules === undefined ? (
+          <Loading />
+        ) : (
+          <CalendarContainer
+            showCancel={showCancel}
+            schedules={schedules.schedules}
+          />
+        )}
       </Header>
     </div>
   )

@@ -8,18 +8,16 @@ import type { FC } from 'react'
 import { useEffect, useRef } from 'react'
 import { StyleWrapper } from './styled'
 
-import { useRouter } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
 import styles from './style.module.css'
 
 import CalendarHandler from '@/lib/calendar'
 import jaLocale from '@fullcalendar/core/locales/ja'
 
-import {
-  CalendarRefAtom,
-  CurrentCalendarDateAtom,
-} from '@/app/[facilityId]/calendar/provider/calendar'
+import { CalendarRefAtom } from '@/app/[facilityId]/calendar/provider/calendar'
 import { CalendarView } from '@/constants/calendarView'
-import { useAtomValue, useSetAtom } from 'jotai'
+import { useQueryParams } from '@/hooks/useQueryParams'
+import { useSetAtom } from 'jotai'
 
 type CalendarTimeGridDayParentProps = object
 
@@ -27,17 +25,20 @@ export const CalendarTimeGridDayParent: FC<
   CalendarTimeGridDayParentProps
 > = ({}) => {
   const router = useRouter()
+  const { facilityId } = useParams<{ facilityId: string }>()
+  const { queryParams } = useQueryParams()
   const calendarRef = useRef<FullCalendar>(null)
-  const calendarHandler = new CalendarHandler(calendarRef, router)
+  const calendarHandler = new CalendarHandler(calendarRef, router, facilityId)
   const setCalendarRefAtom = useSetAtom(CalendarRefAtom)
-  const currentCalendarDateAtom = useAtomValue(CurrentCalendarDateAtom)
 
   useEffect(() => {
     if (calendarRef.current !== null) {
       const calendarApi = calendarRef.current.getApi()
-      calendarApi?.gotoDate(currentCalendarDateAtom)
+      if (queryParams.get('date') !== null) {
+        calendarApi?.gotoDate(new Date(queryParams.get('date') ?? ''))
+      }
     }
-  }, [currentCalendarDateAtom])
+  }, [queryParams.get('date')])
 
   useEffect(() => {
     if (calendarRef.current !== null) {

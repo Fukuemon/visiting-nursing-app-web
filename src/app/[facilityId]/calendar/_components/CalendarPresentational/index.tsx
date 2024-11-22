@@ -15,8 +15,7 @@ import CalendarHandler from '@/lib/calendar'
 import type { Events } from '@/types/event'
 import jaLocale from '@fullcalendar/core/locales/ja'
 
-import { CurrentCalendarDateAtom } from '@/app/[facilityId]/calendar/provider/calendar'
-import { useAtom } from 'jotai'
+import { useQueryParams } from '@/hooks/useQueryParams'
 
 type CalendarContainerProps = {
   events?: Events
@@ -31,16 +30,16 @@ export const CalendarPresentational: FC<CalendarContainerProps> = ({
   const { facilityId } = useParams<{ facilityId: string }>()
   const calendarRef = useRef<FullCalendar>(null)
   const calendarHandler = new CalendarHandler(calendarRef, router, facilityId)
-  const [currentCalendarDateAtom, setCurrentCalendarDate] = useAtom(
-    CurrentCalendarDateAtom,
-  )
+  const { queryParams } = useQueryParams()
 
   useEffect(() => {
     if (calendarRef.current !== null) {
       const calendarApi = calendarRef.current.getApi()
-      calendarApi?.gotoDate(currentCalendarDateAtom)
+      if (queryParams.get('date') !== null) {
+        calendarApi?.gotoDate(new Date(queryParams.get('date') ?? ''))
+      }
     }
-  }, [currentCalendarDateAtom])
+  }, [queryParams.get('date')])
 
   useEffect(() => {
     calendarHandler.handleViewChange(currentCalendarView)

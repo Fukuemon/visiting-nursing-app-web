@@ -14,9 +14,10 @@ import type { Events } from '@/types/event'
 import { TimeGridDayStyleWrapper } from '@/app/[facilityId]/calendar/_components/CalendarTimeGridDayPresentational/timeGridDayStyled'
 import { CurrentCalendarDateAtom } from '@/app/[facilityId]/calendar/provider/calendar'
 import { CalendarView } from '@/constants/calendarView'
+import { useQueryParams } from '@/hooks/useQueryParams'
 import CalendarHandler from '@/lib/calendar'
 import { useAtom } from 'jotai'
-import { useRouter } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
 
 type CalendarTimeGridDayPresentational = {
   events?: Events
@@ -26,8 +27,10 @@ export const CalendarTimeGridDayPresentational: FC<
   CalendarTimeGridDayPresentational
 > = ({ events }) => {
   const router = useRouter()
+  const { facilityId } = useParams<{ facilityId: string }>()
+  const { queryParams } = useQueryParams()
   const calendarRef = useRef<FullCalendar>(null)
-  const calendarHandler = new CalendarHandler(calendarRef, router)
+  const calendarHandler = new CalendarHandler(calendarRef, router, facilityId)
   const [currentCalendarDateAtom, setCurrentCalendarDate] = useAtom(
     CurrentCalendarDateAtom,
   )
@@ -35,9 +38,11 @@ export const CalendarTimeGridDayPresentational: FC<
   useEffect(() => {
     if (calendarRef.current !== null) {
       const calendarApi = calendarRef.current.getApi()
-      calendarApi?.gotoDate(currentCalendarDateAtom)
+      if (queryParams.get('date') !== null) {
+        calendarApi?.gotoDate(new Date(queryParams.get('date') ?? ''))
+      }
     }
-  }, [currentCalendarDateAtom])
+  }, [queryParams.get('date')])
 
   return (
     <div className={styles.container}>
