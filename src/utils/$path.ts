@@ -56,9 +56,11 @@ export const staticPath = {
     arrow_left_svg: '/icons/arrow-left.svg',
     arrow_right_svg: '/icons/arrow-right.svg',
     arrow_top_svg: '/icons/arrow-top.svg',
+    bar_chart_4_svg: '/icons/bar-chart-4.svg',
     calendar_svg: '/icons/calendar.svg',
     check_svg: '/icons/check.svg',
     close_svg: '/icons/close.svg',
+    contact_round_svg: '/icons/contact-round.svg',
     eye_closed_svg: '/icons/eye-closed.svg',
     eye_opened_svg: '/icons/eye-opened.svg',
     hamburger_svg: '/icons/hamburger.svg',
@@ -68,7 +70,8 @@ export const staticPath = {
     square_pen_svg: '/icons/square-pen.svg',
     timer_svg: '/icons/timer.svg',
     trash_2_svg: '/icons/trash-2.svg',
-    user_svg: '/icons/user.svg'
+    user_svg: '/icons/user.svg',
+    users_svg: '/icons/users.svg'
   },
   next_svg: '/next.svg',
   vercel_svg: '/vercel.svg'
