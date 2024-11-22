@@ -6,7 +6,7 @@
   padding: 8px;
   gap: 8px;
   background-color: var(--gray-0);
-  border: 1px var(--gray-500) solid;
+  border: 1px var(--gray-100) solid;
   overflow: hidden;
 
   & .top {
@@ -60,7 +60,6 @@
           display: grid;
           gap: 8px;
           grid-template-columns: 18px 1fr 24px;
-          /* padding: 12px 8px; */
           position: relative;
         }
       }
