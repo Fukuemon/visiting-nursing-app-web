@@ -212,7 +212,11 @@ export const CalendarContainer: FC<CalendarContainerProps> = ({
             key={width}
             events={visibleEvents}
             currentCalendarView={
-              queryParams.get('tab') ?? CalendarView.timeGridDay
+              queryParams.get('tab') === CalendarView.timeGridDay ||
+              queryParams.get('tab') === CalendarView.dayGridMonth ||
+              queryParams.get('tab') === CalendarView.timeGridWeek
+                ? queryParams.get('tab') ?? CalendarView.timeGridDay
+                : CalendarView.timeGridDay
             }
           />
         </div>

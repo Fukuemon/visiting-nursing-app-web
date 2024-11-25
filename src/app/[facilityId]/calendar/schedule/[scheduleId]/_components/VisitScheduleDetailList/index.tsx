@@ -1,6 +1,6 @@
 import { ScheduleCategoryText } from '@/constants/scheduleCategory'
 import { WeekDayTextFromNumber } from '@/constants/weekDay'
-import { usePatient } from '@/hooks/patient'
+import { usePatient } from '@/hooks/api/patient'
 import { RecallingFrequency } from '@/schema/recallingSchedule'
 import { VisitSchedule } from '@/schema/schedule'
 import classNames from 'classnames'
