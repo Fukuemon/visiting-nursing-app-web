@@ -28,6 +28,6 @@
 
   & ._isMenubarOpen {
     display: grid;
-    grid-template-columns: 140px 1fr;
+    grid-template-columns: 160px 1fr;
   }
 }

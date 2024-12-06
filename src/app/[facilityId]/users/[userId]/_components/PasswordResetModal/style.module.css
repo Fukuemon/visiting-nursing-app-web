@@ -1,0 +1,12 @@
+.passwordResetModal {
+  align-items: start;
+  display: flex;
+  gap: 8px;
+  justify-content: space-between;
+  padding: 32px;
+  width: 100%;
+
+  & .passwordInput {
+    width: 100%;
+  }
+}

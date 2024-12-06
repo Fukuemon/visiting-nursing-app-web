@@ -13,6 +13,7 @@
     #e9e9eb 0%,
     rgb(233 233 235 / 0%) 100%
   );
+  --text-default: #09090b;
   --text-critical: #c11111;
   --background-default: #ffffff;
   --correct-bg: #e6fdf0;
@@ -30,4 +31,9 @@
   --gray-100: #f0f1f2;
   --gray-10: #f5f6f7;
   --gray-0: #fff;
+
+  /* z-index */
+  --z-index-modal: 10;
+  --z-index-dropdown: 9;
+  --z-index-header: 8;
 }
