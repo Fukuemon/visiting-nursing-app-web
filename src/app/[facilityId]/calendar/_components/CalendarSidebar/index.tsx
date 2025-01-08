@@ -3,7 +3,7 @@ import { SearchResults } from '@/app/[facilityId]/calendar/_components/SearchRes
 import { TeamCheckbox } from '@/app/[facilityId]/calendar/_components/TeamCheckBox'
 import { Checkbox, CheckboxStateType } from '@/app/_components/Checkbox'
 import { SearchInput } from '@/app/_components/SearchInput'
-import { Team } from '@/schema/team'
+import type { Team } from '@/schema/team'
 import type { User } from '@/schema/user'
 import { useEffect, useState, type FC } from 'react'
 import { useForm } from 'react-hook-form'
@@ -15,6 +15,7 @@ type CalendarSidebarProps = {
   setShowMembers: (member: User[]) => void
   users: User[]
   teams: Team[]
+  queryParams: URLSearchParams
 }
 
 export const CalendarSidebar: FC<CalendarSidebarProps> = ({
@@ -23,6 +24,7 @@ export const CalendarSidebar: FC<CalendarSidebarProps> = ({
   setShowMembers,
   users,
   teams,
+  queryParams,
 }) => {
   const { control, watch } = useForm<{ searchText: string }>({
     defaultValues: {
@@ -31,6 +33,17 @@ export const CalendarSidebar: FC<CalendarSidebarProps> = ({
   })
   const searchText = watch('searchText')
   const [searchUsers, setSearchUsers] = useState<User[]>([])
+  useEffect(() => {
+    setShowMembers(
+      queryParams.get('userIds') !== null
+        ? queryParams
+            .get('userIds')
+            ?.split(',')
+            .map((id) => users.find((user) => user.id === id))
+            .filter((user): user is User => user !== undefined) ?? [currentUser]
+        : [currentUser],
+    )
+  }, [users])
 
   const handleSearch = () => {
     if (searchText !== '') {
@@ -46,6 +59,12 @@ export const CalendarSidebar: FC<CalendarSidebarProps> = ({
   useEffect(() => {
     handleSearch()
   }, [searchText])
+
+  useEffect(() => {
+    if (showMembers.length === 0) {
+      setShowMembers([currentUser])
+    }
+  }, [currentUser, setShowMembers, showMembers])
 
   return (
     <div className={styles.container}>
@@ -65,6 +84,7 @@ export const CalendarSidebar: FC<CalendarSidebarProps> = ({
           member={currentUser}
           showMembers={showMembers}
           setShowMembers={setShowMembers}
+          label="自分"
         />
       </div>
       <div className={styles.members}>
@@ -75,6 +95,7 @@ export const CalendarSidebar: FC<CalendarSidebarProps> = ({
             teamMembers={users.filter((user) => user.team === team.name)}
             showMembers={showMembers}
             setShowMembers={setShowMembers}
+            color={team.color}
           />
         ))}
       </div>

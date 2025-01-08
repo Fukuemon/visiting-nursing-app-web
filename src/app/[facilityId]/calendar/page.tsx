@@ -23,10 +23,13 @@ import { useScheduleList } from '@/hooks/api/schedule'
 import { useQueryParams } from '@/hooks/useQueryParams'
 import { useForm } from 'react-hook-form'
 
+export type Query = {
+  tab: string
+}
+
 export default function CalendarPage() {
   const [isMenubarOpen, setIsMenuBarOpen] = useState(false)
   const { queryParams, setQueryParams } = useQueryParams()
-  const [showCancel, setShowCancel] = useState(ToggleStateType.DEFAULT)
   const pathname = usePathname()
   const router = useRouter()
   const [currentCalendarDate, setCurrentCalendarDate] = useAtom(
@@ -36,6 +39,11 @@ export default function CalendarPage() {
   useEffect(() => {
     if (queryParams.get('date') === null) {
       setQueryParams({ date: new Date() })
+    }
+    if (
+      queryParams.get('tab') === null
+    ) {
+      setQueryParams({ tab: CalendarView.timeGridDay })
     }
   }, [])
 
@@ -48,7 +56,7 @@ export default function CalendarPage() {
 
   const { handlePrev, handleNext, handleToday } = useCalendarNavigation(
     queryParams.get('tab') ?? CalendarView.timeGridDay,
-    currentCalendarDate ?? new Date(),
+    new Date(queryParams.get('date') ?? new Date()),
     setCurrentCalendarDate,
   )
 
@@ -59,7 +67,7 @@ export default function CalendarPage() {
   })
 
   useEffect(() => {
-    if (watch('date')) {
+    if (watch('date') !== undefined) {
       setQueryParams({ date: watch('date') })
     }
   }, [watch('date')])
@@ -92,8 +100,12 @@ export default function CalendarPage() {
         center={<DatePicker name="date" control={control} label="日付" />}
         right={
           <RightControls
-            showCancel={showCancel}
-            setShowCancel={setShowCancel}
+            showCancel={
+              queryParams.get('showCancel') === 'true'
+                ? ToggleStateType.CHECKED
+                : ToggleStateType.DEFAULT
+            }
+            setQueryParams={setQueryParams}
           />
         }
         rightIcon={rightIcon}
@@ -104,8 +116,8 @@ export default function CalendarPage() {
           <Loading />
         ) : (
           <CalendarContainer
-            showCancel={showCancel}
-            schedules={schedules.schedules}
+            showCancel={queryParams.get('showCancel') === 'true'}
+            calendarEvents={schedules.schedules}
           />
         )}
       </Header>
