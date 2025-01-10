@@ -1,8 +1,19 @@
+import {
+  isSchedule,
+  isVisitRecallingSchedule,
+} from '@/app/[facilityId]/calendar/_components/Schedule/Edit/EditSchedule'
+import { eventBackgroundColorCode } from '@/constants/eventBackground'
 import { scheduleType } from '@/constants/scheduleType'
-import { serviceCode } from '@/constants/serviceCode'
+import { serviceCode, ServiceCodeDuration } from '@/constants/serviceCode'
 import { userIda, userIdb, userIdc, userIdd } from '@/hooks/api/user'
-import { RecallingFrequency } from '@/schema/recallingSchedule'
-import type { Schedule } from '@/schema/schedule'
+import type { RecallingSchedule, Schedule } from '@/schema/schedule'
+import { RecallingFrequency } from '@/schema/schedule'
+import type {
+  BackgroundEvent,
+  CalendarEvent,
+  RecallingCalendarEvent,
+} from '@/types/event'
+import { datetime, RRule } from 'rrule'
 import type { Fetcher } from 'swr'
 import useSWR from 'swr'
 import { ulid } from 'ulid'
@@ -19,37 +30,39 @@ const scheduleIdi: string = '01JD8Q3KAVM27ASVHEWH3DA9TW'
 const scheduleIdj: string = '01JD8Q3KAV15WZE69Y00WKK4GJ'
 const scheduleIdk: string = ulid()
 const scheduleIdl: string = ulid()
-const recallingScheduleIda: string = ulid()
-const recallingScheduleIdb: string = ulid()
 const patientIda: string = ulid()
 
-const startDate_a = new Date(2024, 10, 6, 11, 10)
-const startDate_b = new Date(2024, 10, 6, 9, 10)
-const startDate_c = new Date(2024, 10, 6, 12, 10)
+const startDate_a = new Date(2024, 11, 6, 11, 10)
+const startDate_aa = new Date(2024, 11, 6, 11, 50)
+const startDate_b = new Date(2024, 11, 6, 9, 10)
+const startDate_bb = new Date(2024, 11, 6, 9, 39)
+const startDate_c = new Date(2024, 11, 6, 12, 10)
+const startDate_cc = new Date(2024, 11, 6, 12, 50)
 
-const startDate_d = new Date(2024, 10, 6, 11, 10)
-const startDate_e = new Date(2024, 10, 6, 13, 10)
-const startDate_f = new Date(2024, 10, 6, 15, 10)
+const startDate_d = new Date(2024, 11, 6, 11, 10)
+const startDate_e = new Date(2024, 10, 8, 13, 10)
+const startDate_ee = new Date(2024, 10, 9, 13, 50)
+const startDate_f = new Date(2024, 11, 6, 15, 10)
 
-const startDate_g = new Date(2024, 10, 6, 11, 10)
-const startDate_h = new Date(2024, 10, 6, 12, 30)
-const startDate_i = new Date(2024, 10, 6, 14, 10)
+const startDate_g = new Date(2024, 11, 6, 11, 10)
+const startDate_h = new Date(2024, 11, 6, 12, 30)
+const startDate_i = new Date(2024, 11, 6, 14, 10)
 
-const startDate_j = new Date(2024, 10, 6, 11, 10)
-const startDate_k = new Date(2024, 10, 6, 13, 30)
-const startDate_l = new Date(2024, 10, 6, 15, 10)
+const startDate_j = new Date(2024, 11, 6, 11, 10)
+const startDate_k = new Date(2024, 11, 6, 13, 30)
+const startDate_l = new Date(2024, 11, 6, 15, 10)
 
 const schedule_normal_a: Schedule = {
-  scheduleId: scheduleIda,
+  id: scheduleIda,
   userId: userIda,
   title: '会議a',
   scheduleType: scheduleType.normal,
-  scheduleDate: startDate_a,
+  startDate: startDate_a,
   startTime: startDate_a.toLocaleTimeString('ja-JP', {
     hour: '2-digit',
     minute: '2-digit',
   }),
-  endTime: startDate_a.toLocaleTimeString('ja-JP', {
+  endTime: startDate_aa.toLocaleTimeString('ja-JP', {
     hour: '2-digit',
     minute: '2-digit',
   }),
@@ -57,105 +70,104 @@ const schedule_normal_a: Schedule = {
 }
 
 const schedule_visit_b: Schedule = {
-  scheduleId: scheduleIdb,
-  userId: userIda,
+  // scheduleId: scheduleIdb,
+  // userId: userIda,
+  // title: '訪看I2 鈴木一郎',
+  // scheduleType: scheduleType.visit,
+  // patientId: patientIda,
+  // serviceCode: serviceCode.訪看I2,
+  // scheduleDate: startDate_b,
+  // startTime: startDate_b.toLocaleTimeString('ja-JP', {
+  //   hour: '2-digit',
+  //   minute: '2-digit',
+  // }),
+  // endTime: startDate_b.toLocaleTimeString('ja-JP', {
+  //   hour: '2-digit',
+  //   minute: '2-digit',
+  // }),
+  // serviceTime: 29,
+  // isCanceled: false,
+  // destination: '兵庫県神戸市中央区',
+  // description: 'テキストテキスト',
+  // recallingScheduleId: recallingScheduleIda,
+  // recallingSchedule: {
+  id: scheduleIdb,
   title: '訪看I2 鈴木一郎',
-  scheduleType: scheduleType.visit,
+  scheduleType: scheduleType.visitRecalling,
   patientId: patientIda,
   serviceCode: serviceCode.訪看I2,
-  scheduleDate: startDate_b,
+  isCanceled: false,
   startTime: startDate_b.toLocaleTimeString('ja-JP', {
     hour: '2-digit',
     minute: '2-digit',
   }),
-  endTime: startDate_b.toLocaleTimeString('ja-JP', {
+  endTime: startDate_bb.toLocaleTimeString('ja-JP', {
     hour: '2-digit',
     minute: '2-digit',
   }),
   serviceTime: 29,
-  isCanceled: false,
   destination: '兵庫県神戸市中央区',
   description: 'テキストテキスト',
-  recallingScheduleId: recallingScheduleIda,
-  recallingSchedule: {
-    recallingScheduleId: recallingScheduleIda,
-    title: '訪看I2 鈴木一郎',
-    scheduleType: scheduleType.visit,
-    patientId: patientIda,
-    serviceCode: serviceCode.訪看I2,
-    startTime: startDate_b.toLocaleTimeString('ja-JP', {
-      hour: '2-digit',
-      minute: '2-digit',
-    }),
-    endTime: startDate_b.toLocaleTimeString('ja-JP', {
-      hour: '2-digit',
-      minute: '2-digit',
-    }),
-    serviceTime: 29,
-    destination: '兵庫県神戸市中央区',
-    description: 'テキストテキスト',
-    userId: userIda,
+  userId: userIda,
 
-    frequency: RecallingFrequency.Monthly,
-    dayOfWeek: startDate_b.getDay(),
-    weekOfMonth: 1,
-    startDate: startDate_b,
-  },
+  frequency: RecallingFrequency.Weekly,
+  // dayOfWeek: startDate_b.getDay(),
+  weekOfMonth: 1,
+  startDate: startDate_b,
+  endDate: new Date(2025, 12, 6),
+  // },
 }
 
 const schedule_visit_c: Schedule = {
-  scheduleId: scheduleIdc,
-  userId: userIda,
-  title: '訪看I2 佐藤二郎',
-  scheduleType: scheduleType.visit,
-  patientId: patientIda,
-  serviceCode: serviceCode.訪看I2,
-  scheduleDate: startDate_c,
+  // scheduleId: scheduleIdc,
+  // userId: userIda,
+  // title: '訪看I2 佐藤二郎',
+  // scheduleType: scheduleType.visit,
+  // patientId: patientIda,
+  // serviceCode: serviceCode.訪看I2,
+  // scheduleDate: startDate_c,
+  // startTime: startDate_c.toLocaleTimeString('ja-JP', {
+  //   hour: '2-digit',
+  //   minute: '2-digit',
+  // }),
+  // endTime: startDate_c.toLocaleTimeString('ja-JP', {
+  //   hour: '2-digit',
+  //   minute: '2-digit',
+  // }),
+  // serviceTime: 29,
+  // isCanceled: true,
+  // destination: '兵庫県神戸市中央区',
+  // description: '相手都合によりキャンセルしました。',
+  // recallingScheduleId: recallingScheduleIdb,
+  // recallingSchedule: {
+  id: scheduleIdc,
+  title: '会議',
+  scheduleType: scheduleType.normalRecalling,
   startTime: startDate_c.toLocaleTimeString('ja-JP', {
     hour: '2-digit',
     minute: '2-digit',
   }),
-  endTime: startDate_c.toLocaleTimeString('ja-JP', {
+  endTime: startDate_cc.toLocaleTimeString('ja-JP', {
     hour: '2-digit',
     minute: '2-digit',
   }),
-  serviceTime: 29,
-  isCanceled: true,
-  destination: '兵庫県神戸市中央区',
-  description: '相手都合によりキャンセルしました。',
-  recallingScheduleId: recallingScheduleIdb,
-  recallingSchedule: {
-    recallingScheduleId: recallingScheduleIdb,
-    title: '訪看I2 佐藤二郎',
-    scheduleType: scheduleType.visit,
-    patientId: patientIda,
-    serviceCode: serviceCode.訪看I2,
-    startTime: startDate_c.toLocaleTimeString('ja-JP', {
-      hour: '2-digit',
-      minute: '2-digit',
-    }),
-    endTime: startDate_c.toLocaleTimeString('ja-JP', {
-      hour: '2-digit',
-      minute: '2-digit',
-    }),
-    serviceTime: 29,
-    destination: '兵庫県神戸市中央区',
-    description: 'テキストテキスト',
-    userId: userIda,
+  description: 'テキストテキスト',
+  userId: userIda,
 
-    frequency: RecallingFrequency.Monthly,
-    dayOfWeek: startDate_c.getDay(),
-    weekOfMonth: 1,
-    startDate: startDate_c,
-  },
+  frequency: RecallingFrequency.Weekly,
+  dayOfWeek: startDate_c.getDay(),
+  weekOfMonth: 1,
+  startDate: startDate_c,
+  exdate: [1, 3],
+  // },
 }
 
 const schedule_normal_d: Schedule = {
-  scheduleId: scheduleIdd,
+  id: scheduleIdd,
   userId: userIdb,
   title: '会議b',
   scheduleType: scheduleType.normal,
-  scheduleDate: startDate_d,
+  startDate: startDate_d,
   startTime: startDate_d.toLocaleTimeString('ja-JP', {
     hour: '2-digit',
     minute: '2-digit',
@@ -167,61 +179,62 @@ const schedule_normal_d: Schedule = {
   description: 'テキストテキスト',
 }
 
-const schedule_visit_e: Schedule = {
-  scheduleId: scheduleIde,
-  userId: userIdb,
+const schedule_visit_e: RecallingSchedule = {
+  // id: scheduleIde,
+  // userId: userIdb,
+  // title: '訪看I2 伊東三郎',
+  // scheduleType: scheduleType.visit,
+  // patientId: patientIda,
+  // serviceCode: serviceCode.訪看I2,
+  // scheduleDate: startDate_e,
+  // startTime: startDate_e.toLocaleTimeString('ja-JP', {
+  //   hour: '2-digit',
+  //   minute: '2-digit',
+  // }),
+  // endTime: startDate_ee.toLocaleTimeString('ja-JP', {
+  //   hour: '2-digit',
+  //   minute: '2-digit',
+  // }),
+  // serviceTime: 29,
+  // isCanceled: false,
+  // destination: '兵庫県神戸市中央区',
+  // description: 'テキストテキスト',
+  // recallingScheduleId: recallingScheduleIda,
+  // recallingSchedule: {
+  id: scheduleIde,
   title: '訪看I2 伊東三郎',
-  scheduleType: scheduleType.visit,
+  scheduleType: scheduleType.visitRecalling,
   patientId: patientIda,
   serviceCode: serviceCode.訪看I2,
-  scheduleDate: startDate_e,
+  isCanceled: false,
   startTime: startDate_e.toLocaleTimeString('ja-JP', {
     hour: '2-digit',
     minute: '2-digit',
   }),
-  endTime: startDate_e.toLocaleTimeString('ja-JP', {
+  endTime: startDate_ee.toLocaleTimeString('ja-JP', {
     hour: '2-digit',
     minute: '2-digit',
   }),
   serviceTime: 29,
-  isCanceled: false,
   destination: '兵庫県神戸市中央区',
   description: 'テキストテキスト',
-  recallingScheduleId: recallingScheduleIda,
-  recallingSchedule: {
-    recallingScheduleId: recallingScheduleIda,
-    title: '訪看I2 伊東三郎',
-    scheduleType: scheduleType.visit,
-    patientId: patientIda,
-    serviceCode: serviceCode.訪看I2,
-    startTime: startDate_e.toLocaleTimeString('ja-JP', {
-      hour: '2-digit',
-      minute: '2-digit',
-    }),
-    endTime: startDate_e.toLocaleTimeString('ja-JP', {
-      hour: '2-digit',
-      minute: '2-digit',
-    }),
-    serviceTime: 29,
-    destination: '兵庫県神戸市中央区',
-    description: 'テキストテキスト',
-    userId: userIda,
+  userId: userIda,
 
-    frequency: RecallingFrequency.Monthly,
-    dayOfWeek: startDate_e.getDay(),
-    weekOfMonth: 1,
-    startDate: startDate_e,
-  },
+  frequency: RecallingFrequency.Monthly,
+  dayOfWeek: startDate_e.getDay(),
+  weekOfMonth: 2,
+  startDate: startDate_e,
+  // },
 }
 
 const schedule_visit_f: Schedule = {
-  scheduleId: scheduleIdf,
+  id: scheduleIdf,
   userId: userIdb,
   title: '訪看I2 鈴木一郎',
   scheduleType: scheduleType.visit,
   patientId: patientIda,
   serviceCode: serviceCode.訪看I2,
-  scheduleDate: startDate_f,
+  startDate: startDate_f,
   startTime: startDate_f.toLocaleTimeString('ja-JP', {
     hour: '2-digit',
     minute: '2-digit',
@@ -234,39 +247,38 @@ const schedule_visit_f: Schedule = {
   isCanceled: true,
   destination: '兵庫県神戸市中央区',
   description: '相手都合によりキャンセルしました。',
-  recallingScheduleId: recallingScheduleIdb,
-  recallingSchedule: {
-    recallingScheduleId: recallingScheduleIdb,
-    title: '訪看I2 鈴木一郎',
-    scheduleType: scheduleType.visit,
-    patientId: patientIda,
-    serviceCode: serviceCode.訪看I2,
-    startTime: startDate_f.toLocaleTimeString('ja-JP', {
-      hour: '2-digit',
-      minute: '2-digit',
-    }),
-    endTime: startDate_f.toLocaleTimeString('ja-JP', {
-      hour: '2-digit',
-      minute: '2-digit',
-    }),
-    serviceTime: 29,
-    destination: '兵庫県神戸市中央区',
-    description: 'テキストテキスト',
-    userId: userIda,
+  // recallingSchedule: {
+  //   recallingScheduleId: recallingScheduleIdb,
+  //   title: '訪看I2 鈴木一郎',
+  //   scheduleType: scheduleType.visit,
+  //   patientId: patientIda,
+  //   serviceCode: serviceCode.訪看I2,
+  //   startTime: startDate_f.toLocaleTimeString('ja-JP', {
+  //     hour: '2-digit',
+  //     minute: '2-digit',
+  //   }),
+  //   endTime: startDate_f.toLocaleTimeString('ja-JP', {
+  //     hour: '2-digit',
+  //     minute: '2-digit',
+  //   }),
+  //   serviceTime: 29,
+  //   destination: '兵庫県神戸市中央区',
+  //   description: 'テキストテキスト',
+  //   userId: userIda,
 
-    frequency: RecallingFrequency.Monthly,
-    dayOfWeek: startDate_f.getDay(),
-    weekOfMonth: 1,
-    startDate: startDate_f,
-  },
+  //   frequency: RecallingFrequency.Monthly,
+  //   dayOfWeek: startDate_f.getDay(),
+  //   weekOfMonth: 1,
+  //   startDate: startDate_f,
+  // },
 }
 
 const schedule_normal_g: Schedule = {
-  scheduleId: scheduleIdg,
+  id: scheduleIdg,
   userId: userIdc,
   title: '会議c',
   scheduleType: scheduleType.normal,
-  scheduleDate: startDate_g,
+  startDate: startDate_g,
   startTime: startDate_g.toLocaleTimeString('ja-JP', {
     hour: '2-digit',
     minute: '2-digit',
@@ -279,13 +291,13 @@ const schedule_normal_g: Schedule = {
 }
 
 const schedule_visit_h: Schedule = {
-  scheduleId: scheduleIdh,
+  id: scheduleIdh,
   userId: userIdc,
   title: '訪看I2 鈴木一郎',
   scheduleType: scheduleType.visit,
   patientId: patientIda,
   serviceCode: serviceCode.訪看I2,
-  scheduleDate: startDate_h,
+  startDate: startDate_h,
   startTime: startDate_h.toLocaleTimeString('ja-JP', {
     hour: '2-digit',
     minute: '2-digit',
@@ -298,41 +310,40 @@ const schedule_visit_h: Schedule = {
   isCanceled: false,
   destination: '兵庫県神戸市中央区',
   description: 'テキストテキスト',
-  recallingScheduleId: recallingScheduleIda,
-  recallingSchedule: {
-    recallingScheduleId: recallingScheduleIda,
-    title: '訪看I2 鈴木一郎',
-    scheduleType: scheduleType.visit,
-    patientId: patientIda,
-    serviceCode: serviceCode.訪看I2,
-    startTime: startDate_h.toLocaleTimeString('ja-JP', {
-      hour: '2-digit',
-      minute: '2-digit',
-    }),
-    endTime: startDate_h.toLocaleTimeString('ja-JP', {
-      hour: '2-digit',
-      minute: '2-digit',
-    }),
-    serviceTime: 29,
-    destination: '兵庫県神戸市中央区',
-    description: 'テキストテキスト',
-    userId: userIda,
+  // recallingSchedule: {
+  //   recallingScheduleId: recallingScheduleIda,
+  //   title: '訪看I2 鈴木一郎',
+  //   scheduleType: scheduleType.visit,
+  //   patientId: patientIda,
+  //   serviceCode: serviceCode.訪看I2,
+  //   startTime: startDate_h.toLocaleTimeString('ja-JP', {
+  //     hour: '2-digit',
+  //     minute: '2-digit',
+  //   }),
+  //   endTime: startDate_h.toLocaleTimeString('ja-JP', {
+  //     hour: '2-digit',
+  //     minute: '2-digit',
+  //   }),
+  //   serviceTime: 29,
+  //   destination: '兵庫県神戸市中央区',
+  //   description: 'テキストテキスト',
+  //   userId: userIda,
 
-    frequency: RecallingFrequency.Monthly,
-    dayOfWeek: startDate_h.getDay(),
-    weekOfMonth: 1,
-    startDate: startDate_h,
-  },
+  //   frequency: RecallingFrequency.Monthly,
+  //   dayOfWeek: startDate_h.getDay(),
+  //   weekOfMonth: 1,
+  //   startDate: startDate_h,
+  // },
 }
 
 const schedule_visit_i: Schedule = {
-  scheduleId: scheduleIdi,
+  id: scheduleIdi,
   userId: userIdc,
   title: '訪看I2 佐々木四郎',
   scheduleType: scheduleType.visit,
   patientId: patientIda,
   serviceCode: serviceCode.訪看I2,
-  scheduleDate: startDate_i,
+  startDate: startDate_i,
   startTime: startDate_i.toLocaleTimeString('ja-JP', {
     hour: '2-digit',
     minute: '2-digit',
@@ -345,39 +356,38 @@ const schedule_visit_i: Schedule = {
   isCanceled: false,
   destination: '兵庫県神戸市中央区',
   description: '相手都合によりキャンセルしました。',
-  recallingScheduleId: recallingScheduleIdb,
-  recallingSchedule: {
-    recallingScheduleId: recallingScheduleIdb,
-    title: '訪看I2 佐々木四郎',
-    scheduleType: scheduleType.visit,
-    patientId: patientIda,
-    serviceCode: serviceCode.訪看I2,
-    startTime: startDate_i.toLocaleTimeString('ja-JP', {
-      hour: '2-digit',
-      minute: '2-digit',
-    }),
-    endTime: startDate_i.toLocaleTimeString('ja-JP', {
-      hour: '2-digit',
-      minute: '2-digit',
-    }),
-    serviceTime: 29,
-    destination: '兵庫県神戸市中央区',
-    description: 'テキストテキスト',
-    userId: userIda,
+  // recallingSchedule: {
+  //   recallingScheduleId: recallingScheduleIdb,
+  //   title: '訪看I2 佐々木四郎',
+  //   scheduleType: scheduleType.visit,
+  //   patientId: patientIda,
+  //   serviceCode: serviceCode.訪看I2,
+  //   startTime: startDate_i.toLocaleTimeString('ja-JP', {
+  //     hour: '2-digit',
+  //     minute: '2-digit',
+  //   }),
+  //   endTime: startDate_i.toLocaleTimeString('ja-JP', {
+  //     hour: '2-digit',
+  //     minute: '2-digit',
+  //   }),
+  //   serviceTime: 29,
+  //   destination: '兵庫県神戸市中央区',
+  //   description: 'テキストテキスト',
+  //   userId: userIda,
 
-    frequency: RecallingFrequency.Monthly,
-    dayOfWeek: startDate_i.getDay(),
-    weekOfMonth: 1,
-    startDate: startDate_i,
-  },
+  //   frequency: RecallingFrequency.Monthly,
+  //   dayOfWeek: startDate_i.getDay(),
+  //   weekOfMonth: 1,
+  //   startDate: startDate_i,
+  // },
 }
 
 const schedule_normal_j: Schedule = {
-  scheduleId: scheduleIdj,
+  id: scheduleIdj,
   userId: userIdd,
   title: '会議d',
   scheduleType: scheduleType.normal,
-  scheduleDate: startDate_j,
+  startDate: startDate_j,
   startTime: startDate_j.toLocaleTimeString('ja-JP', {
     hour: '2-digit',
     minute: '2-digit',
@@ -390,13 +400,13 @@ const schedule_normal_j: Schedule = {
 }
 
 const schedule_visit_k: Schedule = {
-  scheduleId: scheduleIdk,
+  id: scheduleIdk,
   userId: userIdd,
   title: '訪看I2 澤村五郎',
   scheduleType: scheduleType.visit,
   patientId: patientIda,
   serviceCode: serviceCode.訪看I2,
-  scheduleDate: startDate_k,
+  startDate: startDate_k,
   startTime: startDate_k.toLocaleTimeString('ja-JP', {
     hour: '2-digit',
     minute: '2-digit',
@@ -409,41 +419,40 @@ const schedule_visit_k: Schedule = {
   isCanceled: false,
   destination: '兵庫県神戸市中央区',
   description: 'テキストテキスト',
-  recallingScheduleId: recallingScheduleIda,
-  recallingSchedule: {
-    recallingScheduleId: recallingScheduleIda,
-    title: '訪看I2 澤村五郎',
-    scheduleType: scheduleType.visit,
-    patientId: patientIda,
-    serviceCode: serviceCode.訪看I2,
-    startTime: startDate_k.toLocaleTimeString('ja-JP', {
-      hour: '2-digit',
-      minute: '2-digit',
-    }),
-    endTime: startDate_k.toLocaleTimeString('ja-JP', {
-      hour: '2-digit',
-      minute: '2-digit',
-    }),
-    serviceTime: 29,
-    destination: '兵庫県神戸市中央区',
-    description: 'テキストテキスト',
-    userId: userIda,
+  // recallingSchedule: {
+  //   recallingScheduleId: recallingScheduleIda,
+  //   title: '訪看I2 澤村五郎',
+  //   scheduleType: scheduleType.visit,
+  //   patientId: patientIda,
+  //   serviceCode: serviceCode.訪看I2,
+  //   startTime: startDate_k.toLocaleTimeString('ja-JP', {
+  //     hour: '2-digit',
+  //     minute: '2-digit',
+  //   }),
+  //   endTime: startDate_k.toLocaleTimeString('ja-JP', {
+  //     hour: '2-digit',
+  //     minute: '2-digit',
+  //   }),
+  //   serviceTime: 29,
+  //   destination: '兵庫県神戸市中央区',
+  //   description: 'テキストテキスト',
+  //   userId: userIda,
 
-    frequency: RecallingFrequency.Monthly,
-    dayOfWeek: startDate_k.getDay(),
-    weekOfMonth: 1,
-    startDate: startDate_k,
-  },
+  //   frequency: RecallingFrequency.Monthly,
+  //   dayOfWeek: startDate_k.getDay(),
+  //   weekOfMonth: 1,
+  //   startDate: startDate_k,
+  // },
 }
 
 const schedule_visit_l: Schedule = {
-  scheduleId: scheduleIdl,
+  id: scheduleIdl,
   userId: userIdd,
   title: '訪看I2 木村六郎',
   scheduleType: scheduleType.visit,
   patientId: patientIda,
   serviceCode: serviceCode.訪看I2,
-  scheduleDate: startDate_l,
+  startDate: startDate_l,
   startTime: startDate_l.toLocaleTimeString('ja-JP', {
     hour: '2-digit',
     minute: '2-digit',
@@ -456,34 +465,33 @@ const schedule_visit_l: Schedule = {
   isCanceled: false,
   destination: '兵庫県神戸市中央区',
   description: '相手都合によりキャンセルしました。',
-  recallingScheduleId: recallingScheduleIdb,
-  recallingSchedule: {
-    recallingScheduleId: recallingScheduleIdb,
-    title: '訪看I2 木村六郎',
-    scheduleType: scheduleType.visit,
-    patientId: patientIda,
-    serviceCode: serviceCode.訪看I2,
-    startTime: startDate_l.toLocaleTimeString('ja-JP', {
-      hour: '2-digit',
-      minute: '2-digit',
-    }),
-    endTime: startDate_l.toLocaleTimeString('ja-JP', {
-      hour: '2-digit',
-      minute: '2-digit',
-    }),
-    serviceTime: 29,
-    destination: '兵庫県神戸市中央区',
-    description: 'テキストテキスト',
-    userId: userIda,
+  // recallingSchedule: {
+  //   recallingScheduleId: recallingScheduleIdb,
+  //   title: '訪看I2 木村六郎',
+  //   scheduleType: scheduleType.visit,
+  //   patientId: patientIda,
+  //   serviceCode: serviceCode.訪看I2,
+  //   startTime: startDate_l.toLocaleTimeString('ja-JP', {
+  //     hour: '2-digit',
+  //     minute: '2-digit',
+  //   }),
+  //   endTime: startDate_l.toLocaleTimeString('ja-JP', {
+  //     hour: '2-digit',
+  //     minute: '2-digit',
+  //   }),
+  //   serviceTime: 29,
+  //   destination: '兵庫県神戸市中央区',
+  //   description: 'テキストテキスト',
+  //   userId: userIda,
 
-    frequency: RecallingFrequency.Monthly,
-    dayOfWeek: startDate_l.getDay(),
-    weekOfMonth: 1,
-    startDate: startDate_l,
-  },
+  //   frequency: RecallingFrequency.Monthly,
+  //   dayOfWeek: startDate_l.getDay(),
+  //   weekOfMonth: 1,
+  //   startDate: startDate_l,
+  // },
 }
 
-const scheduleList: Schedule[] = [
+const scheduleList: (Schedule | RecallingSchedule)[] = [
   schedule_normal_a,
   schedule_visit_b,
   schedule_visit_c,
@@ -498,21 +506,23 @@ const scheduleList: Schedule[] = [
   schedule_visit_l,
 ]
 
-const scheduleFetcher: Fetcher<Schedule> = async (url: string) => {
+const scheduleFetcher: Fetcher<Schedule | RecallingSchedule> = async (
+  url: string,
+) => {
   const scheduleId = url.split('/').pop()
-  console.log(scheduleId)
-  console.log(scheduleIdd)
-  const res: Schedule = scheduleList.find(
-    (schedule) => schedule.scheduleId === scheduleId,
+  const res: Schedule | RecallingSchedule = scheduleList.find(
+    (schedule) => schedule.id === scheduleId,
   )!
-  console.log(res)
   return res
   //   const res = await fetch(url)
   //   return res.json()
 }
 
 export const useSchedule = (scheduleId: string) => {
-  const { data, isLoading, error } = useSWR<Schedule, Error>(
+  const { data, isLoading, error } = useSWR<
+    Schedule | RecallingSchedule,
+    Error
+  >(
     process.env.NEXT_PUBLIC_API_URL + `/schedules/${scheduleId}`,
     scheduleFetcher,
   )
@@ -524,20 +534,216 @@ export const useSchedule = (scheduleId: string) => {
   }
 }
 
-const scheduleListFetcher: Fetcher<Schedule[]> = async (url: string) => {
-  const res: Schedule[] = scheduleList
-  return res
+const scheduleListFetcher: Fetcher<
+  (CalendarEvent | RecallingCalendarEvent | BackgroundEvent)[]
+> = async (url: string) => {
+  const calendarEvents: (
+    | CalendarEvent
+    | RecallingCalendarEvent
+    | BackgroundEvent
+  )[] = scheduleList.flatMap(createEvent)
+  return calendarEvents
 }
 
 export const useScheduleList = () => {
-  const { data, isLoading, error } = useSWR<Schedule[], Error>(
-    process.env.NEXT_PUBLIC_API_URL + `/schedules`,
-    scheduleListFetcher,
-  )
-
+  const { data, isLoading, error } = useSWR<
+    (CalendarEvent | RecallingCalendarEvent | BackgroundEvent)[],
+    Error
+  >(process.env.NEXT_PUBLIC_API_URL + `/schedules`, scheduleListFetcher)
   return {
     schedules: data,
     isLoading,
     error,
   }
+}
+
+const createEvent = (
+  schedule: Schedule | RecallingSchedule,
+): (CalendarEvent | RecallingCalendarEvent | BackgroundEvent)[] => {
+  let eventBackgroundColor = eventBackgroundColorCode[schedule.scheduleType]
+  const startTime =
+    parseInt(schedule.startTime.slice(0, 2)) * 60 +
+    parseInt(schedule.startTime.slice(3))
+  const endTime =
+    parseInt(schedule.endTime.slice(0, 2)) * 60 +
+    parseInt(schedule.endTime.slice(3))
+
+  const createDateTime = (date: Date, time: string): Date => {
+    const newDate = new Date(date)
+    newDate.setMonth(newDate.getMonth())
+    newDate.setHours(parseInt(time.slice(0, 2)))
+    newDate.setMinutes(parseInt(time.slice(3)))
+    return newDate
+  }
+
+  const createBaseEvent = (
+    id: string,
+    title: string,
+    start: Date,
+    end: Date,
+    backgroundColor: string,
+    textColor: string,
+    userId: string,
+    isCanceled: boolean,
+  ): CalendarEvent => ({
+    id,
+    title,
+    allDay: false,
+    start,
+    end,
+    startEditable: true,
+    durationEditable: false,
+    backgroundColor,
+    textColor,
+    extendedProps: { userId, isCanceled },
+  })
+
+  if (isSchedule(schedule)) {
+    const startDate = createDateTime(schedule.startDate, schedule.startTime)
+    const endDate = createDateTime(schedule.startDate, schedule.endTime)
+
+    if (schedule.scheduleType === scheduleType.normal) {
+      return [
+        createBaseEvent(
+          schedule.id,
+          schedule.title,
+          startDate,
+          endDate,
+          eventBackgroundColor,
+          'white',
+          schedule.userId,
+          false,
+        ),
+      ]
+    }
+
+    const textColor = schedule.isCanceled ? 'gray' : 'white'
+
+    if (schedule.isCanceled) {
+      eventBackgroundColor = eventBackgroundColorCode.canceled
+      return [
+        createBaseEvent(
+          schedule.id,
+          schedule.description,
+          startDate,
+          endDate,
+          eventBackgroundColor,
+          textColor,
+          schedule.userId,
+          schedule.isCanceled,
+        ),
+      ]
+    }
+
+    return [
+      createBaseEvent(
+        schedule.id,
+        schedule.title,
+        startDate,
+        endDate,
+        eventBackgroundColor,
+        textColor,
+        schedule.userId,
+        schedule.isCanceled,
+      ),
+    ]
+  }
+
+  const dtstart = datetime(
+    schedule.startDate.getFullYear(),
+    schedule.startDate.getMonth() + 1,
+    schedule.startDate.getDate(),
+    parseInt(schedule.startTime.slice(0, 2)),
+    parseInt(schedule.startTime.slice(3)),
+    0,
+  )
+
+  const rrule = new RRule({
+    freq:
+      schedule.frequency === RecallingFrequency.Weekly
+        ? RRule.WEEKLY
+        : RRule.MONTHLY,
+    interval: 1,
+    dtstart,
+    until: schedule.endDate,
+  })
+
+  const dates = rrule.all()
+  const exdate =
+    schedule.exdate?.map((index) => dates[index].toISOString().slice(0, 19)) ??
+    []
+
+  const createRecurringEvents = (duration: number) => {
+    const backgroundEvent: BackgroundEvent = {
+      id: `${schedule.id}-background`,
+      title: schedule.title,
+      allDay: false,
+      rrule: {
+        freq: RecallingFrequency.Weekly,
+        interval: 1,
+        dtstart,
+        until:
+          schedule.endDate !== undefined
+            ? schedule.endDate
+            : datetime(
+                schedule.startDate.getFullYear() + 1,
+                schedule.startDate.getMonth() + 1,
+                schedule.startDate.getDate(),
+                parseInt(schedule.startTime.slice(0, 2)),
+                parseInt(schedule.startTime.slice(3)),
+                0,
+              ),
+      },
+      duration: { minute: duration },
+      startEditable: false,
+      display: 'background',
+      extendedProps: {
+        userId: schedule.userId,
+        isCanceled: false,
+      },
+    }
+
+    const recallingEvent: RecallingCalendarEvent = {
+      id: schedule.id,
+      title: schedule.title,
+      allDay: false,
+      backgroundColor: eventBackgroundColor,
+      rrule: {
+        freq: schedule.frequency,
+        interval: 1,
+        dtstart,
+        byweekday: [dtstart.getDay() - 1],
+        bysetpos:
+          schedule.frequency === RecallingFrequency.Monthly
+            ? Math.floor((dtstart.getDate() - 1) / 7) + 1
+            : undefined,
+        until:
+          schedule.endDate !== undefined
+            ? schedule.endDate
+            : datetime(
+                schedule.startDate.getFullYear() + 1,
+                schedule.startDate.getMonth() + 1,
+                schedule.startDate.getDate(),
+                parseInt(schedule.startTime.slice(0, 2)),
+                parseInt(schedule.startTime.slice(3)),
+                0,
+              ),
+      },
+      duration: { minute: duration },
+      exdate,
+      startEditable: true,
+      extendedProps: {
+        userId: schedule.userId,
+        isCanceled: false,
+      },
+    }
+
+    return [recallingEvent, backgroundEvent]
+  }
+
+  if (!isVisitRecallingSchedule(schedule)) {
+    return createRecurringEvents(endTime - startTime)
+  }
+
+  return createRecurringEvents(ServiceCodeDuration[schedule.serviceCode].max)
 }

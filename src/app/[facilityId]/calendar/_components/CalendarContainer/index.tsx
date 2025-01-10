@@ -3,113 +3,42 @@ import { CalendarSidebar } from '@/app/[facilityId]/calendar/_components/Calenda
 import { CalendarTimeGridDayParent } from '@/app/[facilityId]/calendar/_components/CalendarTimeGridDayParent'
 import { CalendarTimeGridDayPresentational } from '@/app/[facilityId]/calendar/_components/CalendarTimeGridDayPresentational'
 import { Loading } from '@/app/_components/Loading'
-import type { ToggleStateType } from '@/app/_components/Toggle'
 import { CalendarView } from '@/constants/calendarView'
 import { useTeamList } from '@/hooks/api/team'
 import { useUserList } from '@/hooks/api/user'
 import { useQueryParams } from '@/hooks/useQueryParams'
 import type { User } from '@/schema/user'
-import type { CalendarEvent, Events } from '@/types/event'
+import type { Events } from '@/types/event'
 import { useParams } from 'next/navigation'
 import { useEffect, useRef, useState, type FC } from 'react'
 import styles from './style.module.css'
 
-import { eventBackgroundColorCode } from '@/constants/eventBackground'
-import { scheduleType } from '@/constants/scheduleType'
-import { Schedule } from '@/schema/schedule'
-
-const createEvent = (schedule: Schedule): CalendarEvent => {
-  const startDate = new Date(schedule.scheduleDate)
-  const endDate = new Date(schedule.scheduleDate)
-  startDate.setHours(parseInt(schedule.startTime.slice(0, 2)))
-  startDate.setMinutes(parseInt(schedule.startTime.slice(3)))
-  endDate.setHours(parseInt(schedule.endTime.slice(0, 2)))
-  endDate.setMinutes(parseInt(schedule.endTime.slice(3)))
-  let eventBackgroundColor = eventBackgroundColorCode[schedule.scheduleType]
-
-  if (schedule.scheduleType === scheduleType.normal) {
-    return {
-      id: schedule.scheduleId,
-      title: schedule.title,
-      start: startDate,
-      end: endDate,
-      startEditable: true,
-      durationEditable: false,
-      backgroundColor: eventBackgroundColor,
-      // borderColor,
-      textColor: 'white',
-      extendedProps: {
-        userId: schedule.userId,
-        isCanceled: false,
-      },
-    }
-  }
-
-  const extendedProps = {
-    userId: schedule.userId,
-    isCanceled: schedule.isCanceled,
-  }
-  const textColor = schedule.isCanceled ? 'gray' : 'white'
-
-  if (schedule.isCanceled) {
-    eventBackgroundColor = eventBackgroundColorCode.canceled
-    return {
-      id: schedule.scheduleId,
-      title: schedule.description,
-      start: startDate,
-      end: endDate,
-      startEditable: true,
-      durationEditable: false,
-      backgroundColor: eventBackgroundColor,
-      textColor,
-      extendedProps,
-    }
-  }
-
-  return {
-    id: schedule.scheduleId,
-    title: schedule.title,
-    start: startDate,
-    end: endDate,
-    startEditable: true,
-    durationEditable: false,
-    backgroundColor: eventBackgroundColor,
-    textColor,
-    extendedProps,
-  }
-}
-
 type CalendarContainerProps = {
-  showCancel: ToggleStateType
-  schedules: Schedule[]
-}
-
-const getTeamIndexColor = (teamIndex: number): string => {
-  const colors = ['#FFF8DC', '#E0FFD1', '#FFB6C1', '#B0E0E6'] // 4種類の色
-  return colors[teamIndex % colors.length]
+  showCancel: boolean
+  calendarEvents: Events
 }
 
 export const CalendarContainer: FC<CalendarContainerProps> = ({
   showCancel,
-  schedules,
+  calendarEvents,
 }) => {
   const { facilityId } = useParams<{ facilityId: string }>()
-  const { queryParams } = useQueryParams()
+  const { queryParams, setQueryParams } = useQueryParams()
   const users = useUserList([facilityId, '', '', '', ''])
   const teams = useTeamList(facilityId)
   const currentUser = {
-    id: '01JAYFC3Q3HGJZ6DP3DN9EPZZR',
-    username: 'テストメンバー1',
+    id: '01JE2J0PNT3MN60M4M2AHPQCPV',
+    username: '山本二郎',
     position: 'member',
-    team: 'C',
+    team: 'B',
     facility: 'テスト訪問看護ステーション',
     department: '看護',
     area: 'B',
     policies: [],
-    email: '',
-    phone: '+0123456789',
-    created_at: '2024-10-24T14:18:15+09:00',
-    updated_at: '2024-10-24T14:18:15+09:00',
+    email: 'yamamoto@example.com',
+    phone: '',
+    created_at: '2024-12-02T11:08:30+09:00',
+    updated_at: '2024-12-02T11:08:30+09:00',
   }
   const containerRef = useRef<HTMLDivElement>(null)
   const [width, setWidth] = useState(0)
@@ -129,19 +58,16 @@ export const CalendarContainer: FC<CalendarContainerProps> = ({
     })
   }
 
-  const calendarEvents: CalendarEvent[] = schedules.map(createEvent)
-
   const filterEvents = () => {
     let filteredEvents = calendarEvents.filter((event) =>
       showMembers.some((member) => member.id === event.extendedProps.userId),
     )
 
-    if (showCancel === 'default') {
+    if (!showCancel) {
       filteredEvents = filteredEvents.filter(
         (event) => !event.extendedProps.isCanceled,
       )
     }
-
     setVisibleEvents(filteredEvents)
   }
 
@@ -202,6 +128,7 @@ export const CalendarContainer: FC<CalendarContainerProps> = ({
       return 0
     })
     setShowMembers(showMembers.length === users.length ? [] : sortedUsers)
+    setQueryParams({ userIds: sortedUsers.map((user) => user.id).join(',') })
   }
 
   return (
@@ -240,9 +167,10 @@ export const CalendarContainer: FC<CalendarContainerProps> = ({
             )
 
             // チームのインデックスを取得
-            const teamIndex = showMembers.findIndex(
-              (m) => m.team === member.team,
+            const memberTeam = teams.teams?.find(
+              (team) => team.name === member.team,
             )
+            const backgroundColor = memberTeam?.color ?? 'var(--gray-0)'
 
             return (
               <div
@@ -255,7 +183,9 @@ export const CalendarContainer: FC<CalendarContainerProps> = ({
               >
                 <p
                   className={styles.name}
-                  style={{ backgroundColor: getTeamIndexColor(teamIndex) }}
+                  style={{
+                    backgroundColor,
+                  }}
                 >
                   {member.username}
                 </p>
@@ -279,6 +209,7 @@ export const CalendarContainer: FC<CalendarContainerProps> = ({
           currentUser={currentUser}
           showMembers={showMembers}
           setShowMembers={setShowMembersSorted}
+          queryParams={queryParams}
         />
       )}
     </div>
