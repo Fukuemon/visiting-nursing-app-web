@@ -15,7 +15,9 @@ import CalendarHandler from '@/lib/calendar'
 import type { Events } from '@/types/event'
 import jaLocale from '@fullcalendar/core/locales/ja'
 
+import Modal from '@/app/_components/Modal'
 import { useQueryParams } from '@/hooks/useQueryParams'
+import type { EventContentArg } from '@fullcalendar/core/index.js'
 
 type CalendarContainerProps = {
   events?: Events
@@ -45,6 +47,20 @@ export const CalendarPresentational: FC<CalendarContainerProps> = ({
     calendarHandler.handleViewChange(currentCalendarView)
   }, [currentCalendarView])
 
+  const renderEventContent = (eventContent: EventContentArg) => (
+    <>
+      <Modal>
+        <Modal.Trigger>
+          <b>{eventContent.timeText}</b>
+          {eventContent.event.title}
+        </Modal.Trigger>
+        <Modal.Body>
+          <p>test</p>
+        </Modal.Body>
+      </Modal>
+    </>
+  )
+
   return (
     <div className={styles.container}>
       <StyleWrapper>
@@ -72,6 +88,7 @@ export const CalendarPresentational: FC<CalendarContainerProps> = ({
           eventClick={calendarHandler.handleEventClick}
           dateClick={calendarHandler.handleDateClick}
           allDaySlot={false}
+          eventContent={renderEventContent}
         />
       </StyleWrapper>
     </div>

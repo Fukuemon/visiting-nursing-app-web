@@ -28,17 +28,14 @@ export default class CalendarHandler {
     this.facilityId = facilityId
     this.calendarApi = this.calendarRef.current?.getApi()
   }
-  handleEventClick = (arg: EventClickArg) => {
-    this.router.push(
-      pagesPath._facilityId(this.facilityId).calendar.schedule._scheduleId(arg.event.id).$url().path,
-    )
-  }
+  handleEventClick = (arg: EventClickArg) => {}
   handleEventChange = (arg: EventChangeArg) => {}
   handleDateClick = (arg: DateClickArg) => {
     const start = String(arg.date).replace(/ GMT.*$/, '')
     this.router.push(
-      pagesPath._facilityId(this.facilityId).calendar.schedule.new.$url({ query: { start } }).path +
-        '&tab=normal',
+      pagesPath
+        ._facilityId(this.facilityId)
+        .calendar.schedule.new.$url({ query: { start } }).path + '&tab=normal',
     )
   }
   handleViewChange = (currentCalendarView: string) => {

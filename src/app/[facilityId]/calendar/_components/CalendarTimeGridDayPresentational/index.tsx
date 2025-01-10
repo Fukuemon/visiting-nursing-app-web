@@ -12,11 +12,12 @@ import styles from './style.module.css'
 import type { Events } from '@/types/event'
 
 import { TimeGridDayStyleWrapper } from '@/app/[facilityId]/calendar/_components/CalendarTimeGridDayPresentational/timeGridDayStyled'
-import { CurrentCalendarDateAtom } from '@/app/[facilityId]/calendar/provider/calendar'
+import { ScheduleDetailModal } from '@/app/[facilityId]/calendar/_components/Schedule/ScheduleDetailModal'
+import Modal from '@/app/_components/Modal'
 import { CalendarView } from '@/constants/calendarView'
 import { useQueryParams } from '@/hooks/useQueryParams'
 import CalendarHandler from '@/lib/calendar'
-import { useAtom } from 'jotai'
+import type { EventContentArg } from '@fullcalendar/core/index.js'
 import { useParams, useRouter } from 'next/navigation'
 
 type CalendarTimeGridDayPresentational = {
@@ -31,9 +32,6 @@ export const CalendarTimeGridDayPresentational: FC<
   const { queryParams } = useQueryParams()
   const calendarRef = useRef<FullCalendar>(null)
   const calendarHandler = new CalendarHandler(calendarRef, router, facilityId)
-  const [currentCalendarDateAtom, setCurrentCalendarDate] = useAtom(
-    CurrentCalendarDateAtom,
-  )
 
   useEffect(() => {
     if (calendarRef.current !== null) {
@@ -43,6 +41,19 @@ export const CalendarTimeGridDayPresentational: FC<
       }
     }
   }, [queryParams.get('date')])
+
+  const renderEventContent = (eventContent: EventContentArg) => (
+    <Modal className={styles.modal}>
+      <Modal.Trigger className={styles.eventContent}>
+        <p className={styles.timeText}>{eventContent.timeText}</p>
+        <p className={styles.title}>{eventContent.event.title}</p>
+      </Modal.Trigger>
+      <ScheduleDetailModal
+        scheduleId={eventContent.event.id}
+        startDate={eventContent.event.start ?? new Date()}
+      />
+    </Modal>
+  )
 
   return (
     <div className={styles.container}>
@@ -73,6 +84,7 @@ export const CalendarTimeGridDayPresentational: FC<
           eventClick={calendarHandler.handleEventClick}
           dateClick={calendarHandler.handleDateClick}
           allDaySlot={false}
+          eventContent={renderEventContent}
         />
       </TimeGridDayStyleWrapper>
     </div>
