@@ -5,6 +5,7 @@ import { createContext, useContext, useEffect, useRef, useState } from 'react'
 
 import classNames from 'classnames'
 import { AnimatePresence, motion } from 'framer-motion'
+import { createPortal } from 'react-dom'
 
 import styles from './style.module.css'
 
@@ -18,7 +19,7 @@ const ModalContext = createContext<{
   setIsOpen: () => {},
 })
 
-const Modal = ({
+const PortalModal = ({
   children,
   className,
   onOpen,
@@ -82,7 +83,7 @@ const Closure = ({
     <button
       type="button"
       onClick={() => {
-        if (disabled) return
+        if (disabled === false || disabled === undefined) return
         setIsOpen(false)
         onClick?.()
       }}
@@ -107,9 +108,15 @@ const Body = ({
   onClose,
 }: ModalBodyProps) => {
   const { isOpen, setIsOpen } = useContext(ModalContext)
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+    return () => setMounted(false)
+  }, [])
 
   const handleClose = () => {
-    if (isDirty) {
+    if (isDirty === false || isDirty === undefined) {
       if (!window.confirm('変更が破棄されますがよろしいですか？')) {
         return
       }
@@ -118,69 +125,72 @@ const Body = ({
     setIsOpen(false)
   }
 
-  return (
+  const modalContent = (
     <AnimatePresence mode="wait">
       {isOpen && (
         <>
-          {
-            <motion.div
-              key="overlay"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.2 }}
-              className={classNames(styles.overlay)}
-              onClick={() => handleClose()}
-            />
-          }
-          {
-
-            <motion.div
-              key="modal"
-              className={styles.modal}
-              initial={{
-                opacity: 0,
-                y: window.matchMedia('(min-width: 720px)').matches
-                  ? 'calc(-50% + 20px)'
-                  : 'calc(-50% + 100%)',
-                x: '-50%',
-              }}
-              animate={{ opacity: 1, y: 'calc(-50% + 0px)' }}
-              exit={{
-                opacity: 0,
-                y: window.matchMedia('(min-width: 720px)').matches
-                  ? 'calc(-50% + 20px)'
-                  : 'calc(-50% + 50px)',
-              }}
-              transition={{ duration: 0.2 }}
-            >
-              <div className={styles.header}>
-                <button
-                  onClick={handleClose}
-                  type="button"
-                  className={styles.closeButton}
-                >
-                  <CloseIcon width={24} height={24} />
-                </button>
-                <h3 className={styles.heading}>{title}</h3>
-              </div>
-              {children}
-              {stickyFooter !== undefined && (
-                <div className={styles.stickyFooter}>{stickyFooter}</div>
-              )}
-            </motion.div>
-          }
+          <motion.div
+            key="overlay"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className={classNames(styles.overlay)}
+            onClick={() => handleClose()}
+          />
+          <motion.div
+            key="modal"
+            className={styles.modal}
+            initial={{
+              opacity: 0,
+              y: window.matchMedia('(min-width: 720px)').matches
+                ? 'calc(-50% + 20px)'
+                : 'calc(-50% + 100%)',
+              x: '-50%',
+            }}
+            animate={{ opacity: 1, y: 'calc(-50% + 0px)' }}
+            exit={{
+              opacity: 0,
+              y: window.matchMedia('(min-width: 720px)').matches
+                ? 'calc(-50% + 20px)'
+                : 'calc(-50% + 50px)',
+            }}
+            transition={{ duration: 0.2 }}
+          >
+            <div className={styles.header}>
+              <button
+                onClick={handleClose}
+                type="button"
+                className={styles.closeButton}
+              >
+                <CloseIcon width={24} height={24} />
+              </button>
+              <h3 className={styles.heading}>{title}</h3>
+            </div>
+            <div style={{ overflowY: 'auto' }}>{children}</div>
+            {stickyFooter !== undefined && (
+              <div className={styles.stickyFooter}>{stickyFooter}</div>
+            )}
+          </motion.div>
         </>
       )}
     </AnimatePresence>
   )
+
+  return mounted ? createPortal(modalContent, document.body) : null
 }
 
 const UnstyledBody = ({ children, isDirty, onClose }: ModalBodyProps) => {
   const { isOpen, setIsOpen } = useContext(ModalContext)
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+    return () => setMounted(false)
+  }, [])
 
   const handleClose = () => {
-    if (isDirty) {
+    if (isDirty === false || isDirty === undefined) {
       if (!window.confirm('変更が破棄されますがよろしいですか？')) {
         return
       }
@@ -189,53 +199,51 @@ const UnstyledBody = ({ children, isDirty, onClose }: ModalBodyProps) => {
     setIsOpen(false)
   }
 
-  return (
+  const modalContent = (
     <AnimatePresence mode="wait">
       {isOpen && (
         <>
-          {
-            <motion.div
-              key="overlay"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.2 }}
-              className={classNames(styles.overlay)}
-              onClick={() => handleClose()}
-            />
-          }
-          {
-            <motion.div
-              key="modal"
-              className={styles.unstyledModal}
-              initial={{
-                opacity: 0,
-                y: window.matchMedia('(min-width: 720px)').matches
-                  ? 'calc(-50% + 20px)'
-                  : 'calc(-50% + 100%)',
-                x: '-50%',
-              }}
-              animate={{ opacity: 1, y: 'calc(-50% + 0px)' }}
-              exit={{
-                opacity: 0,
-                y: window.matchMedia('(min-width: 720px)').matches
-                  ? 'calc(-50% + 20px)'
-                  : 'calc(-50% + 50px)',
-              }}
-              transition={{ duration: 0.2 }}
-            >
-              {children}
-            </motion.div>
-          }
+          <motion.div
+            key="overlay"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className={classNames(styles.overlay)}
+            onClick={() => handleClose()}
+          />
+          <motion.div
+            key="modal"
+            className={styles.unstyledModal}
+            initial={{
+              opacity: 0,
+              y: window.matchMedia('(min-width: 720px)').matches
+                ? 'calc(-50% + 20px)'
+                : 'calc(-50% + 100%)',
+              x: '-50%',
+            }}
+            animate={{ opacity: 1, y: 'calc(-50% + 0px)' }}
+            exit={{
+              opacity: 0,
+              y: window.matchMedia('(min-width: 720px)').matches
+                ? 'calc(-50% + 20px)'
+                : 'calc(-50% + 50px)',
+            }}
+            transition={{ duration: 0.2 }}
+          >
+            {children}
+          </motion.div>
         </>
       )}
     </AnimatePresence>
   )
+
+  return mounted ? createPortal(modalContent, document.body) : null
 }
 
-Modal.Body = Body
-Modal.UnstyledBody = UnstyledBody
-Modal.Trigger = Trigger
-Modal.Closure = Closure
+PortalModal.Body = Body
+PortalModal.UnstyledBody = UnstyledBody
+PortalModal.Trigger = Trigger
+PortalModal.Closure = Closure
 
-export default Modal
+export default PortalModal
