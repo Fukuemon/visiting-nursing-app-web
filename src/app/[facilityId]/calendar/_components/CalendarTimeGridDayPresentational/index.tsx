@@ -12,7 +12,7 @@ import styles from './style.module.css'
 import type { Events } from '@/types/event'
 
 import { TimeGridDayStyleWrapper } from '@/app/[facilityId]/calendar/_components/CalendarTimeGridDayPresentational/timeGridDayStyled'
-import { ScheduleDetailModal } from '@/app/[facilityId]/calendar/_components/Schedule/ScheduleDetailModal'
+import { ScheduleDetailModal } from '@/app/[facilityId]/calendar/_components/Schedule/Detail/ScheduleDetailModal'
 import Modal from '@/app/_components/Modal'
 import { CalendarView } from '@/constants/calendarView'
 import { useQueryParams } from '@/hooks/useQueryParams'

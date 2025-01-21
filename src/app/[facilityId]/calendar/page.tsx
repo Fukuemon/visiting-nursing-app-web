@@ -5,7 +5,7 @@ import { IconButton } from '@/app/_components/IconButton'
 import { Menubar } from '@/app/_components/Menubar'
 import { ToggleStateType } from '@/app/_components/Toggle'
 import { CalendarView } from '@/constants/calendarView'
-import { usePathname, useRouter } from 'next/navigation'
+import { useParams, usePathname, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import styles from './style.module.css'
 import MenuIcon from '/public/icons/menu.svg'
@@ -22,12 +22,14 @@ import { Loading } from '@/app/_components/Loading'
 import { useScheduleList } from '@/hooks/api/schedule'
 import { useQueryParams } from '@/hooks/useQueryParams'
 import { useForm } from 'react-hook-form'
+import { useSWRConfig } from 'swr'
 
 export type Query = {
   tab: string
 }
 
 export default function CalendarPage() {
+  const { facilityId } = useParams<{ facilityId: string }>()
   const [isMenubarOpen, setIsMenuBarOpen] = useState(false)
   const { queryParams, setQueryParams } = useQueryParams()
   const pathname = usePathname()
@@ -35,7 +37,8 @@ export default function CalendarPage() {
   const [currentCalendarDate, setCurrentCalendarDate] = useAtom(
     CurrentCalendarDateAtom,
   )
-  const schedules = useScheduleList()
+  const { mutate } = useSWRConfig()
+  const schedules = useScheduleList(facilityId)
   useEffect(() => {
     if (queryParams.get('date') === null) {
       setQueryParams({ date: new Date() })
@@ -45,6 +48,7 @@ export default function CalendarPage() {
     ) {
       setQueryParams({ tab: CalendarView.timeGridDay })
     }
+    mutate(process.env.NEXT_PUBLIC_API_URL + `/facilities/${facilityId}/schedules`)
   }, [])
 
   useEffect(() => {
@@ -85,7 +89,6 @@ export default function CalendarPage() {
       <UserIcon height={32} width={32} />
     </IconButton>
   )
-
   return (
     <div className={styles.pageContainer}>
       <Header

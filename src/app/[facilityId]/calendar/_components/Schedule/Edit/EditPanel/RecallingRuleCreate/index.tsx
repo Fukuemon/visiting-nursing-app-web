@@ -1,11 +1,8 @@
 'use client'
 
 import { DatePicker } from '@/app/_components/DatePicker'
-import type { RecallingScheduleCreate } from '@/schema/schedule'
-import {
-  RecallingFrequency,
-  RecallingScheduleKey,
-} from '@/schema/schedule'
+import type { ScheduleCreate } from '@/schema/schedule'
+import { RecallingFrequency, RecallingScheduleKey } from '@/schema/schedule'
 import classNames from 'classnames'
 import { useEffect, useState } from 'react'
 import type { UseFormSetValue } from 'react-hook-form'
@@ -13,8 +10,8 @@ import { useController, useWatch, type Control } from 'react-hook-form'
 import styles from './style.module.css'
 
 export type RecallingRuleCreateProps = {
-  control: Control<RecallingScheduleCreate>
-  setValue: UseFormSetValue<RecallingScheduleCreate>
+  control: Control<ScheduleCreate>
+  setValue: UseFormSetValue<ScheduleCreate>
 }
 
 export const RecallingRuleCreate = ({

@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, type ComponentPropsWithoutRef } from 'react'
+import { useEffect, useRef, type ComponentPropsWithoutRef } from 'react'
 import type { Control, FieldPath, FieldValues } from 'react-hook-form'
 import { useController } from 'react-hook-form'
 import styles from './style.module.css'
@@ -21,6 +21,7 @@ export const DatePicker = <T extends FieldValues>({
   isWide = false,
   ...props
 }: DatePickerProps<T>) => {
+  const previousValidDate = useRef<Date | null>(null)
   const {
     field,
     fieldState: { error },
@@ -32,24 +33,43 @@ export const DatePicker = <T extends FieldValues>({
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const dateValue =
       event.target.value !== '' ? new Date(event.target.value) : null
-    field.onChange(dateValue)
+    if (dateValue !== null && !isNaN(dateValue.getTime())) {
+      previousValidDate.current = dateValue
+      field.onChange(dateValue)
+    } else {
+      field.onChange(previousValidDate.current)
+    }
   }
 
-  // field.value の型チェックを改善
   const getValue = () => {
-    const value = field.value as Date
-    if (value !== null && typeof value === 'object' && 'getTime' in value) {
+    const value = field.value as Date | null
+    if (value === null) return ''
+
+    if (!isNaN(value.getTime())) {
+      previousValidDate.current = value
       const year = value.getFullYear()
       const month = String(value.getMonth() + 1).padStart(2, '0')
       const day = String(value.getDate()).padStart(2, '0')
       return `${year}-${month}-${day}`
     }
+
+    if (previousValidDate.current !== null) {
+      const prevDate = previousValidDate.current
+      const year = prevDate.getFullYear()
+      const month = String(prevDate.getMonth() + 1).padStart(2, '0')
+      const day = String(prevDate.getDate()).padStart(2, '0')
+      return `${year}-${month}-${day}`
+    }
+
     return ''
   }
 
   useEffect(() => {
-    getValue()
-  }, [])
+    const value = field.value as Date | null
+    if (value !== null && !isNaN(value.getTime())) {
+      previousValidDate.current = value
+    }
+  }, [field.value])
 
   return (
     <div className={styles.datePicker} data-wide={isWide}>

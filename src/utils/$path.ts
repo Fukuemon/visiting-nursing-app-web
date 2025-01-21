@@ -1,3 +1,4 @@
+import type { Query as Query_d2tsb5 } from '../app/[facilityId]/calendar/page';
 import type { Query as Query_14t6ck9 } from '../app/[facilityId]/calendar/@modal/(.)schedule/new/page';
 import type { Query as Query_fbo8o } from '../app/[facilityId]/calendar/schedule/new/page';
 
@@ -14,29 +15,17 @@ export const pagesPath = {
     "calendar": {
       "@modal": {
         "___schedule": {
-          _scheduleId: (scheduleId: string | number) => ({
-            "edit": {
-              $url: (url?: { hash?: string }) => ({ pathname: '/[facilityId]/calendar/@modal/(.)schedule/[scheduleId]/edit' as const, query: { facilityId, scheduleId }, hash: url?.hash, path: `/${facilityId}/calendar/@modal/(.)schedule/${scheduleId}/edit${buildSuffix(url)}` })
-            },
-            $url: (url?: { hash?: string }) => ({ pathname: '/[facilityId]/calendar/@modal/(.)schedule/[scheduleId]' as const, query: { facilityId, scheduleId }, hash: url?.hash, path: `/${facilityId}/calendar/@modal/(.)schedule/${scheduleId}${buildSuffix(url)}` })
-          }),
           "new": {
             $url: (url: { query: Query_14t6ck9, hash?: string }) => ({ pathname: '/[facilityId]/calendar/@modal/(.)schedule/new' as const, query: { facilityId, ...url.query }, hash: url.hash, path: `/${facilityId}/calendar/@modal/(.)schedule/new${buildSuffix(url)}` })
           }
         }
       },
       "schedule": {
-        _scheduleId: (scheduleId: string | number) => ({
-          "edit": {
-            $url: (url?: { hash?: string }) => ({ pathname: '/[facilityId]/calendar/schedule/[scheduleId]/edit' as const, query: { facilityId, scheduleId }, hash: url?.hash, path: `/${facilityId}/calendar/schedule/${scheduleId}/edit${buildSuffix(url)}` })
-          },
-          $url: (url?: { hash?: string }) => ({ pathname: '/[facilityId]/calendar/schedule/[scheduleId]' as const, query: { facilityId, scheduleId }, hash: url?.hash, path: `/${facilityId}/calendar/schedule/${scheduleId}${buildSuffix(url)}` })
-        }),
         "new": {
           $url: (url: { query: Query_fbo8o, hash?: string }) => ({ pathname: '/[facilityId]/calendar/schedule/new' as const, query: { facilityId, ...url.query }, hash: url.hash, path: `/${facilityId}/calendar/schedule/new${buildSuffix(url)}` })
         }
       },
-      $url: (url?: { hash?: string }) => ({ pathname: '/[facilityId]/calendar' as const, query: { facilityId }, hash: url?.hash, path: `/${facilityId}/calendar${buildSuffix(url)}` })
+      $url: (url: { query: Query_d2tsb5, hash?: string }) => ({ pathname: '/[facilityId]/calendar' as const, query: { facilityId, ...url.query }, hash: url.hash, path: `/${facilityId}/calendar${buildSuffix(url)}` })
     },
     "users": {
       _userId: (userId: string | number) => ({

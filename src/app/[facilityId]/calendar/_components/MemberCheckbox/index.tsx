@@ -6,7 +6,9 @@ export const MemberCheckbox: FC<{
   member: User
   showMembers: User[]
   setShowMembers: (members: User[]) => void
-}> = ({ member, showMembers, setShowMembers }) => {
+  color?: string
+  label?: string
+}> = ({ member, showMembers, setShowMembers, color, label }) => {
   const isChecked = showMembers.some(
     (showMember) => showMember.id === member.id,
   )
@@ -26,8 +28,9 @@ export const MemberCheckbox: FC<{
       checkBoxState={
         isChecked ? CheckboxStateType.CHECKED : CheckboxStateType.DEFAULT
       }
-      label={member.username}
+      label={label ?? member.username}
       onClick={toggleMember}
+      color={color}
     />
   )
 }

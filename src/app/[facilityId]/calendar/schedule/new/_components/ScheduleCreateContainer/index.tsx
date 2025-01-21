@@ -11,10 +11,20 @@ export const ScheduleCreateContainer = () => {
     startParam !== null && startParam !== '' ? new Date(startParam) : new Date()
   console.log(startDate)
   const users = useUserList([facilityId, '', '', '', ''])
-  const patients = usePatientList()
+  const patients = usePatientList(facilityId)
   const currentUser = {
-    id: '01J6SMYDSKKKNJCR2Y3242T7YX',
-    username: '鈴木一郎',
+    id: '01JE2J0PNT3MN60M4M2AHPQCPV',
+    username: '山本二郎',
+    position: 'member',
+    team: 'B',
+    facility: 'テスト訪問看護ステーション',
+    department: '看護',
+    area: 'B',
+    policies: [],
+    email: 'yamamoto@example.com',
+    phone: '',
+    created_at: '2024-12-02T11:08:30+09:00',
+    updated_at: '2024-12-02T11:08:30+09:00',
   }
 
   if (users.error !== undefined || patients.error !== undefined) {

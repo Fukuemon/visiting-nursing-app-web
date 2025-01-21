@@ -1,14 +1,8 @@
-import { ServiceCodeEdit } from '@/app/[facilityId]/calendar/schedule/[scheduleId]/edit/_components/EditPanel/ServiceCodeEdit'
+import { ServiceCodeEdit } from '@/app/[facilityId]/calendar/_components/Schedule/Edit/EditPanel/ServiceCodeEdit'
 import { DatePicker } from '@/app/_components/DatePicker'
 import { NumberPicker } from '@/app/_components/NumberPicker'
 import { TimePicker } from '@/app/_components/TimePicker'
-import type { ServiceCode } from '@/constants/serviceCode'
-import { ServiceCodeDuration } from '@/constants/serviceCode'
-import type {
-  RecallingSchedule,
-  RecallingScheduleCreate,
-} from '@/schema/recallingSchedule'
-import { RecallingScheduleKey } from '@/schema/recallingSchedule'
+import { ServiceCode } from '@/schema/serviceCode'
 import type { Schedule, ScheduleCreate } from '@/schema/schedule'
 import { useEffect } from 'react'
 import {
@@ -28,10 +22,9 @@ export type ScheduleDateCreateProps = {
   endTimeName: FieldPath<ScheduleCreate>
   serviceTimeName: FieldPath<ScheduleCreate>
   setValue: UseFormSetValue<ScheduleCreate>
-  recallingSetValue: UseFormSetValue<RecallingScheduleCreate>
-  serviceCodeName: FieldPath<ScheduleCreate>
+  serviceCodeIdName: FieldPath<ScheduleCreate>
   isVisitSchedule: boolean
-  isRecallingSchedule: boolean
+  serviceCodes: ServiceCode[]
 }
 
 export const ScheduleDateCreate = ({
@@ -41,33 +34,36 @@ export const ScheduleDateCreate = ({
   startTimeName,
   endTimeName,
   serviceTimeName,
-  serviceCodeName,
-  recallingSetValue,
+  serviceCodeIdName,
   isVisitSchedule,
-  isRecallingSchedule,
+  serviceCodes,
 }: ScheduleDateCreateProps) => {
   const date = useWatch({ control, name: dateName })
   const startTime = useWatch({ control, name: startTimeName }) as
     | string
     | undefined
   const endTime = useWatch({ control, name: endTimeName }) as string | undefined
+  console.log(endTime)
   const serviceTime = useWatch({ control, name: serviceTimeName }) as
     | number
     | undefined
-  const serviceCode = useWatch({ control, name: serviceCodeName }) as
-    | ServiceCode
+  const serviceCodeId = useWatch({ control, name: serviceCodeIdName }) as
+    | string
     | undefined
 
   useEffect(() => {
     // serviceCode変更時
     if (
-      serviceCode !== undefined &&
+      serviceCodeId !== undefined &&
       date !== undefined &&
       startTime !== undefined &&
       endTime !== undefined &&
-      serviceTime !== undefined
+      serviceTime !== undefined &&
+      serviceCodes
     ) {
-      const duration = ServiceCodeDuration[serviceCode].max
+      const duration = serviceCodes.find(
+        (serviceCode) => serviceCode.id === serviceCodeId,
+      )?.service_time_range_end
       setValue(
         serviceTimeName,
         duration as PathValue<Schedule, Path<Schedule>>,
@@ -86,7 +82,7 @@ export const ScheduleDateCreate = ({
         shouldValidate: true,
       })
     }
-  }, [serviceCode, setValue, serviceTimeName])
+  }, [serviceCodeId, setValue, serviceTimeName])
 
   useEffect(() => {
     // starttime変更時
@@ -125,66 +121,81 @@ export const ScheduleDateCreate = ({
   }, [date, startTime, serviceTime, setValue, endTimeName])
   useEffect(() => {
     // serviceTime変更時
-    if (serviceCode !== undefined && serviceTime !== undefined) {
-      const { min, max } = ServiceCodeDuration[serviceCode]
-      if (serviceTime < min) {
-        setValue(serviceTimeName, min as PathValue<Schedule, Path<Schedule>>, {
-          shouldValidate: true,
-        })
-      } else if (serviceTime > max) {
-        setValue(serviceTimeName, max as PathValue<Schedule, Path<Schedule>>, {
-          shouldValidate: true,
-        })
+    if (
+      serviceCodeId !== undefined &&
+      serviceTime !== undefined &&
+      serviceCodes !== undefined
+    ) {
+      const serviceCode = serviceCodes.find(
+        (serviceCode) => serviceCode.id === serviceCodeId,
+      )
+
+      if (serviceCode && serviceTime < serviceCode.service_time_range_start) {
+        setValue(
+          serviceTimeName,
+          serviceCode.service_time_range_start as PathValue<Schedule, Path<Schedule>>,
+          {
+            shouldValidate: true,
+          },
+        )
+      } else if (serviceCode && serviceTime > serviceCode.service_time_range_end) {
+        setValue(
+          serviceTimeName,
+          serviceCode.service_time_range_end as PathValue<Schedule, Path<Schedule>>,
+          {
+            shouldValidate: true,
+          },
+        )
       }
     }
   }, [serviceTime, setValue, serviceTimeName])
 
-  useEffect(() => {
-    // 訪問日変更時
-    if (date !== undefined) {
-      const visitDate = new Date(date)
-      const dayOfWeek = visitDate.getDay()
-      const adjustedDate = visitDate.getDate() + dayOfWeek
-      const weekOfMonth = Math.ceil(adjustedDate / 7)
-      if (isRecallingSchedule) {
-        recallingSetValue(
-          RecallingScheduleKey.DayOfWeek,
-          dayOfWeek as PathValue<RecallingSchedule, Path<RecallingSchedule>>,
-          {
-            shouldValidate: true,
-          },
-        )
-        recallingSetValue(
-          RecallingScheduleKey.DayOfWeek,
-          dayOfWeek as PathValue<RecallingSchedule, Path<RecallingSchedule>>,
-          {
-            shouldValidate: true,
-          },
-        )
-        recallingSetValue(
-          RecallingScheduleKey.WeekOfMonth,
-          weekOfMonth as PathValue<RecallingSchedule, Path<RecallingSchedule>>,
-          {
-            shouldValidate: true,
-          },
-        )
-        recallingSetValue(
-          RecallingScheduleKey.WeekOfMonth,
-          weekOfMonth as PathValue<RecallingSchedule, Path<RecallingSchedule>>,
-          {
-            shouldValidate: true,
-          },
-        )
-        recallingSetValue(
-          RecallingScheduleKey.StartDate,
-          visitDate as PathValue<RecallingSchedule, Path<RecallingSchedule>>,
-          {
-            shouldValidate: true,
-          },
-        )
-      }
-    }
-  }, [date, setValue, recallingSetValue, recallingSetValue])
+  // useEffect(() => {
+  //   // 訪問日変更時
+  //   if (date !== undefined) {
+  //     const visitDate = new Date(date)
+  //     const dayOfWeek = visitDate.getDay()
+  //     const adjustedDate = visitDate.getDate() + dayOfWeek
+  //     const weekOfMonth = Math.ceil(adjustedDate / 7)
+  //     if (isRecallingSchedule) {
+  //       recallingSetValue(
+  //         RecallingScheduleKey.DayOfWeek,
+  //         dayOfWeek as PathValue<RecallingSchedule, Path<RecallingSchedule>>,
+  //         {
+  //           shouldValidate: true,
+  //         },
+  //       )
+  //       recallingSetValue(
+  //         RecallingScheduleKey.DayOfWeek,
+  //         dayOfWeek as PathValue<RecallingSchedule, Path<RecallingSchedule>>,
+  //         {
+  //           shouldValidate: true,
+  //         },
+  //       )
+  //       recallingSetValue(
+  //         RecallingScheduleKey.WeekOfMonth,
+  //         weekOfMonth as PathValue<RecallingSchedule, Path<RecallingSchedule>>,
+  //         {
+  //           shouldValidate: true,
+  //         },
+  //       )
+  //       recallingSetValue(
+  //         RecallingScheduleKey.WeekOfMonth,
+  //         weekOfMonth as PathValue<RecallingSchedule, Path<RecallingSchedule>>,
+  //         {
+  //           shouldValidate: true,
+  //         },
+  //       )
+  //       recallingSetValue(
+  //         RecallingScheduleKey.StartDate,
+  //         visitDate as PathValue<RecallingSchedule, Path<RecallingSchedule>>,
+  //         {
+  //           shouldValidate: true,
+  //         },
+  //       )
+  //     }
+  //   }
+  // }, [date, setValue, recallingSetValue, recallingSetValue])
 
   return (
     <div className={styles.scheduleDateEdit}>
@@ -229,7 +240,7 @@ export const ScheduleDateCreate = ({
       </div>
       {isVisitSchedule && (
         <div className={styles.serviceCode}>
-          <ServiceCodeEdit control={control} name={serviceCodeName} />
+          <ServiceCodeEdit control={control} name={serviceCodeIdName} />
         </div>
       )}
     </div>

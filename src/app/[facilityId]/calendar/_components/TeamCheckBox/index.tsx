@@ -9,7 +9,8 @@ export const TeamCheckbox: FC<{
   teamMembers: User[]
   showMembers: User[]
   setShowMembers: (members: User[]) => void
-}> = ({ teamName, teamMembers, showMembers, setShowMembers }) => {
+  color?: string
+}> = ({ teamName, teamMembers, showMembers, setShowMembers, color }) => {
   const allMembersInTeamSelected = teamMembers.every((member) =>
     showMembers.some((showMember) => showMember.id === member.id),
   )
@@ -41,6 +42,7 @@ export const TeamCheckbox: FC<{
             ? CheckboxStateType.CHECKED
             : CheckboxStateType.DEFAULT
         }
+        color={color}
         label={`${teamName}チーム`}
         onClick={toggleTeamMembers}
       />
@@ -50,6 +52,7 @@ export const TeamCheckbox: FC<{
             member={member}
             showMembers={showMembers}
             setShowMembers={setShowMembers}
+            color={color}
           />
         </div>
       ))}

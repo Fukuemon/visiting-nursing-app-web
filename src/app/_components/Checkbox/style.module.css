@@ -23,9 +23,6 @@
     }
 
     &[data-active="true"] {
-      background-color: var(--action-main);
-      border-color: var(--action-main);
-
       &[data-error="true"] {
         background-color: var(--incorrect-main);
         border-color: var(--incorrect-main);

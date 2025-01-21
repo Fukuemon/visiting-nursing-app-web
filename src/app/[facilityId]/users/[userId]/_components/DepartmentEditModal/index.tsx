@@ -9,7 +9,7 @@ import { Button } from '@/app/_components/Button'
 import Modal from '@/app/_components/Modal'
 
 import { SelectButton } from '@/app/_components/SelectButton'
-import { Department } from '@/schema/department'
+import type { Department } from '@/schema/department'
 import styles from './style.module.css'
 
 export type DepartmentEditModalProps = {

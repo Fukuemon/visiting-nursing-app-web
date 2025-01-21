@@ -159,4 +159,8 @@ export const StyleWrapper = styled.div`
     box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.4);
     border: 1px var(--gray-200) solid;
   }
+
+  .fc-bg-title {
+    font-size: 18px;
+  }
 `

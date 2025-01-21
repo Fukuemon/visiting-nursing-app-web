@@ -19,31 +19,19 @@ import styles from './style.module.css'
 
 export type EditPanelProps = {
   control: Control<ScheduleEdit>
-  // recallingControl: Control<RecallingScheduleEdit>
-  // recallingCreateControl: Control<RecallingScheduleCreate>
-  // recallingSetValue: UseFormSetValue<RecallingScheduleEdit>
-  // recallingCreateSetValue: UseFormSetValue<RecallingScheduleCreate>
   setValue: UseFormSetValue<ScheduleEdit>
   currentId: ScheduleKey | VisitScheduleKey | RecallingScheduleKey | undefined
   setCurrentId: (id: ScheduleKey | VisitScheduleKey) => void
-  // isRecallingSchedule: boolean
   isVisitSchedule: boolean
-  isSchedule: boolean
   watchScheduleType: scheduleType
 }
 
 export const EditPanel: FC<EditPanelProps> = ({
   control,
-  // recallingControl,
-  // recallingCreateControl,
-  // recallingSetValue,
-  // recallingCreateSetValue,
   setValue,
   currentId,
   setCurrentId,
-  // isRecallingSchedule,
   isVisitSchedule,
-  isSchedule,
   watchScheduleType,
 }) => {
   useEffect(() => {
@@ -72,7 +60,6 @@ export const EditPanel: FC<EditPanelProps> = ({
             serviceTimeName={VisitScheduleKey.ServiceTime}
             serviceCodeName={VisitScheduleKey.ServiceCode}
             isVisitSchedule={isVisitSchedule}
-            watchScheduleType={watchScheduleType}
           />
         )}
         {(watchScheduleType === scheduleType.normalRecalling ||

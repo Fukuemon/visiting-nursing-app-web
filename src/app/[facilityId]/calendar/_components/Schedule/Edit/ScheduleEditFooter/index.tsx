@@ -42,12 +42,12 @@ export const ScheduleEditFooter = ({
     if (
       (watchScheduleType === scheduleType.normalRecalling || 
        watchScheduleType === scheduleType.visitRecalling) &&
-      scheduleDirtyFields.startDate !== undefined &&
-      scheduleEdit.formState.defaultValues?.startDate !== null &&
-      scheduleEdit.formState.defaultValues?.startDate !== undefined
+      scheduleDirtyFields[ScheduleKey.StartDate] !== undefined &&
+      scheduleEdit.formState.defaultValues?.[ScheduleKey.StartDate] !== null &&
+      scheduleEdit.formState.defaultValues?.[ScheduleKey.StartDate] !== undefined
     ) {
       // 繰り返しの開始時間を変更
-      const defaultStartDate = scheduleEdit.formState.defaultValues.startDate
+      const defaultStartDate = scheduleEdit.formState.defaultValues[ScheduleKey.StartDate]
       const diffTime = currentStartDate.getTime() - defaultStartDate.getTime()
 
       const newParentStartDate = new Date(parentStartDate.getTime() + diffTime)
@@ -56,7 +56,7 @@ export const ScheduleEditFooter = ({
     } else if (
       (watchScheduleType === scheduleType.visit ||
         watchScheduleType === scheduleType.normal) &&
-      Boolean(scheduleDirtyFields.scheduleType)
+      Boolean(scheduleDirtyFields[ScheduleKey.ScheduleType])
     ) {
       // 繰り返しから通常予定に変更
       if (watchScheduleType === scheduleType.visit) {

@@ -1,3 +1,4 @@
+import { CalendarView } from '@/constants/calendarView'
 import { pagesPath } from '@/utils/$path'
 import classNames from 'classnames'
 import { easeOut, motion } from 'framer-motion'
@@ -19,7 +20,9 @@ export const Menubar: FC<MenubarProps> = ({ isOpen, currentLink }) => {
   const { facilityId } = useParams<{ facilityId: string }>()
   const links = [
     {
-      href: pagesPath._facilityId(facilityId).calendar.$url().path,
+      href: pagesPath
+        ._facilityId(facilityId)
+        .calendar.$url({ query: { tab: CalendarView.timeGridDay } }).path,
       label: 'カレンダー',
       icon: <CalendarIcon />,
     },
@@ -52,6 +55,7 @@ export const Menubar: FC<MenubarProps> = ({ isOpen, currentLink }) => {
         <div className={styles.links}>
           {links.map((link) => (
             <div
+              key={link.href}
               className={classNames(styles.linkContainer, {
                 [styles._currentLink]: currentLink === link.href,
               })}

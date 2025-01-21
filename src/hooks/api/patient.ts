@@ -30,19 +30,19 @@ export const usePatient = (patientId: string) => {
 }
 
 const patientListFetcher = async (url: string) => {
-  const res: Patient[] = [
-    { name: '鈴木一郎', id: patientIda, area: 'A' },
-    { name: '鈴木二郎', id: patientIdb, area: 'B' },
-    { name: '鈴木三郎', id: patientIdc, area: 'C' },
-  ]
-  return res
-  //   const res = await fetch(url)
-  //   return res.json()
+  // const res: Patient[] = [
+  //   { name: '鈴木一郎', id: patientIda, area: 'A' },
+  //   { name: '鈴木二郎', id: patientIdb, area: 'B' },
+  //   { name: '鈴木三郎', id: patientIdc, area: 'C' },
+  // ]
+  // return res
+    const res = await fetch(url)
+    return res.json()
 }
 
-export const usePatientList = () => {
-  const { data, isLoading, error } = useSWR(
-    process.env.NEXT_PUBLIC_API_URL + `/patients`,
+export const usePatientList = (facilityId: string) => {
+  const { data, isLoading, error, mutate } = useSWR<Patient[], Error>(
+    process.env.NEXT_PUBLIC_API_URL + `/facilities/${facilityId}/patients`,
     patientListFetcher,
   )
 
@@ -50,5 +50,6 @@ export const usePatientList = () => {
     patients: data,
     isLoading,
     error,
+    mutate,
   }
 }

@@ -9,7 +9,7 @@ import { Button } from '@/app/_components/Button'
 import Modal from '@/app/_components/Modal'
 
 import { SelectButton } from '@/app/_components/SelectButton'
-import { Position } from '@/schema/position'
+import type { Position } from '@/schema/position'
 import styles from './style.module.css'
 
 export type PositionEditModalProps = {

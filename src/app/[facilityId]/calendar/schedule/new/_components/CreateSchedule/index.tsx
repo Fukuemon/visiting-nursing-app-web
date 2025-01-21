@@ -1,24 +1,20 @@
 import {
   SelectPanel,
   type ButtonContentProps,
-} from '@/app/[facilityId]/calendar/schedule/[scheduleId]/edit/_components/SelectPanel'
-import { FreeTextSelect } from '@/app/[facilityId]/calendar/schedule/[scheduleId]/edit/_components/SelectPanel/FreeTextSelect'
-import { OptionSelect } from '@/app/[facilityId]/calendar/schedule/[scheduleId]/edit/_components/SelectPanel/OptionSelect'
-import { RecallingRuleSelect } from '@/app/[facilityId]/calendar/schedule/[scheduleId]/edit/_components/SelectPanel/RecallingRuleSelect'
-import { ScheduleCategorySelect } from '@/app/[facilityId]/calendar/schedule/[scheduleId]/edit/_components/SelectPanel/ScheduleCategorySelect'
-import { ScheduleDateSelect } from '@/app/[facilityId]/calendar/schedule/[scheduleId]/edit/_components/SelectPanel/ScheduleDateSelect'
+} from '@/app/[facilityId]/calendar/_components/Schedule/Edit/SelectPanel'
+import { FreeTextSelect } from '@/app/[facilityId]/calendar/_components/Schedule/Edit/SelectPanel/FreeTextSelect'
+import { OptionSelect } from '@/app/[facilityId]/calendar/_components/Schedule/Edit/SelectPanel/OptionSelect'
+import { RecallingRuleSelect } from '@/app/[facilityId]/calendar/_components/Schedule/Edit/SelectPanel/RecallingRuleSelect'
+import { ScheduleCategorySelect } from '@/app/[facilityId]/calendar/_components/Schedule/Edit/SelectPanel/ScheduleCategorySelect'
+import { ScheduleDateSelect } from '@/app/[facilityId]/calendar/_components/Schedule/Edit/SelectPanel/ScheduleDateSelect'
 import InterceptModal from '@/app/_components/InterceptModal'
 import { ccCategory, CcCategoryText } from '@/constants/ccCategory'
 import { scheduleType } from '@/constants/scheduleType'
-import type { RecallingScheduleCreate } from '@/schema/recallingSchedule'
+import type { RecallingScheduleCreate, ScheduleCreate } from '@/schema/schedule'
 import {
   RecallingFrequency,
   recallingScheduleCreateSchema,
   RecallingScheduleKey,
-  VisitRecallingScheduleKey,
-} from '@/schema/recallingSchedule'
-import type { ScheduleCreate } from '@/schema/schedule'
-import {
   scheduleCreateSchema,
   ScheduleKey,
   VisitScheduleKey,
@@ -32,11 +28,11 @@ import { useForm } from 'react-hook-form'
 import { CreatePanel } from '@/app/[facilityId]/calendar/schedule/new/_components/CreatePanel'
 import { ScheduleCreateFooter } from '@/app/[facilityId]/calendar/schedule/new/_components/ScheduleCreateFooter'
 import { TextTab } from '@/app/_components/TextTab'
-import { serviceCode } from '@/constants/serviceCode'
 import { useQueryParams } from '@/hooks/useQueryParams'
 import { useSideTransition } from '@/hooks/useSideTransition'
 import type { Patient } from '@/schema/patient'
 import styles from './style.module.css'
+import { useServiceCodeList } from '@/hooks/api/serviceCode'
 
 export type CreateScheduleProps = {
   users: User[]
@@ -62,29 +58,28 @@ export const CreateSchedule: FC<CreateScheduleProps> = ({
   currentUserId,
   startDate,
 }) => {
+  const serviceCodes = useServiceCodeList()
   const { queryParams } = useQueryParams()
   const { activeTab } = useSideTransition(
     'tab',
     tabs.map((tab) => tab.id),
     queryParams.get('tab') ?? 'visit',
   )
-  console.log(activeTab)
   const [currentId, setCurrentId] = useState<
     ScheduleKey | VisitScheduleKey | RecallingScheduleKey | undefined
-  >(ScheduleKey.ScheduleDate)
-  const [isRecallingSchedule, setIsRecallingSchedule] = useState(false)
+  >(ScheduleKey.StartDate)
 
   const scheduleCreate = useForm<ScheduleCreate>({
     defaultValues: {
       [ScheduleKey.UserId]: currentUserId,
       [ScheduleKey.ScheduleType]:
         activeTab === 'visit' ? scheduleType.visit : scheduleType.normal,
-      [ScheduleKey.ScheduleDate]: startDate,
+      [ScheduleKey.StartDate]: startDate,
       [ScheduleKey.StartTime]: startDate.toLocaleTimeString('ja-JP', {
         hour: '2-digit',
         minute: '2-digit',
       }),
-      [ScheduleKey.EndTime]: startDate.toLocaleTimeString('ja-JP', {
+      [ScheduleKey.EndTime]: new Date(startDate.getTime() + 30 * 60000).toLocaleTimeString('ja-JP', {
         hour: '2-digit',
         minute: '2-digit',
       }),
@@ -93,7 +88,7 @@ export const CreateSchedule: FC<CreateScheduleProps> = ({
       ...(activeTab === 'visit'
         ? {
             [VisitScheduleKey.PatientId]: '',
-            [VisitScheduleKey.ServiceCode]: serviceCode.訪看I2,
+            [VisitScheduleKey.ServiceCodeId]: '',
             [VisitScheduleKey.ServiceTime]: 29,
             [VisitScheduleKey.Destination]: '',
             [VisitScheduleKey.IsCanceled]: false,
@@ -107,7 +102,9 @@ export const CreateSchedule: FC<CreateScheduleProps> = ({
   const recallingScheduleCreate = useForm<RecallingScheduleCreate>({
     defaultValues: {
       [RecallingScheduleKey.ScheduleType]:
-        activeTab === 'visit' ? scheduleType.visit : scheduleType.normal,
+        activeTab === 'visit'
+          ? scheduleType.visitRecalling
+          : scheduleType.normalRecalling,
       [RecallingScheduleKey.UserId]: currentUserId,
       [RecallingScheduleKey.Title]: '',
       [RecallingScheduleKey.StartTime]: new Date().toISOString(),
@@ -119,11 +116,11 @@ export const CreateSchedule: FC<CreateScheduleProps> = ({
 
       ...(activeTab === 'visit'
         ? {
-            [VisitRecallingScheduleKey.PatientId]: '',
-            [VisitRecallingScheduleKey.ServiceCode]: serviceCode.訪看I2,
-            [VisitRecallingScheduleKey.ServiceTime]: 29,
-            [VisitRecallingScheduleKey.Destination]: '',
-            [VisitRecallingScheduleKey.ScheduleCategory]: undefined,
+            [VisitScheduleKey.PatientId]: '',
+            [VisitScheduleKey.ServiceCodeId]: '',
+            [VisitScheduleKey.ServiceTime]: 29,
+            [VisitScheduleKey.Destination]: '',
+            [VisitScheduleKey.ScheduleCategory]: undefined,
           }
         : {}),
     },
@@ -135,8 +132,8 @@ export const CreateSchedule: FC<CreateScheduleProps> = ({
       ScheduleKey.ScheduleType,
       activeTab === 'visit' ? scheduleType.visit : scheduleType.normal,
     )
-    if (scheduleCreate.watch(VisitScheduleKey.ServiceCode) === undefined) {
-      scheduleCreate.setValue(VisitScheduleKey.ServiceCode, serviceCode.訪看I2)
+    if (scheduleCreate.watch(VisitScheduleKey.ServiceCodeId) === undefined) {
+      scheduleCreate.setValue(VisitScheduleKey.ServiceCodeId, '')
     }
     if (scheduleCreate.watch(VisitScheduleKey.ServiceTime) === undefined) {
       scheduleCreate.setValue(VisitScheduleKey.ServiceTime, 29)
@@ -152,33 +149,27 @@ export const CreateSchedule: FC<CreateScheduleProps> = ({
     }
     recallingScheduleCreate.setValue(
       RecallingScheduleKey.ScheduleType,
-      activeTab === 'visit' ? scheduleType.visit : scheduleType.normal,
+      activeTab === 'visit'
+        ? (scheduleType.visitRecalling as never)
+        : (scheduleType.normalRecalling as never),
     )
     if (
-      recallingScheduleCreate.watch(VisitScheduleKey.ServiceCode) === undefined
+      recallingScheduleCreate.watch(VisitScheduleKey.ServiceCodeId) === undefined
     ) {
       recallingScheduleCreate.setValue(
-        VisitRecallingScheduleKey.ServiceCode,
-        serviceCode.訪看I2,
-      )
-    }
-    if (
-      recallingScheduleCreate.watch(VisitRecallingScheduleKey.ServiceTime) ===
-      undefined
-    ) {
-      recallingScheduleCreate.setValue(
-        VisitRecallingScheduleKey.ServiceTime,
-        29,
-      )
-    }
-    if (
-      recallingScheduleCreate.watch(VisitRecallingScheduleKey.Destination) ===
-      undefined
-    ) {
-      recallingScheduleCreate.setValue(
-        VisitRecallingScheduleKey.Destination,
+        VisitScheduleKey.ServiceCodeId,
         '',
       )
+    }
+    if (
+      recallingScheduleCreate.watch(VisitScheduleKey.ServiceTime) === undefined
+    ) {
+      recallingScheduleCreate.setValue(VisitScheduleKey.ServiceTime, 29)
+    }
+    if (
+      recallingScheduleCreate.watch(VisitScheduleKey.Destination) === undefined
+    ) {
+      recallingScheduleCreate.setValue(VisitScheduleKey.Destination, '')
     }
   }, [activeTab])
 
@@ -192,6 +183,22 @@ export const CreateSchedule: FC<CreateScheduleProps> = ({
 
   const isCcNormal =
     scheduleCreate.watch(ScheduleKey.CcCategory) === ccCategory.normal
+
+  const watchScheduleType = scheduleCreate.watch(ScheduleKey.ScheduleType)
+  const watchRecallingFrequency = scheduleCreate.watch(
+    RecallingScheduleKey.Frequency,
+  )
+
+  // console.log(scheduleCreate.watch(ScheduleKey.UserId))
+  // console.log(users)
+
+  if (serviceCodes.error) {
+    return <div>エラーが発生しました</div>
+  }
+
+  if (serviceCodes.serviceCodes === undefined) {
+    return <div>データが取得できていません</div>
+  }
 
   const scheduleEditMap: ButtonContentProps[] = [
     ...(activeTab === 'normal'
@@ -228,21 +235,25 @@ export const CreateSchedule: FC<CreateScheduleProps> = ({
         ]
       : []),
     {
-      id: ScheduleKey.ScheduleDate,
+      id: ScheduleKey.StartDate,
       label: activeTab === 'visit' ? '訪問日時' : '予定日時',
       content: (
         <ScheduleDateSelect
-          scheduleDate={scheduleCreate.watch(ScheduleKey.ScheduleDate)}
+          startDate={scheduleCreate.watch(ScheduleKey.StartDate)}
           startTime={scheduleCreate.watch(ScheduleKey.StartTime)}
           endTime={scheduleCreate.watch(ScheduleKey.EndTime)}
           serviceTime={scheduleCreate.watch(VisitScheduleKey.ServiceTime)}
-          serviceCode={scheduleCreate.watch(VisitScheduleKey.ServiceCode)}
+          serviceCode={serviceCodes.serviceCodes?.find(
+            (serviceCode) => serviceCode.id === scheduleCreate.watch(VisitScheduleKey.ServiceCodeId),
+          )}
           isVisitSchedule={activeTab === 'visit'}
         />
       ),
     },
 
-    ...(isRecallingSchedule
+    ...(scheduleCreate.watch(ScheduleKey.ScheduleType) ===
+      scheduleType.normalRecalling ||
+    scheduleCreate.watch(ScheduleKey.ScheduleType) === scheduleType.visitRecalling
       ? [
           {
             id: RecallingScheduleKey.Frequency,
@@ -390,10 +401,7 @@ export const CreateSchedule: FC<CreateScheduleProps> = ({
         }
         stickyFooter={
           <ScheduleCreateFooter
-            isRecallingSchedule={isRecallingSchedule}
             scheduleCreate={scheduleCreate}
-            recallingScheduleCreate={recallingScheduleCreate}
-            scheduleDirtyFields={scheduleCreate.formState.dirtyFields}
           />
         }
       >
@@ -403,20 +411,70 @@ export const CreateSchedule: FC<CreateScheduleProps> = ({
               scheduleEditMap={scheduleEditMap}
               currentId={currentId}
               setCurrentId={setCurrentId}
-              isRecallingSchedule={isRecallingSchedule}
-              setIsRecallingSchedule={setIsRecallingSchedule}
+              watchScheduleType={watchScheduleType}
+              onToggle={() => {
+                if (watchScheduleType === scheduleType.normal) {
+                  scheduleCreate.setValue(
+                    ScheduleKey.ScheduleType,
+                    scheduleType.normalRecalling,
+                    {
+                      shouldDirty: true,
+                    },
+                  )
+                  if (watchRecallingFrequency === undefined) {
+                    scheduleCreate.setValue(
+                      RecallingScheduleKey.Frequency,
+                      RecallingFrequency.Weekly,
+                      {
+                        shouldDirty: true,
+                      },
+                    )
+                  }
+                } else if (watchScheduleType === scheduleType.visit) {
+                  scheduleCreate.setValue(
+                    ScheduleKey.ScheduleType,
+                    scheduleType.visitRecalling,
+                    {
+                      shouldDirty: true,
+                    },
+                  )
+                  if (watchRecallingFrequency === undefined) {
+                    scheduleCreate.setValue(
+                      RecallingScheduleKey.Frequency,
+                      RecallingFrequency.Weekly,
+                      {
+                        shouldDirty: true,
+                      },
+                    )
+                  }
+                } else if (watchScheduleType === scheduleType.normalRecalling) {
+                  scheduleCreate.setValue(
+                    ScheduleKey.ScheduleType,
+                    scheduleType.normal,
+                    {
+                      shouldDirty: true,
+                    },
+                  )
+                } else if (watchScheduleType === scheduleType.visitRecalling) {
+                  scheduleCreate.setValue(
+                    ScheduleKey.ScheduleType,
+                    scheduleType.visit,
+                    {
+                      shouldDirty: true,
+                    },
+                  )
+                }
+              }}
             />
           </div>
           <div className={styles.editPanel}>
             <CreatePanel
               control={scheduleCreate.control}
-              recallingControl={recallingScheduleCreate.control}
               setValue={scheduleCreate.setValue}
-              recallingSetValue={recallingScheduleCreate.setValue}
               currentId={currentId}
               setCurrentId={setCurrentId}
-              isRecallingSchedule={isRecallingSchedule}
               isVisitSchedule={activeTab === 'visit'}
+              watchScheduleType={watchScheduleType}
             />
           </div>
         </div>

@@ -1,6 +1,6 @@
 import type { FC } from 'react'
 
-import { ServiceCodeText, type ServiceCode } from '@/constants/serviceCode'
+import { ServiceCode } from '@/schema/serviceCode'
 import styles from './style.module.css'
 
 export type ScheduleDateSelectProps = {
@@ -8,7 +8,7 @@ export type ScheduleDateSelectProps = {
   startTime: string
   endTime: string
   serviceTime: number
-  serviceCode: ServiceCode
+  serviceCode: ServiceCode | undefined
   isVisitSchedule: boolean
 }
 
@@ -44,7 +44,7 @@ export const ScheduleDateSelect: FC<ScheduleDateSelectProps> = ({
       {isVisitSchedule && (
         <div>
           <p className={styles.title}>サービスコード</p>
-          <p>{ServiceCodeText[serviceCode]}</p>
+          <p>{serviceCode?.code}</p>
         </div>
       )}
     </div>

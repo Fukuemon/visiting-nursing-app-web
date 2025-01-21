@@ -71,6 +71,7 @@ export const TimeGridDayStyleWrapper = styled.div`
   .fc .fc-event-main {
     border-width: 2px;
     padding: 3px;
+    overflow: hidden;
   }
 
   .fc .fc-event-main:hover {
@@ -102,5 +103,9 @@ export const TimeGridDayStyleWrapper = styled.div`
   // カレンダーの左側の線を非表示
   .fc-timegrid-col.fc-timegrid-axis {
     border: none;
+  }
+  .fc .fc-timegrid-bg-harness {
+    font-size: 1rem;
+    overflow: hidden;
   }
 `

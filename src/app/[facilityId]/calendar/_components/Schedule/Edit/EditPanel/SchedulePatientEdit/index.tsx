@@ -4,6 +4,7 @@ import { useController, useForm } from 'react-hook-form'
 import { SearchInput } from '@/app/_components/SearchInput'
 import Table from '@/app/_components/Table'
 import { usePatientList } from '@/hooks/api/patient'
+import { useParams } from 'next/navigation'
 import styles from './style.module.css'
 
 export type SchedulePatientEditProps<T extends FieldValues> = {
@@ -15,12 +16,13 @@ export const SchedulePatientEdit = <T extends FieldValues>({
   control,
   name,
 }: SchedulePatientEditProps<T>) => {
+  const { facilityId } = useParams<{ facilityId: string }>()
   const { field } = useController({
     name,
     control,
   })
 
-  const { control: searchControl, watch } = useForm<{
+  const { control: searchControl } = useForm<{
     patientName: string
     patientArea: string
   }>({
@@ -29,7 +31,7 @@ export const SchedulePatientEdit = <T extends FieldValues>({
       patientArea: '',
     },
   })
-  const { patients, isLoading, error } = usePatientList()
+  const { patients, isLoading, error } = usePatientList(facilityId)
 
   if (isLoading || patients === undefined) return <div>Loading...</div>
   if (error !== undefined && error.message !== '') {

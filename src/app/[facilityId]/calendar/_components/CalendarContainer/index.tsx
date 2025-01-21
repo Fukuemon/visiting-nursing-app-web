@@ -59,6 +59,9 @@ export const CalendarContainer: FC<CalendarContainerProps> = ({
   }
 
   const filterEvents = () => {
+    if (calendarEvents === null) {
+      return
+    }
     let filteredEvents = calendarEvents.filter((event) =>
       showMembers.some((member) => member.id === event.extendedProps.userId),
     )
@@ -73,7 +76,7 @@ export const CalendarContainer: FC<CalendarContainerProps> = ({
 
   useEffect(() => {
     filterEvents()
-  }, [showMembers, showCancel])
+  }, [showMembers, showCancel, calendarEvents])
 
   useEffect(() => {
     const currentElement = containerRef.current

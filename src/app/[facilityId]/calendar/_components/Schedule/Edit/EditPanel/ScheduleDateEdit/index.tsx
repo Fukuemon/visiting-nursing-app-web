@@ -2,7 +2,6 @@ import { ServiceCodeEdit } from '@/app/[facilityId]/calendar/_components/Schedul
 import { DatePicker } from '@/app/_components/DatePicker'
 import { NumberPicker } from '@/app/_components/NumberPicker'
 import { TimePicker } from '@/app/_components/TimePicker'
-import type { scheduleType } from '@/constants/scheduleType'
 import type { ServiceCode } from '@/constants/serviceCode'
 import { ServiceCodeDuration } from '@/constants/serviceCode'
 import { type Schedule, type ScheduleEdit } from '@/schema/schedule'
@@ -24,12 +23,9 @@ export type ScheduleDateEditProps = {
   endTimeName: FieldPath<ScheduleEdit>
   serviceTimeName: FieldPath<ScheduleEdit>
   setValue: UseFormSetValue<ScheduleEdit>
-  // recallingSetValue: UseFormSetValue<RecallingScheduleEdit>
+
   serviceCodeName: FieldPath<ScheduleEdit>
   isVisitSchedule: boolean
-  // isRecallingSchedule: boolean
-  // recallingCreateSetValue: UseFormSetValue<RecallingScheduleCreate>
-  watchScheduleType: scheduleType
 }
 
 export const ScheduleDateEdit = ({
@@ -40,11 +36,7 @@ export const ScheduleDateEdit = ({
   endTimeName,
   serviceTimeName,
   serviceCodeName,
-  // recallingSetValue,
   isVisitSchedule,
-  // isRecallingSchedule,
-  // recallingCreateSetValue,
-  watchScheduleType,
 }: ScheduleDateEditProps) => {
   const date = useWatch({ control, name: dateName })
   const startTime = useWatch({ control, name: startTimeName }) as

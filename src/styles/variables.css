@@ -31,9 +31,11 @@
   --gray-100: #f0f1f2;
   --gray-10: #f5f6f7;
   --gray-0: #fff;
+  --background-bg-surface-active: #f5f6f7;
+  --icon-tertiary: #bcbdc1;
 
   /* z-index */
-  --z-index-modal: 10;
-  --z-index-dropdown: 9;
-  --z-index-header: 8;
+  --z-index-modal: 100;
+  --z-index-dropdown: 90;
+  --z-index-header: 80;
 }

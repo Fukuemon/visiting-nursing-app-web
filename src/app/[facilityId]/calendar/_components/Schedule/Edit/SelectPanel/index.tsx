@@ -2,13 +2,11 @@ import type { FC, ReactNode } from 'react'
 
 import { Toggle, ToggleStateType } from '@/app/_components/Toggle'
 import { scheduleType } from '@/constants/scheduleType'
-import type { ScheduleEdit, VisitScheduleKey } from '@/schema/schedule'
-import {
-  RecallingFrequency,
+import type {
   RecallingScheduleKey,
   ScheduleKey,
+  VisitScheduleKey,
 } from '@/schema/schedule'
-import type { UseFormSetValue } from 'react-hook-form'
 import styles from './style.module.css'
 
 export type ButtonContentProps = {
@@ -24,8 +22,7 @@ export type SelectPanelProps = {
   ) => void
   currentId: ScheduleKey | VisitScheduleKey | RecallingScheduleKey | undefined
   watchScheduleType: scheduleType
-  watchRecallingFrequency: RecallingFrequency | undefined
-  setValue: UseFormSetValue<ScheduleEdit>
+  onToggle: () => void
 }
 
 export const SelectPanel: FC<SelectPanelProps> = ({
@@ -33,9 +30,9 @@ export const SelectPanel: FC<SelectPanelProps> = ({
   setCurrentId,
   currentId,
   watchScheduleType,
-  watchRecallingFrequency,
-  setValue,
-}) => {
+
+  onToggle,
+}) => {  
   return (
     <div className={styles.selectPanel}>
       <div className={styles.toggle}>
@@ -48,41 +45,7 @@ export const SelectPanel: FC<SelectPanelProps> = ({
               : ToggleStateType.DEFAULT
           }
           onClick={() => {
-            if (watchScheduleType === scheduleType.normal) {
-              setValue(ScheduleKey.ScheduleType, scheduleType.normalRecalling, {
-                shouldDirty: true,
-              })
-              if (watchRecallingFrequency === undefined) {
-                setValue(
-                  RecallingScheduleKey.Frequency,
-                  RecallingFrequency.Weekly,
-                  {
-                    shouldDirty: true,
-                  },
-                )
-              }
-            } else if (watchScheduleType === scheduleType.visit) {
-              setValue(ScheduleKey.ScheduleType, scheduleType.visitRecalling, {
-                shouldDirty: true,
-              })
-              if (watchRecallingFrequency === undefined) {
-                setValue(
-                  RecallingScheduleKey.Frequency,
-                  RecallingFrequency.Weekly,
-                  {
-                    shouldDirty: true,
-                  },
-                )
-              }
-            } else if (watchScheduleType === scheduleType.normalRecalling) {
-              setValue(ScheduleKey.ScheduleType, scheduleType.normal, {
-                shouldDirty: true,
-              })
-            } else if (watchScheduleType === scheduleType.visitRecalling) {
-              setValue(ScheduleKey.ScheduleType, scheduleType.visit, {
-                shouldDirty: true,
-              })
-            }
+            onToggle()
           }}
         />
       </div>

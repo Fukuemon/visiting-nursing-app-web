@@ -1,45 +1,47 @@
-import { CcCategoryEdit } from '@/app/[facilityId]/calendar/schedule/[scheduleId]/edit/_components/EditPanel/CcCategoryEdit'
-import { RecallingRuleCreate } from '@/app/[facilityId]/calendar/schedule/[scheduleId]/edit/_components/EditPanel/RecallingRuleCreate'
-import { SchedulePatientEdit } from '@/app/[facilityId]/calendar/schedule/[scheduleId]/edit/_components/EditPanel/SchedulePatientEdit'
-import { ScheduleUserEdit } from '@/app/[facilityId]/calendar/schedule/[scheduleId]/edit/_components/EditPanel/ScheduleUserEdit'
-import { TextareaEdit } from '@/app/[facilityId]/calendar/schedule/[scheduleId]/edit/_components/EditPanel/TextareaEdit'
+import { CcCategoryEdit } from '@/app/[facilityId]/calendar/_components/Schedule/Edit/EditPanel/CcCategoryEdit'
+import { RecallingRuleCreate } from '@/app/[facilityId]/calendar/_components/Schedule/Edit/EditPanel/RecallingRuleCreate'
+import { SchedulePatientEdit } from '@/app/[facilityId]/calendar/_components/Schedule/Edit/EditPanel/SchedulePatientEdit'
+import { ScheduleUserEdit } from '@/app/[facilityId]/calendar/_components/Schedule/Edit/EditPanel/ScheduleUserEdit'
+import { TextareaEdit } from '@/app/[facilityId]/calendar/_components/Schedule/Edit/EditPanel/TextareaEdit'
 import { ScheduleCategoryCreate } from '@/app/[facilityId]/calendar/schedule/new/_components/CreatePanel/ScheduleCategoryCreate'
 import { ScheduleDateCreate } from '@/app/[facilityId]/calendar/schedule/new/_components/CreatePanel/ScheduleDateCreate'
-import type { RecallingScheduleCreate } from '@/schema/recallingSchedule'
-import { RecallingScheduleKey } from '@/schema/recallingSchedule'
-import type { ScheduleCreate } from '@/schema/schedule'
-import { ScheduleKey, VisitScheduleKey } from '@/schema/schedule'
+import type { RecallingScheduleCreate, ScheduleCreate } from '@/schema/schedule'
+import {
+  RecallingScheduleKey,
+  ScheduleKey,
+  VisitScheduleKey,
+} from '@/schema/schedule'
 import type { FC } from 'react'
 import { useEffect } from 'react'
 import type { Control, UseFormSetValue } from 'react-hook-form'
 import styles from './style.module.css'
+import { scheduleType } from '@/constants/scheduleType'
+import { useServiceCodeList } from '@/hooks/api/serviceCode'
 
 export type CreatePanelProps = {
   control: Control<ScheduleCreate>
-  recallingControl: Control<RecallingScheduleCreate>
-  recallingSetValue: UseFormSetValue<RecallingScheduleCreate>
   setValue: UseFormSetValue<ScheduleCreate>
   currentId: ScheduleKey | VisitScheduleKey | RecallingScheduleKey | undefined
   setCurrentId: (id: ScheduleKey | VisitScheduleKey) => void
-  isRecallingSchedule: boolean
   isVisitSchedule: boolean
+  watchScheduleType: scheduleType
 }
 
 export const CreatePanel: FC<CreatePanelProps> = ({
   control,
-  recallingControl,
-  recallingSetValue,
   setValue,
   currentId,
   setCurrentId,
-  isRecallingSchedule,
   isVisitSchedule,
+  watchScheduleType,
 }) => {
   useEffect(() => {
     if (currentId === null || currentId === undefined) {
-      setCurrentId(ScheduleKey.ScheduleDate)
+      setCurrentId(ScheduleKey.StartDate)
     }
   }, [currentId, setCurrentId])
+
+  const { serviceCodes } = useServiceCodeList()
 
   return (
     <div className={styles.createPanel}>
@@ -57,25 +59,25 @@ export const CreatePanel: FC<CreatePanelProps> = ({
             name={VisitScheduleKey.PatientId}
           />
         )}
-        {currentId === ScheduleKey.ScheduleDate && (
+        {currentId === ScheduleKey.StartDate && serviceCodes && (
           <ScheduleDateCreate
             control={control}
             setValue={setValue}
-            dateName={ScheduleKey.ScheduleDate}
+            dateName={ScheduleKey.StartDate}
             startTimeName={ScheduleKey.StartTime}
             endTimeName={ScheduleKey.EndTime}
             serviceTimeName={VisitScheduleKey.ServiceTime}
-            serviceCodeName={VisitScheduleKey.ServiceCode}
-            recallingSetValue={recallingSetValue}
+            serviceCodeIdName={VisitScheduleKey.ServiceCodeId}
             isVisitSchedule={isVisitSchedule}
-            isRecallingSchedule={isRecallingSchedule}
+            serviceCodes={serviceCodes}
           />
         )}
-        {isRecallingSchedule &&
+        {(watchScheduleType === scheduleType.normalRecalling ||
+          watchScheduleType === scheduleType.visitRecalling) &&
           currentId === RecallingScheduleKey.Frequency && (
             <RecallingRuleCreate
-              control={recallingControl}
-              setValue={recallingSetValue}
+              control={control}
+              setValue={setValue}
             />
           )}
 

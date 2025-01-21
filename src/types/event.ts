@@ -1,3 +1,5 @@
+import type { EventInput } from '@fullcalendar/core/index.js'
+
 export type CalendarEventProps = {
   id: string
   start: string
@@ -10,7 +12,7 @@ export type NewCalendarEventProps = {
 export type Duration = {
   minute: number
 }
-export type CalendarEvent = {
+export type CalendarEvent = EventInput & {
   id: string
   title: string
   start: Date
@@ -25,14 +27,50 @@ export type CalendarEvent = {
     isCanceled: boolean
   }
 }
-export type BackgroundEvent = {
+export type RecallingCalendarEvent = EventInput & {
   id: string
-  userId: string
   title: string
-  rrule: string
+  allDay: false
+  backgroundColor?: string
+  rrule: {
+    freq: string
+    interval: number
+    dtstart: Date
+    until?: Date
+    byweekday?: number[]
+    bysetpos?: number
+  }
+  exdate?: string[] | null
+  startEditable: true
+  duration?: Duration
+  extendedProps: {
+    userId: string
+    isCanceled: boolean
+  }
+}
+
+export type BackgroundEvent = EventInput & {
+  id: string
+  title: string
+  allDay: false
+  rrule: {
+    freq: string
+    interval: number
+    dtstart: Date
+    until?: Date
+  }
+  exdate?: string[] | null
   duration: Duration
   startEditable: false
   display: 'background'
+  extendedProps: {
+    userId: string
+    isCanceled: boolean
+  }
 }
 
-export type Events = (CalendarEvent)[]
+export type Events = (
+  | CalendarEvent
+  | RecallingCalendarEvent
+  | BackgroundEvent
+)[]

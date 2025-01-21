@@ -18,6 +18,7 @@ export type CheckboxProps = ComponentPropsWithoutRef<'input'> & {
   disabled?: boolean
   error?: boolean
   label?: string
+  color?: string
 }
 
 export const Checkbox: FC<CheckboxProps> = ({
@@ -25,6 +26,7 @@ export const Checkbox: FC<CheckboxProps> = ({
   disabled = false,
   error = false,
   label = '',
+  color = 'var(--action-main)',
   ...props
 }) => {
   return (
@@ -39,6 +41,12 @@ export const Checkbox: FC<CheckboxProps> = ({
         <input type="checkbox" hidden disabled={disabled} {...props} />
         <div
           className={styles.icon}
+          style={{
+            backgroundColor:
+              checkBoxState === CheckboxStateType.CHECKED
+                ? color
+                : 'var(--gray-0)',
+          }}
           data-active={checkBoxState !== CheckboxStateType.DEFAULT}
         >
           {checkBoxState === 'checked' && <CheckIcon width={16} height={16} />}
