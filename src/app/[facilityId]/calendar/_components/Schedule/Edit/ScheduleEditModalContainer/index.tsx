@@ -1,5 +1,5 @@
 'use client'
-import { ScheduleEditModal } from '@/app/[facilityId]/calendar/_components/Schedule/ScheduleEditModal'
+import { ScheduleEditModal } from '@/app/[facilityId]/calendar/_components/Schedule/Edit/ScheduleEditModal'
 import { useUserList } from '@/hooks/api/user'
 import type { RecallingSchedule, Schedule } from '@/schema/schedule'
 import { useParams } from 'next/navigation'

@@ -1,7 +1,7 @@
-import { isSchedule } from '@/app/[facilityId]/calendar/_components/Schedule/Edit/EditSchedule'
+import { isSchedule } from '@/app/[facilityId]/calendar/_components/Schedule/Edit/ScheduleEditModal'
 import { WeekDayTextFromNumber } from '@/constants/weekDay'
 import type { NormalRecallingSchedule, NormalSchedule } from '@/schema/schedule'
-import { RecallingFrequency } from '@/schema/schedule'
+import { RecallingFrequency, ScheduleKey } from '@/schema/schedule'
 import { type FC } from 'react'
 import styles from './style.module.css'
 
@@ -36,11 +36,15 @@ export const NormalScheduleDetailList: FC<NormalScheduleDetailListProps> = ({
           <div>
             <li className={styles.row}>
               <span>開始時間</span>
-              <span className={styles.item}>{schedule.startTime}</span>
+              <span className={styles.item}>
+                {schedule[ScheduleKey.StartTime]}
+              </span>
             </li>
             <li className={styles.row}>
               <span>終了時間</span>
-              <span className={styles.item}>{schedule.endTime}</span>
+              <span className={styles.item}>
+                {schedule[ScheduleKey.EndTime]}
+              </span>
             </li>
           </div>
           <div>

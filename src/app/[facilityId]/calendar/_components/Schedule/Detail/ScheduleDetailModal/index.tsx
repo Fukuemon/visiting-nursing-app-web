@@ -1,12 +1,13 @@
-import { NormalScheduleDetailList } from '@/app/[facilityId]/calendar/_components/Schedule/NomalScheduleDetailList'
-import { ScheduleEditModalContainer } from '@/app/[facilityId]/calendar/_components/Schedule/ScheduleEditModalContainer'
+import { NormalScheduleDetailList } from '@/app/[facilityId]/calendar/_components/Schedule/Detail/NomalScheduleDetailList'
+import { ScheduleEditModalContainer } from '@/app/[facilityId]/calendar/_components/Schedule/Edit/ScheduleEditModalContainer'
 
-import { VisitScheduleDetailList } from '@/app/[facilityId]/calendar/_components/Schedule/VisitScheduleDetailList'
+import { VisitScheduleDetailList } from '@/app/[facilityId]/calendar/_components/Schedule/Detail/VisitScheduleDetailList'
 import { Button } from '@/app/_components/Button'
 import { Loading } from '@/app/_components/Loading'
 import Modal from '@/app/_components/Modal'
 import { ScheduleType } from '@/constants/scheduleType'
 import { useSchedule } from '@/hooks/api/schedule'
+import { ScheduleKey } from '@/schema/schedule'
 import { type FC } from 'react'
 
 export type ScheduleDetailModalProps = {
@@ -42,8 +43,8 @@ export const ScheduleDetailModal: FC<ScheduleDetailModalProps> = ({
     >
       {schedule !== undefined ? (
         <div>
-          {schedule.scheduleType === ScheduleType.visit ||
-          schedule.scheduleType === ScheduleType.visitRecalling ? (
+          {schedule[ScheduleKey.ScheduleType] === ScheduleType.visit ||
+          schedule[ScheduleKey.ScheduleType] === ScheduleType.visitRecalling ? (
             <VisitScheduleDetailList
               schedule={schedule}
               startDate={startDate}
