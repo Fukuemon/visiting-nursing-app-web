@@ -26,9 +26,9 @@ export const InterceptModal = ({
   const router = useRouter()
   const handleClose = () => {
     if (isDirty === true) {
-      if (!window.confirm('変更が破棄されますがよろしいですか？')) {
-        return
-      }
+      // if (!window.confirm('変更が破棄されますがよろしいですか？')) {
+      //   return
+      // }
     }
     onClose?.()
     router.back()

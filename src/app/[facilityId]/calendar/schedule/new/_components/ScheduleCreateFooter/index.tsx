@@ -4,7 +4,7 @@ import { useParams, useRouter } from 'next/navigation'
 import { Button } from '@/app/_components/Button'
 import { scheduleType } from '@/constants/scheduleType'
 import type { RecallingScheduleCreate, ScheduleCreate } from '@/schema/schedule'
-import { ScheduleKey, VisitScheduleKey } from '@/schema/schedule'
+import { RecallingScheduleKey, ScheduleKey, VisitScheduleKey } from '@/schema/schedule'
 import type { UseFormReturn } from 'react-hook-form'
 import useSWRMutation from 'swr/mutation'
 import styles from './style.module.css'
@@ -47,9 +47,9 @@ export const ScheduleCreateFooter = ({
   const scheduleDirtyFields = scheduleCreate.formState.dirtyFields
   const router = useRouter()
   const onSubmit = async (data: ScheduleCreate | RecallingScheduleCreate) => {
-    console.log(data)
+    console.log('data', data)
     await trigger({
-      date: data[ScheduleKey.StartDate].toISOString().split('T')[0],
+      date: `${data[ScheduleKey.StartDate].getFullYear()}-${String(data[ScheduleKey.StartDate].getMonth() + 1).padStart(2, '0')}-${String(data[ScheduleKey.StartDate].getDate()).padStart(2, '0')}`,
       end_time: data[ScheduleKey.EndTime],
       schedule_type_id: data[ScheduleKey.ScheduleType],
       staff_id: data[ScheduleKey.UserId],
@@ -70,29 +70,32 @@ export const ScheduleCreateFooter = ({
     router.back()
   }
   const onRecallingSubmit = async (
-    data: ScheduleCreate | RecallingScheduleCreate,
+    data: RecallingScheduleCreate,
   ) => {
+    console.log('createRecalling', data)
     await triggerRecalling({
-      date: data[ScheduleKey.StartDate].toISOString().split('T')[0],
+      date: `${data[ScheduleKey.StartDate].getFullYear()}-${String(data[ScheduleKey.StartDate].getMonth() + 1).padStart(2, '0')}-${String(data[ScheduleKey.StartDate].getDate()).padStart(2, '0')}`,
       end_time: data[ScheduleKey.EndTime],
-      schedule_type_id: '01JG8Z3XZVD7M11CGETHQNAA6W',
-      staff_id: '01JE2J0PNT3MN60M4M2AHPQCPV',
+      schedule_type_id: data[ScheduleKey.ScheduleType] === scheduleType.normalRecalling ? scheduleType.normal : scheduleType.visit,
+      staff_id: data[ScheduleKey.UserId],
       start_time: data[ScheduleKey.StartTime],
-      description: 'テスト',
-      title: 'テスト',
+      description: data[ScheduleKey.Description],
+      title: data[ScheduleKey.Title],
       recurring_rule: {
-        frequency: 'monthly',
-        start_date: '2024-12-12',
-        end_date: '2025-12-12',
-        day_of_month: 12,
+        frequency: data[RecallingScheduleKey.Frequency],
+        end_date: data[RecallingScheduleKey.EndDate]
+          ? data[RecallingScheduleKey.EndDate].toISOString().split('T')[0]
+          : null,
       },
-      visit_info: {
-        assign_staff_id: '01JE2J0PNT3MN60M4M2AHPQCPV',
-        patient_id: '01JG8Y2DBN9X0RFG6D9WE2SNEN',
-        service_code_id: '01JBVE7Z0H0E0M6BX3FV1DK69A',
-        companion_id: '01JE2H4JCY3T8F02FJRY9H3M3Q',
-        visit_category_ids: ['01JG8Y318V9KEYK76VVKHNZJCF'],
-      },
+      ...(data[ScheduleKey.ScheduleType] === scheduleType.visitRecalling && {
+        visit_info: {
+          assign_staff_id: data[ScheduleKey.UserId],
+          patient_id: data[VisitScheduleKey.PatientId],
+          service_code_id: data[VisitScheduleKey.ServiceCodeId],
+          // companion_id: data[ScheduleKey.CcUserId],
+          visit_category_ids: data[VisitScheduleKey.ScheduleCategory],
+        },
+      }),
     })
     router.back()
   }

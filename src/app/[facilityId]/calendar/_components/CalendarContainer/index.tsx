@@ -59,13 +59,14 @@ export const CalendarContainer: FC<CalendarContainerProps> = ({
   }
 
   const filterEvents = () => {
+    // console.log('calendarEvents', calendarEvents)
     if (calendarEvents === null) {
       return
     }
     let filteredEvents = calendarEvents.filter((event) =>
       showMembers.some((member) => member.id === event.extendedProps.userId),
     )
-
+    // console.log('filteredEvents', filteredEvents)
     if (!showCancel) {
       filteredEvents = filteredEvents.filter(
         (event) => !event.extendedProps.isCanceled,

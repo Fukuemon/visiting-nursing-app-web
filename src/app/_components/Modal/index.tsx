@@ -117,9 +117,9 @@ const Body = ({
 
   const handleClose = () => {
     if (isDirty === false || isDirty === undefined) {
-      if (!window.confirm('変更が破棄されますがよろしいですか？')) {
-        return
-      }
+      // if (!window.confirm('変更が破棄されますがよろしいですか？')) {
+      //   return
+      // }
     }
     onClose?.()
     setIsOpen(false)
@@ -191,9 +191,9 @@ const UnstyledBody = ({ children, isDirty, onClose }: ModalBodyProps) => {
 
   const handleClose = () => {
     if (isDirty === false || isDirty === undefined) {
-      if (!window.confirm('変更が破棄されますがよろしいですか？')) {
-        return
-      }
+      // if (!window.confirm('変更が破棄されますがよろしいですか？')) {
+      //   return
+      // }
     }
     onClose?.()
     setIsOpen(false)

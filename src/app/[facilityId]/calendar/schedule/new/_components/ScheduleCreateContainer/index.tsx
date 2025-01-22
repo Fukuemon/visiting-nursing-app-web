@@ -1,6 +1,7 @@
 import { CreateSchedule } from '@/app/[facilityId]/calendar/schedule/new/_components/CreateSchedule'
 import { Loading } from '@/app/_components/Loading'
 import { usePatientList } from '@/hooks/api/patient'
+import { useServiceCodeList } from '@/hooks/api/serviceCode'
 import { useUserList } from '@/hooks/api/user'
 import { useParams, useSearchParams } from 'next/navigation'
 
@@ -12,6 +13,7 @@ export const ScheduleCreateContainer = () => {
   console.log(startDate)
   const users = useUserList([facilityId, '', '', '', ''])
   const patients = usePatientList(facilityId)
+  const serviceCodes = useServiceCodeList(facilityId)
   const currentUser = {
     id: '01JE2J0PNT3MN60M4M2AHPQCPV',
     username: '山本二郎',
@@ -35,12 +37,14 @@ export const ScheduleCreateContainer = () => {
 
   return users.users === undefined ||
     currentUser === undefined ||
-    patients.patients === undefined ? (
+    patients.patients === undefined ||
+    serviceCodes.serviceCodes === undefined ? (
     <Loading />
   ) : (
     <CreateSchedule
       users={users.users}
       patients={patients.patients}
+      serviceCodes={serviceCodes.serviceCodes}
       currentUserId={currentUser.id}
       startDate={startDate}
     />

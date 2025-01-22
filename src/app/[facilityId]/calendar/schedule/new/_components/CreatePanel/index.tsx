@@ -17,6 +17,7 @@ import type { Control, UseFormSetValue } from 'react-hook-form'
 import styles from './style.module.css'
 import { scheduleType } from '@/constants/scheduleType'
 import { useServiceCodeList } from '@/hooks/api/serviceCode'
+import { ServiceCode } from '@/schema/serviceCode'
 
 export type CreatePanelProps = {
   control: Control<ScheduleCreate>
@@ -25,6 +26,7 @@ export type CreatePanelProps = {
   setCurrentId: (id: ScheduleKey | VisitScheduleKey) => void
   isVisitSchedule: boolean
   watchScheduleType: scheduleType
+  serviceCodes: ServiceCode[]
 }
 
 export const CreatePanel: FC<CreatePanelProps> = ({
@@ -34,14 +36,13 @@ export const CreatePanel: FC<CreatePanelProps> = ({
   setCurrentId,
   isVisitSchedule,
   watchScheduleType,
+  serviceCodes,
 }) => {
   useEffect(() => {
     if (currentId === null || currentId === undefined) {
       setCurrentId(ScheduleKey.StartDate)
     }
   }, [currentId, setCurrentId])
-
-  const { serviceCodes } = useServiceCodeList()
 
   return (
     <div className={styles.createPanel}>
@@ -59,7 +60,7 @@ export const CreatePanel: FC<CreatePanelProps> = ({
             name={VisitScheduleKey.PatientId}
           />
         )}
-        {currentId === ScheduleKey.StartDate && serviceCodes && (
+        {currentId === ScheduleKey.StartDate && (
           <ScheduleDateCreate
             control={control}
             setValue={setValue}

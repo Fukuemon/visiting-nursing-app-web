@@ -599,33 +599,45 @@ const scheduleListFetcher: Fetcher<
         : []),
       ...(fetchedSchedules.recurring_schedules !== null
         ? fetchedSchedules.recurring_schedules.map((recurringSchedule) => {
-            // 日付文字列をDateオブジェクトに変換
-            const [year, month, day] = recurringSchedule.date
-              .split('-')
-              .map(Number)
-            const scheduleDate = new Date(year, month - 1, day)
-            console.log(scheduleDate)
-            // 定期スケジュールの基本情報を変換
-            const baseRecurringSchedule: RecurringSchedule = {
-              id: recurringSchedule.id,
-              staff_id: recurringSchedule.staff_id,
-              staff_name: recurringSchedule.staff_name,
-              title: recurringSchedule.title,
-              date: scheduleDate,
-              start_time: recurringSchedule.start_time,
-              end_time: recurringSchedule.end_time,
-              description: recurringSchedule.description,
-              schedule_type: recurringSchedule.schedule_type,
-              is_over_time_work: recurringSchedule.is_over_time_work,
-              visit_info: recurringSchedule.visit_info,
-              cancel_reason: recurringSchedule.cancel_reason,
-              frequency: recurringSchedule.recurring_rule.frequency,
-              days_of_week: recurringSchedule.recurring_rule.days_of_week,
-              day_of_month: recurringSchedule.recurring_rule.day_of_month,
-              week_of_month: recurringSchedule.recurring_rule.week_of_month,
-              start_date: recurringSchedule.recurring_rule.start_date,
-              end_date: recurringSchedule.recurring_rule.end_date,
-              exclusion_dates: recurringSchedule.exclusion_dates,
+          // 日付文字列をDateオブジェクトに変換
+          const [year, month, day] = recurringSchedule.date
+            .split('-')
+            .map(Number)
+          const scheduleDate = new Date(year, month - 1, day)
+          // console.log(scheduleDate)
+          // 定期スケジュールの基本情報を変換
+          const baseRecurringSchedule: RecurringSchedule = {
+            id: 'recurring/' + recurringSchedule.id,
+            title: recurringSchedule.title,
+            staff_id: recurringSchedule.staff_id,
+            staff_name: recurringSchedule.staff_name,
+            date: scheduleDate,
+            start_time: recurringSchedule.start_time,
+            end_time: recurringSchedule.end_time,
+            description: recurringSchedule.description,
+            schedule_type: recurringSchedule.schedule_type,
+            is_over_time_work: recurringSchedule.is_over_time_work,
+            visit_info: recurringSchedule.visit_info,
+            cancel_reason: recurringSchedule.cancel_reason,
+            frequency: recurringSchedule.recurring_rule.frequency,
+            days_of_week: recurringSchedule.recurring_rule.days_of_week,
+            day_of_month: recurringSchedule.recurring_rule.day_of_month,
+            week_of_month: recurringSchedule.recurring_rule.week_of_month,
+            start_date: recurringSchedule.recurring_rule.start_date,
+            end_date: recurringSchedule.recurring_rule.end_date,
+            exclusion_dates: recurringSchedule.exclusion_dates,
+          }
+          // 訪問情報がある場合は訪問スケジュールとして変換
+          if (recurringSchedule.visit_info) {
+            baseRecurringSchedule.schedule_type = scheduleType.visit
+            baseRecurringSchedule.patientId = recurringSchedule.visit_info.id
+            baseRecurringSchedule.patientName = recurringSchedule.visit_info.patient_name
+              baseRecurringSchedule.serviceCodeId =
+                recurringSchedule.visit_info.service_code
+              baseRecurringSchedule.destination =
+                recurringSchedule.visit_info.route || ''
+              baseRecurringSchedule.isCanceled = !!recurringSchedule.cancel_reason
+              baseRecurringSchedule.serviceTime = 0 // サービス時間は別途計算が必要
             }
             return baseRecurringSchedule
           })
@@ -698,7 +710,7 @@ const createEvent = (
   })
 
   // console.log('createEvent')
-  // console.log('schedule', schedule)
+  console.log('schedule', schedule)
 
   if (!('frequency' in schedule)) {
     console.log('isSchedule')
@@ -751,7 +763,7 @@ const createEvent = (
     return [
       createBaseEvent(
         schedule.id,
-        schedule.patientName,
+        schedule.serviceCodeId + ' ' + schedule.patientName,
         startDate,
         endDate,
         'blue',
@@ -787,10 +799,10 @@ const createEvent = (
       dates[index].toISOString().slice(0, 19),
     ) ?? []
 
-  const createRecurringEvents = (duration: number, backgroundColor: string) => {
+  const createRecurringEvents = (title: string, duration: number, backgroundColor: string) => {
     const backgroundEvent: BackgroundEvent = {
       id: `${schedule.id}-background`,
-      title: schedule.title,
+      title: title,
       allDay: false,
       rrule: {
         freq: RecallingFrequency.Weekly,
@@ -817,25 +829,25 @@ const createEvent = (
       },
     }
 
-    if (schedule.schedule_type === '01JG8Z4740VMSJXKXPRV3NDR2R') {
-      console.log('normal')
-      return [
-        createBaseEvent(
-          schedule.id,
-          schedule.title,
-          startDate,
-          endDate,
-          'green',
-          'white',
-          schedule[ScheduleKey.UserId],
-          false,
-        ),
-      ]
-    }
+    // if (schedule.schedule_type === '01JG8Z4740VMSJXKXPRV3NDR2R') {
+    //   console.log('normal')
+    //   return [
+    //     createBaseEvent(
+    //       schedule.id,
+    //       schedule.title,
+    //       startDate,
+    //       endDate,
+    //       'green',
+    //       'white',
+    //       schedule[ScheduleKey.UserId],
+    //       false,
+    //     ),
+    //   ]
+    // }
 
     const recallingEvent: RecallingCalendarEvent = {
       id: schedule.id,
-      title: 'test',
+      title: title,
       allDay: false,
       backgroundColor,
       rrule: {
@@ -872,9 +884,18 @@ const createEvent = (
     return [recallingEvent, backgroundEvent]
   }
 
-  if (schedule.schedule_type === '通常') {
-    return createRecurringEvents(endTime - startTime, 'blue')
+  console.log('schedule.schedule_type', schedule.schedule_type)
+
+  if (schedule.schedule_type === '01JG8Z3XZVD7M11CGETHQNAA6W') {
+    console.log('schedule.patientName', schedule.patientName)
+    return createRecurringEvents(
+      schedule.patientName + ' ' + schedule.serviceCodeId,
+      endTime - startTime,
+      'blue',
+    )
   }
 
-  return createRecurringEvents(endTime - startTime, 'green')
+  
+
+  return createRecurringEvents(schedule.title, endTime - startTime, 'green')
 }

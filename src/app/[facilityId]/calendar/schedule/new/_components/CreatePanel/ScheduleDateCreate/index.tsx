@@ -59,7 +59,7 @@ export const ScheduleDateCreate = ({
       startTime !== undefined &&
       endTime !== undefined &&
       serviceTime !== undefined &&
-      serviceCodes
+      serviceCodes !== undefined
     ) {
       const duration = serviceCodes.find(
         (serviceCode) => serviceCode.id === serviceCodeId,

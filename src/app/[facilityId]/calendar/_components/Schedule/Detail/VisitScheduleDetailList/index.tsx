@@ -18,7 +18,7 @@ export const VisitScheduleDetailList: FC<VisitScheduleDetailListProps> = ({
   schedule,
   startDate,
 }) => {
-  console.log('startDate', startDate)
+  // console.log('startDate', startDate)
   const patient = usePatient(schedule.patientId)
 
   if (patient.isLoading || patient.patient === undefined) {
@@ -28,7 +28,7 @@ export const VisitScheduleDetailList: FC<VisitScheduleDetailListProps> = ({
   if (patient.error !== undefined) {
     throw new Error(patient.error)
   }
-  console.log(schedule[ScheduleKey.StartDate])
+  // console.log(schedule[ScheduleKey.StartDate])
 
   return (
     <div
@@ -104,10 +104,10 @@ export const VisitScheduleDetailList: FC<VisitScheduleDetailListProps> = ({
         <h2 className={styles.title}>訪問情報</h2>
         <div className={styles.info}>
           <div>
-            <li className={styles.row}>
+            {/* <li className={styles.row}>
               <span>提供時間</span>
               <span className={styles.item}>{schedule.serviceTime}分</span>
-            </li>
+            </li> */}
             <li className={styles.row}>
               <span>患者名</span>
               <Link
@@ -121,7 +121,9 @@ export const VisitScheduleDetailList: FC<VisitScheduleDetailListProps> = ({
           <div>
             <li className={styles.row}>
               <span>サービスコード</span>
-              <span className={styles.item}>{schedule.serviceCode}</span>
+              <span className={styles.item}>
+                {schedule.visit_info.service_code}
+              </span>
             </li>
             <li className={styles.row}>
               <span>訪問種類</span>
@@ -141,7 +143,9 @@ export const VisitScheduleDetailList: FC<VisitScheduleDetailListProps> = ({
         </div>
         <li className={styles.row}>
           <span>住所</span>
-          <span className={styles.item}>{schedule.destination}</span>
+          <span className={styles.item}>
+            {schedule.destination ? schedule.destination : '未設定'}
+          </span>
         </li>
       </ul>
       <ul className={styles.list}>

@@ -5,10 +5,10 @@ import { VisitScheduleDetailList } from '@/app/[facilityId]/calendar/_components
 import { Button } from '@/app/_components/Button'
 import { Loading } from '@/app/_components/Loading'
 import Modal from '@/app/_components/Modal'
-import { ScheduleType } from '@/constants/scheduleType'
+import { scheduleType } from '@/constants/scheduleType'
 import { useSchedule } from '@/hooks/api/schedule'
-import { ScheduleKey } from '@/schema/schedule'
 import { type FC } from 'react'
+import { EventImpl } from '@fullcalendar/core/internal'
 
 export type ScheduleDetailModalProps = {
   scheduleId: string
@@ -20,6 +20,8 @@ export const ScheduleDetailModal: FC<ScheduleDetailModalProps> = ({
   startDate,
 }) => {
   const { schedule, error } = useSchedule(scheduleId)
+
+  console.log('schedule', schedule)
 
   if (error !== undefined) return <div>Error: {error.message}</div>
   return (
@@ -43,8 +45,7 @@ export const ScheduleDetailModal: FC<ScheduleDetailModalProps> = ({
     >
       {schedule !== undefined ? (
         <div>
-          {schedule[ScheduleKey.ScheduleType] === ScheduleType.visit ||
-          schedule[ScheduleKey.ScheduleType] === ScheduleType.visitRecalling ? (
+          {schedule.visit_info !== null ? (
             <VisitScheduleDetailList
               schedule={schedule}
               startDate={startDate}

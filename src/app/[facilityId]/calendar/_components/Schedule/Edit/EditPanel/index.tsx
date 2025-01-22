@@ -81,12 +81,12 @@ export const EditPanel: FC<EditPanelProps> = ({
         {currentId === ScheduleKey.CcUserId && (
           <ScheduleUserEdit control={control} name={ScheduleKey.CcUserId} />
         )}
-        {currentId === VisitScheduleKey.ServiceCode && (
+        {/* {currentId === VisitScheduleKey.ServiceCode && (
           <ServiceCodeEdit
             control={control}
             name={VisitScheduleKey.ServiceCode}
           />
-        )}
+        )} */}
         {currentId === VisitScheduleKey.ScheduleCategory && (
           <ScheduleCategoryEdit control={control} />
         )}

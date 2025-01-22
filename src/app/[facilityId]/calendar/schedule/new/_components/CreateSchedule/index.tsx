@@ -33,10 +33,12 @@ import { useSideTransition } from '@/hooks/useSideTransition'
 import type { Patient } from '@/schema/patient'
 import styles from './style.module.css'
 import { useServiceCodeList } from '@/hooks/api/serviceCode'
+import { ServiceCode } from '@/schema/serviceCode'
 
 export type CreateScheduleProps = {
   users: User[]
   patients: Patient[]
+  serviceCodes: ServiceCode[]
   currentUserId: string
   startDate: Date
 }
@@ -55,10 +57,10 @@ const tabs: ComponentPropsWithoutRef<typeof TextTab>['tabs'] = [
 export const CreateSchedule: FC<CreateScheduleProps> = ({
   users,
   patients,
+  serviceCodes,
   currentUserId,
   startDate,
 }) => {
-  const serviceCodes = useServiceCodeList()
   const { queryParams } = useQueryParams()
   const { activeTab } = useSideTransition(
     'tab',
@@ -117,7 +119,7 @@ export const CreateSchedule: FC<CreateScheduleProps> = ({
       ...(activeTab === 'visit'
         ? {
             [VisitScheduleKey.PatientId]: '',
-            [VisitScheduleKey.ServiceCodeId]: '',
+            [VisitScheduleKey.ServiceCodeId]: serviceCodes[0].id,
             [VisitScheduleKey.ServiceTime]: 29,
             [VisitScheduleKey.Destination]: '',
             [VisitScheduleKey.ScheduleCategory]: undefined,
@@ -192,14 +194,6 @@ export const CreateSchedule: FC<CreateScheduleProps> = ({
   // console.log(scheduleCreate.watch(ScheduleKey.UserId))
   // console.log(users)
 
-  if (serviceCodes.error) {
-    return <div>エラーが発生しました</div>
-  }
-
-  if (serviceCodes.serviceCodes === undefined) {
-    return <div>データが取得できていません</div>
-  }
-
   const scheduleEditMap: ButtonContentProps[] = [
     ...(activeTab === 'normal'
       ? [
@@ -243,7 +237,7 @@ export const CreateSchedule: FC<CreateScheduleProps> = ({
           startTime={scheduleCreate.watch(ScheduleKey.StartTime)}
           endTime={scheduleCreate.watch(ScheduleKey.EndTime)}
           serviceTime={scheduleCreate.watch(VisitScheduleKey.ServiceTime)}
-          serviceCode={serviceCodes.serviceCodes?.find(
+          serviceCode={serviceCodes.find(
             (serviceCode) => serviceCode.id === scheduleCreate.watch(VisitScheduleKey.ServiceCodeId),
           )}
           isVisitSchedule={activeTab === 'visit'}
@@ -475,6 +469,7 @@ export const CreateSchedule: FC<CreateScheduleProps> = ({
               setCurrentId={setCurrentId}
               isVisitSchedule={activeTab === 'visit'}
               watchScheduleType={watchScheduleType}
+              serviceCodes={serviceCodes}
             />
           </div>
         </div>
