@@ -3,6 +3,7 @@ import { Loading } from '@/app/_components/Loading'
 import { usePatientList } from '@/hooks/api/patient'
 import { useServiceCodeList } from '@/hooks/api/serviceCode'
 import { useUserList } from '@/hooks/api/user'
+import { useVisitCategoryList } from '@/hooks/api/visitCategory'
 import { useParams, useSearchParams } from 'next/navigation'
 
 export const ScheduleCreateContainer = () => {
@@ -22,6 +23,7 @@ export const ScheduleCreateContainer = () => {
   const users = useUserList([facilityId, '', '', '', ''])
   const patients = usePatientList(facilityId)
   const serviceCodes = useServiceCodeList()
+  const visitCategories = useVisitCategoryList()
   const currentUser = {
     id: '01JE2J0PNT3MN60M4M2AHPQCPV',
     username: '山本二郎',
@@ -48,13 +50,15 @@ export const ScheduleCreateContainer = () => {
   return users.users === undefined ||
     currentUser === undefined ||
     patients.patients === undefined ||
-    serviceCodes.serviceCodes === undefined ? (
+    serviceCodes.serviceCodes === undefined ||
+    visitCategories.visitCategories === undefined ? (
     <Loading />
   ) : (
     <CreateSchedule
       users={users.users}
       patients={patients.patients}
       serviceCodes={serviceCodes.serviceCodes}
+      visitCategories={visitCategories.visitCategories}
       currentUserId={currentUser.id}
       startDate={startDate}
       endTime={endTime()}

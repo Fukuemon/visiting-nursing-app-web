@@ -34,6 +34,7 @@ import type { Patient } from '@/schema/patient'
 import styles from './style.module.css'
 import { useServiceCodeList } from '@/hooks/api/serviceCode'
 import { ServiceCode } from '@/schema/serviceCode'
+import { VisitCategory } from '@/schema/visitCategory'
 
 export type CreateScheduleProps = {
   users: User[]
@@ -42,7 +43,8 @@ export type CreateScheduleProps = {
   currentUserId: string
   startDate: Date
   endTime: string
-  initialUserId: string
+  initialUserId: string | null
+  visitCategories: VisitCategory[]
 }
 
 const tabs: ComponentPropsWithoutRef<typeof TextTab>['tabs'] = [
@@ -60,6 +62,7 @@ export const CreateSchedule: FC<CreateScheduleProps> = ({
   users,
   patients,
   serviceCodes,
+  visitCategories,
   currentUserId,
   startDate,
   endTime,
@@ -77,7 +80,7 @@ export const CreateSchedule: FC<CreateScheduleProps> = ({
 
   const scheduleCreate = useForm<ScheduleCreate>({
     defaultValues: {
-      [ScheduleKey.UserId]: initialUserId,
+      [ScheduleKey.UserId]: initialUserId ?? currentUserId,
       [ScheduleKey.ScheduleType]:
         activeTab === 'visit' ? scheduleType.visit : scheduleType.normal,
       [ScheduleKey.StartDate]: startDate,
@@ -202,10 +205,12 @@ export const CreateSchedule: FC<CreateScheduleProps> = ({
   // console.log(scheduleCreate.watch(ScheduleKey.UserId))
   // console.log(users)
   // console.log('serviceCode', serviceCodes[0].id)
-  console.log('endTime', endTime)
-  console.log('watchEndTime', scheduleCreate.watch(ScheduleKey.EndTime))
+  // console.log('endTime', endTime)
+  // console.log('watchEndTime', scheduleCreate.watch(ScheduleKey.EndTime))
   // console.log(scheduleCreate.watch(VisitScheduleKey.ServiceCodeId))
   // console.log(scheduleCreate.watch(VisitScheduleKey.ServiceTime))
+
+  console.log('scheduleCategory',scheduleCreate.watch(VisitScheduleKey.ScheduleCategory))
 
   const scheduleEditMap: ButtonContentProps[] = [
     ...(activeTab === 'normal'
@@ -376,6 +381,7 @@ export const CreateSchedule: FC<CreateScheduleProps> = ({
                 scheduleCategory={scheduleCreate.watch(
                   VisitScheduleKey.ScheduleCategory,
                 )}
+                visitCategories={visitCategories}
               />
             ),
           },
@@ -483,6 +489,7 @@ export const CreateSchedule: FC<CreateScheduleProps> = ({
               isVisitSchedule={activeTab === 'visit'}
               watchScheduleType={watchScheduleType}
               serviceCodes={serviceCodes}
+              visitCategories={visitCategories}
             />
           </div>
         </div>

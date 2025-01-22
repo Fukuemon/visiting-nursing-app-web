@@ -30,6 +30,17 @@ export const VisitScheduleDetailList: FC<VisitScheduleDetailListProps> = ({
   }
   // console.log(schedule[ScheduleKey.StartDate])
 
+  const convertTimeToMinutes = (time: string): number => {
+    const [hours, minutes] = time.split(':').map(Number)
+    return hours * 60 + minutes
+  }
+
+  const startTimeInMinutes = convertTimeToMinutes(
+    schedule[ScheduleKey.StartTime],
+  )
+  const endTimeInMinutes = convertTimeToMinutes(schedule[ScheduleKey.EndTime])
+  const serviceTime = endTimeInMinutes - startTimeInMinutes
+
   return (
     <div
       className={classNames(styles.container, {
@@ -104,10 +115,10 @@ export const VisitScheduleDetailList: FC<VisitScheduleDetailListProps> = ({
         <h2 className={styles.title}>訪問情報</h2>
         <div className={styles.info}>
           <div>
-            {/* <li className={styles.row}>
+            <li className={styles.row}>
               <span>提供時間</span>
-              <span className={styles.item}>{schedule.serviceTime}分</span>
-            </li> */}
+              <span className={styles.item}>{serviceTime}分</span>
+            </li>
             <li className={styles.row}>
               <span>患者名</span>
               <Link
@@ -128,10 +139,10 @@ export const VisitScheduleDetailList: FC<VisitScheduleDetailListProps> = ({
             <li className={styles.row}>
               <span>訪問種類</span>
               <div className={styles._category}>
-                {schedule.scheduleCategory !== undefined ? (
-                  schedule.scheduleCategory.map((category) => (
+                {schedule.visit_info.visit_categories !== null ? (
+                  schedule.visit_info.visit_categories.map((category) => (
                     <span className={styles.item} key={category}>
-                      {ScheduleCategoryText[category]}
+                      {category.name}
                     </span>
                   ))
                 ) : (

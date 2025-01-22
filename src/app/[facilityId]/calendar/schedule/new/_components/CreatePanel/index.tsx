@@ -18,6 +18,7 @@ import styles from './style.module.css'
 import { scheduleType } from '@/constants/scheduleType'
 import { useServiceCodeList } from '@/hooks/api/serviceCode'
 import { ServiceCode } from '@/schema/serviceCode'
+import { VisitCategory } from '@/schema/visitCategory'
 
 export type CreatePanelProps = {
   control: Control<ScheduleCreate>
@@ -27,6 +28,7 @@ export type CreatePanelProps = {
   isVisitSchedule: boolean
   watchScheduleType: scheduleType
   serviceCodes: ServiceCode[]
+  visitCategories: VisitCategory[]
 }
 
 export const CreatePanel: FC<CreatePanelProps> = ({
@@ -37,6 +39,7 @@ export const CreatePanel: FC<CreatePanelProps> = ({
   isVisitSchedule,
   watchScheduleType,
   serviceCodes,
+  visitCategories,
 }) => {
   useEffect(() => {
     if (currentId === null || currentId === undefined) {
@@ -96,7 +99,10 @@ export const CreatePanel: FC<CreatePanelProps> = ({
           <ScheduleUserEdit control={control} name={ScheduleKey.CcUserId} />
         )}
         {currentId === VisitScheduleKey.ScheduleCategory && (
-          <ScheduleCategoryCreate control={control} />
+          <ScheduleCategoryCreate
+            control={control}
+            visitCategories={visitCategories}
+          />
         )}
         {currentId === ScheduleKey.Description && (
           <TextareaEdit

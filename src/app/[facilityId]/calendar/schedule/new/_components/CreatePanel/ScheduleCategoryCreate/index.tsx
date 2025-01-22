@@ -12,9 +12,11 @@ import {
 } from '@/constants/scheduleCategory'
 import type { ScheduleCreate } from '@/schema/schedule'
 import { VisitScheduleKey } from '@/schema/schedule'
+import { VisitCategory } from '@/schema/visitCategory'
 
 export type ScheduleCategoryCreateProps = {
   control: Control<ScheduleCreate>
+  visitCategories: VisitCategory[]
 }
 
 export const ScheduleCategoryOptions = [
@@ -34,6 +36,7 @@ export const ScheduleCategoryOptions = [
 
 export const ScheduleCategoryCreate: FC<ScheduleCategoryCreateProps> = ({
   control,
+  visitCategories,
 }) => {
   const { field } = useController({
     control,
@@ -44,15 +47,15 @@ export const ScheduleCategoryCreate: FC<ScheduleCategoryCreateProps> = ({
     <div className={styles.scheduleCategoryCreate}>
       <h2 className={styles.heading}>訪問の種類を選んでください</h2>
       <div className={styles.content}>
-        {ScheduleCategoryOptions.map((option) => (
-          <label key={option.value} className={styles.radioCards}>
+        {visitCategories.map((visitCategory) => (
+          <label key={visitCategory.id} className={styles.radioCards}>
             <input
               className={styles.radio}
               type="checkbox"
               {...field}
-              value={option.value}
-              checked={field.value?.includes(option.value)}
-              defaultChecked={field.value?.includes(option.value)}
+              value={visitCategory.id}
+              checked={field.value?.includes(visitCategory.id)}
+              defaultChecked={field.value?.includes(visitCategory.id)}
               onChange={(e) => {
                 if (typeof field.value === 'boolean') {
                   field.onChange(!field.value)
@@ -71,7 +74,7 @@ export const ScheduleCategoryCreate: FC<ScheduleCategoryCreateProps> = ({
                 }
               }}
             />
-            <span className={styles.label}>{option.label}</span>
+            <span className={styles.label}>{visitCategory.name}</span>
           </label>
         ))}
       </div>

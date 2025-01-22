@@ -4,6 +4,7 @@ import type { ScheduleCategory } from '@/constants/scheduleCategory'
 import { scheduleCategoryConstant } from '@/constants/scheduleCategory'
 import { scheduleType } from '@/constants/scheduleType'
 import type { ServiceCode } from '@/schema/serviceCode'
+import { VisitCategory, visitCategorySchema } from '@/schema/visitCategory'
 import type { ZodType } from 'zod'
 import { z } from 'zod'
 
@@ -46,7 +47,7 @@ const baseScheduleSchema = z.object({
 
 export enum VisitScheduleKey {
   PatientId = 'patientId',
-  ScheduleCategory = 'scheduleCategory',
+  ScheduleCategory = 'visit_category_ids',
   Destination = 'destination',
   ServiceCodeId = 'serviceCodeId',
   ServiceTime = 'serviceTime',
@@ -56,7 +57,7 @@ export enum VisitScheduleKey {
 export type VisitSchedule = BaseSchedule & {
   [ScheduleKey.ScheduleType]: scheduleType.visit
   [VisitScheduleKey.PatientId]: string
-  [VisitScheduleKey.ScheduleCategory]?: ScheduleCategory[]
+  [VisitScheduleKey.ScheduleCategory]?: string[]
   [VisitScheduleKey.ServiceCodeId]: string
   [VisitScheduleKey.Destination]: string
   [VisitScheduleKey.IsCanceled]: boolean
@@ -67,7 +68,7 @@ export const visitScheduleSchema = baseScheduleSchema.extend({
   [ScheduleKey.ScheduleType]: z.literal(scheduleType.visit),
   [VisitScheduleKey.PatientId]: z.string().ulid(),
   [VisitScheduleKey.ScheduleCategory]: z
-    .array(z.nativeEnum(scheduleCategoryConstant))
+    .array(z.string())
     .optional(),
   [VisitScheduleKey.ServiceCodeId]: z.string(),
   [VisitScheduleKey.Destination]: z.string(),
@@ -140,7 +141,7 @@ export const baseRecallingScheduleSchema = z.object({
 export type VisitRecallingSchedule = BaseRecallingSchedule & {
   [ScheduleKey.ScheduleType]: scheduleType.visitRecalling
   [VisitScheduleKey.PatientId]: string
-  [VisitScheduleKey.ScheduleCategory]?: ScheduleCategory[]
+  [VisitScheduleKey.ScheduleCategory]?: string[]
   [VisitScheduleKey.ServiceCodeId]: string
   [VisitScheduleKey.Destination]: string
   [VisitScheduleKey.ServiceTime]: number
@@ -151,7 +152,7 @@ export const visitRecallingScheduleSchema = baseRecallingScheduleSchema.extend({
   [ScheduleKey.ScheduleType]: z.literal(scheduleType.visitRecalling),
   [VisitScheduleKey.PatientId]: z.string().ulid(),
   [VisitScheduleKey.ScheduleCategory]: z
-    .array(z.nativeEnum(scheduleCategoryConstant))
+    .array(z.string())
     .optional(),
   [VisitScheduleKey.ServiceCodeId]: z.string(),
   [VisitScheduleKey.Destination]: z.string(),
