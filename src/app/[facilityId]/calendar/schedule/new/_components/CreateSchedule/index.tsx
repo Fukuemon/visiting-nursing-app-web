@@ -41,6 +41,8 @@ export type CreateScheduleProps = {
   serviceCodes: ServiceCode[]
   currentUserId: string
   startDate: Date
+  endTime: string
+  initialUserId: string
 }
 
 const tabs: ComponentPropsWithoutRef<typeof TextTab>['tabs'] = [
@@ -60,6 +62,8 @@ export const CreateSchedule: FC<CreateScheduleProps> = ({
   serviceCodes,
   currentUserId,
   startDate,
+  endTime,
+  initialUserId,
 }) => {
   const { queryParams } = useQueryParams()
   const { activeTab } = useSideTransition(
@@ -73,7 +77,7 @@ export const CreateSchedule: FC<CreateScheduleProps> = ({
 
   const scheduleCreate = useForm<ScheduleCreate>({
     defaultValues: {
-      [ScheduleKey.UserId]: currentUserId,
+      [ScheduleKey.UserId]: initialUserId,
       [ScheduleKey.ScheduleType]:
         activeTab === 'visit' ? scheduleType.visit : scheduleType.normal,
       [ScheduleKey.StartDate]: startDate,
@@ -81,20 +85,23 @@ export const CreateSchedule: FC<CreateScheduleProps> = ({
         hour: '2-digit',
         minute: '2-digit',
       }),
-      [ScheduleKey.EndTime]: new Date(startDate.getTime() + 30 * 60000).toLocaleTimeString('ja-JP', {
-        hour: '2-digit',
-        minute: '2-digit',
-      }),
+      [ScheduleKey.EndTime]: endTime,
       [ScheduleKey.Title]: '',
       [ScheduleKey.Description]: '',
+      [VisitScheduleKey.ServiceCodeId]: serviceCodes[0].id,
+      [VisitScheduleKey.PatientId]: patients[0].id,
+      [VisitScheduleKey.ServiceTime]: 29,
+      [VisitScheduleKey.Destination]: '',
+      [VisitScheduleKey.IsCanceled]: false,
+      [VisitScheduleKey.ScheduleCategory]: undefined,
       ...(activeTab === 'visit'
         ? {
-            [VisitScheduleKey.PatientId]: '',
-            [VisitScheduleKey.ServiceCodeId]: '',
-            [VisitScheduleKey.ServiceTime]: 29,
-            [VisitScheduleKey.Destination]: '',
-            [VisitScheduleKey.IsCanceled]: false,
-            [VisitScheduleKey.ScheduleCategory]: undefined,
+            // [VisitScheduleKey.PatientId]: '',
+            // [VisitScheduleKey.ServiceCodeId]: '01JBVE7Z0H0E0M6BX3FV1DK69A',
+            // [VisitScheduleKey.ServiceTime]: 29,
+            // [VisitScheduleKey.Destination]: '',
+            // [VisitScheduleKey.IsCanceled]: false,
+            // [VisitScheduleKey.ScheduleCategory]: undefined,
           }
         : {}),
     } as ScheduleCreate,
@@ -110,16 +117,17 @@ export const CreateSchedule: FC<CreateScheduleProps> = ({
       [RecallingScheduleKey.UserId]: currentUserId,
       [RecallingScheduleKey.Title]: '',
       [RecallingScheduleKey.StartTime]: new Date().toISOString(),
-      [RecallingScheduleKey.EndTime]: new Date().toISOString(),
+      // [RecallingScheduleKey.EndTime]: endTime,
       [RecallingScheduleKey.Description]: '',
       [RecallingScheduleKey.StartDate]: new Date(),
       [RecallingScheduleKey.Frequency]: RecallingFrequency.Weekly,
       [RecallingScheduleKey.DayOfWeek]: new Date().getDay(),
+      [VisitScheduleKey.ServiceCodeId]: '01JBVE7Z0H0E0M6BX3FV1DK69A',
 
       ...(activeTab === 'visit'
         ? {
             [VisitScheduleKey.PatientId]: '',
-            [VisitScheduleKey.ServiceCodeId]: serviceCodes[0].id,
+            // [VisitScheduleKey.ServiceCodeId]: serviceCodes[0].id,
             [VisitScheduleKey.ServiceTime]: 29,
             [VisitScheduleKey.Destination]: '',
             [VisitScheduleKey.ScheduleCategory]: undefined,
@@ -193,6 +201,11 @@ export const CreateSchedule: FC<CreateScheduleProps> = ({
 
   // console.log(scheduleCreate.watch(ScheduleKey.UserId))
   // console.log(users)
+  // console.log('serviceCode', serviceCodes[0].id)
+  console.log('endTime', endTime)
+  console.log('watchEndTime', scheduleCreate.watch(ScheduleKey.EndTime))
+  // console.log(scheduleCreate.watch(VisitScheduleKey.ServiceCodeId))
+  // console.log(scheduleCreate.watch(VisitScheduleKey.ServiceTime))
 
   const scheduleEditMap: ButtonContentProps[] = [
     ...(activeTab === 'normal'

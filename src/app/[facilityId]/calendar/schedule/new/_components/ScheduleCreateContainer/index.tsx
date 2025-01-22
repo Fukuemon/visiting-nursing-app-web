@@ -10,10 +10,18 @@ export const ScheduleCreateContainer = () => {
   const startParam = useSearchParams().get('start')
   const startDate =
     startParam !== null && startParam !== '' ? new Date(startParam) : new Date()
+  const initialUserId = useSearchParams().get('userId')
+  const endTime = () => {
+    const endTime = new Date(startDate.getTime() + 30 * 60000)
+    return endTime.toLocaleTimeString('ja-JP', {
+      hour: '2-digit',
+      minute: '2-digit',
+    })
+  }
   console.log(startDate)
   const users = useUserList([facilityId, '', '', '', ''])
   const patients = usePatientList(facilityId)
-  const serviceCodes = useServiceCodeList(facilityId)
+  const serviceCodes = useServiceCodeList()
   const currentUser = {
     id: '01JE2J0PNT3MN60M4M2AHPQCPV',
     username: '山本二郎',
@@ -35,6 +43,8 @@ export const ScheduleCreateContainer = () => {
     throw new Error(errorMessage)
   }
 
+  console.log('serviceCodes', serviceCodes.serviceCodes)
+
   return users.users === undefined ||
     currentUser === undefined ||
     patients.patients === undefined ||
@@ -47,6 +57,8 @@ export const ScheduleCreateContainer = () => {
       serviceCodes={serviceCodes.serviceCodes}
       currentUserId={currentUser.id}
       startDate={startDate}
+      endTime={endTime()}
+      initialUserId={initialUserId}
     />
   )
 }

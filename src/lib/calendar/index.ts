@@ -30,12 +30,13 @@ export default class CalendarHandler {
   }
   handleEventClick = (arg: EventClickArg) => {}
   handleEventChange = (arg: EventChangeArg) => {}
-  handleDateClick = (arg: DateClickArg) => {
+  handleDateClick = (arg: DateClickArg, userId?: string) => {
     const start = String(arg.date).replace(/ GMT.*$/, '')
     this.router.push(
       pagesPath
         ._facilityId(this.facilityId)
-        .calendar.schedule.new.$url({ query: { start } }).path + '&tab=normal',
+        .calendar.schedule.new.$url({ query: { start, userId } }).path +
+        '&tab=normal',
     )
   }
   handleViewChange = (currentCalendarView: string) => {

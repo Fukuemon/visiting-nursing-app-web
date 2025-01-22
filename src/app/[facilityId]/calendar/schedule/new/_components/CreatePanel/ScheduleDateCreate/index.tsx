@@ -109,13 +109,13 @@ export const ScheduleDateCreate = ({
           },
         )
       } else {
-        setValue(
-          endTimeName,
-          startTime as PathValue<Schedule, Path<Schedule>>,
-          {
-            shouldValidate: true,
-          },
-        )
+        // setValue(
+        //   endTimeName,
+        //   startTime as PathValue<Schedule, Path<Schedule>>,
+        //   {
+        //     shouldValidate: true,
+        //   },
+        // )
       }
     }
   }, [date, startTime, serviceTime, setValue, endTimeName])

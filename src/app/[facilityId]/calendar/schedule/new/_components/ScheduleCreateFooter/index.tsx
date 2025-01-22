@@ -120,13 +120,13 @@ export const ScheduleCreateFooter = ({
           }}
         >
           <Button
-            disabled={
-              !isScheduleDirty &&
-              !(
-                watchScheduleType === scheduleType.normalRecalling ||
-                watchScheduleType === scheduleType.visitRecalling
-              )
-            }
+            // disabled={
+            //   !isScheduleDirty &&
+            //   !(
+            //     watchScheduleType === scheduleType.normalRecalling ||
+            //     watchScheduleType === scheduleType.visitRecalling
+            //   )
+            // }
           >
             保存
           </Button>

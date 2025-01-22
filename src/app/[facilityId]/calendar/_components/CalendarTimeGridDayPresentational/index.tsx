@@ -1,6 +1,6 @@
 import jaLocale from '@fullcalendar/core/locales/ja'
 import dayGridPlugin from '@fullcalendar/daygrid'
-import interactionPlugin from '@fullcalendar/interaction'
+import interactionPlugin, { DateClickArg } from '@fullcalendar/interaction'
 import momentTimezonePlugin from '@fullcalendar/moment-timezone'
 import FullCalendar from '@fullcalendar/react'
 import rrulePlugin from '@fullcalendar/rrule'
@@ -19,14 +19,16 @@ import { useQueryParams } from '@/hooks/useQueryParams'
 import CalendarHandler from '@/lib/calendar'
 import type { EventContentArg } from '@fullcalendar/core/index.js'
 import { useParams, useRouter } from 'next/navigation'
+import { pagesPath } from '@/utils/$path'
 
 type CalendarTimeGridDayPresentational = {
   events?: Events
+  userId?: string
 }
 
 export const CalendarTimeGridDayPresentational: FC<
   CalendarTimeGridDayPresentational
-> = ({ events }) => {
+> = ({ events, userId }) => {
   const router = useRouter()
   const { facilityId } = useParams<{ facilityId: string }>()
   const { queryParams } = useQueryParams()
@@ -54,6 +56,15 @@ export const CalendarTimeGridDayPresentational: FC<
       />
     </Modal>
   )
+  const handleDateClick = (arg: DateClickArg) => {
+    const start = String(arg.date).replace(/ GMT.*$/, '')
+    router.push(
+      pagesPath
+        ._facilityId(facilityId)
+        .calendar.schedule.new.$url({ query: { start, userId } }).path +
+        '&tab=normal',
+    )
+  }
 
   return (
     <div className={styles.container}>
@@ -82,7 +93,7 @@ export const CalendarTimeGridDayPresentational: FC<
           droppable
           events={events}
           eventClick={calendarHandler.handleEventClick}
-          dateClick={calendarHandler.handleDateClick}
+          dateClick={handleDateClick}
           allDaySlot={false}
           eventContent={renderEventContent}
         />

@@ -196,6 +196,7 @@ export const CalendarContainer: FC<CalendarContainerProps> = ({
                 <CalendarTimeGridDayPresentational
                   key={width}
                   events={memberEvents}
+                  userId={member.id}
                 />
               </div>
             )
